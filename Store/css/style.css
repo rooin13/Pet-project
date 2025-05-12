@@ -1,0 +1,381 @@
+html{
+    box-sizing: border-box;
+    
+}
+
+*{
+    box-sizing: border-box;
+}
+
+a{
+    color: inherit;
+    text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4{
+    margin: 0;
+    padding: 0;
+}
+
+main{
+    width: 100%;
+
+    margin-top: 50px;
+    height: 1000px;
+}
+.header{
+    width: 100%;
+    position: fixed;
+    z-index: 5;
+
+    background-color: rgba(254, 253, 253, 0.925);
+}
+ul,
+ol,
+li{
+    list-style: none;
+    margin: 0;
+    
+    padding: 0;
+}
+
+img{
+    vertical-align: top;
+}
+
+p{
+    margin: 0;
+    padding: 0
+}
+
+*::before,
+*::after{
+    box-sizing: inherit;
+}
+
+html{
+    box-sizing: border-box;
+    
+}
+@font-face {
+    font-family: 'Lazy-Dog';
+    src:  url('/github-projects/pet-projects/Store/fonts/the-lazy-dog-5.woff2') format('woff2'),
+    url('/github-projects/pet-projects/Store/fonts/the-lazy-dog-5.woff') format('woff');
+  }
+
+
+
+
+body{
+    font-family: "Manrope",sans-serif;
+    align-items: center;
+    display: flex;
+    font-weight: 200;
+    height: 100%;
+    flex-direction: column;
+}
+
+h2{
+    font-size: 30px;
+}
+
+
+
+.container{
+    max-width:1920px;
+    margin: 0 auto;
+    align-items: center;
+    padding: 0 30px;
+ 
+}
+
+.flex{
+    display: flex !important;
+}
+
+.display-none{
+    display: none;
+}
+.flex-wrap{
+    flex-wrap: wrap;
+}
+.show{
+    display: inherit !important;
+}
+
+
+.darkness{
+    background-color: rgba(0, 0, 0, 0.726) !important;
+}
+ 
+/* btn btn btn btn btn btn btn btn btn btn btn btn btn btn btn btn btn btn btn btn 
+btn btn btn btn btn btn btn btn btn btn btn btn btn btn btn btn btn btn btn btn  */
+
+.btn-reset{
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.btn{
+    padding: 10px 20px;
+    cursor: pointer;
+    width: auto ;
+    border-radius: 0.25rem ;
+    border: 0.1rem solid #000 ;
+    background-color: #000 ;
+    color: #fff ;
+    font-size: 0.75rem ;
+    font-weight: 600 ;
+    text-transform: uppercase;
+    transition: background-color 0.17s ease-in-out;
+}
+
+.btn:hover{
+    background-color: #fff ;
+    color: #000 ;
+}
+
+/* modal modal modal modal modal modal modal modal modal modal modal modal modal modal modal modal 
+modal modal modal modal modal modal modal modal modal modal modal modal modal modal modal modal  */
+
+.modal{
+    position: absolute;
+    background-color: white;
+    justify-content: center;
+    display: none;
+    top: 50px;
+    width: 400px;
+    height: 300px;
+}
+
+.modal-content{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: 10px;
+    align-items: center;
+
+}
+
+.modal-title{
+    margin-bottom: 20px;
+}
+
+/* form form form form form form form form form form form form form form form form form form form form 
+form form form form form form form form form form form form form form form form form form form form  */
+
+.form-wrapper{
+    justify-content: space-around;
+}
+.form{
+    flex-direction: column;
+    width: 500px;
+}   
+
+.input{
+    border-radius: 0.25rem ;
+    padding: 10px 30px;
+    padding-left: 2px;
+    border: 0.1rem solid #000 ;
+
+
+}
+
+input::placeholder{
+    text-transform: uppercase;
+    padding-left: 0;
+    margin-left: 0;
+    left: 10px !important;
+}
+
+.input:focus{
+    outline: 2px solid rgba(0, 0, 0, 0.413);
+}
+
+.input:not(:last-child){
+    margin-bottom: 20px;
+}
+
+
+
+/* nav nav nav nav nav nav nav nav nav nav nav nav nav nav nav nav nav nav nav nav nav nav nav nav nav  */
+/* nav nav nav nav nav nav nav nav nav nav nav nav nav nav nav nav nav nav nav nav nav nav nav nav nav  */
+
+.header{
+    border-bottom: 1px solid black;
+}
+
+.nav{
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex-basis: 100%;
+    width: 100%;
+    padding-top: 15px;
+    padding-bottom: 15px;
+
+}
+
+.nav__list{
+    flex-basis: 100%;
+    justify-content: space-between;
+
+    align-items: center;
+}
+
+.nav__item{
+    font-size: 17px;
+    transition: border 5s ease;
+
+}
+
+.nav__item:not(:last-child){
+    margin-right: 20px;
+}
+
+.nav__list-rightside{
+
+    justify-content: flex-end;
+}
+
+.nav__logo{
+    margin-top: 5px;
+    width: 88px;
+    height: 14px;
+
+}
+
+.nav__link{
+    position: relative;
+}
+
+
+.nav__link::after{
+    content: "";
+    position: absolute;
+    left: 2px;
+    bottom: -1px;
+    height: 0.5px; 
+    width: 95%;
+    background-color:black  ;
+    transform: scaleX(0);
+    transition: transform 0.2s ease-in-out;
+}
+
+.nav__link:hover::after{
+    transform: scale(1);
+}
+
+.nav__link:focus::after{
+    transform: scale(1);
+}
+
+
+
+
+
+.main{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex-basis: 100%;
+    width: 100%;
+}
+
+
+
+
+
+.product-image{
+    width: 100%;
+    height: 100%;
+    max-height: 240px;
+    z-index: 0;
+}
+
+
+
+.product-card{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-basis: 33.3333333%;
+    border: 0.5px solid black;
+    border-top: 0px solid black;
+    border-left: 0px solid black;
+    background-color: #fff;
+    overflow: hidden;
+    padding: 4px;
+}
+
+
+.product-type{
+    margin-bottom: 10px;
+    font-size: 15px;
+    font-weight: 400;
+}
+
+.product-name{
+    font-size: 17px;
+    font-weight: 400;
+    margin-bottom: 10px;
+}
+.product-dscr{
+    z-index: 3;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-top: 10px;
+    padding-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    justify-content: center;
+}
+
+
+
+
+
+
+
+
+
+.hero{
+    width: 100%;
+    height: 650px;
+    background-position: 40% 10%;
+    flex-basis: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column
+}
+
+.hero-title{
+    font-size: 100px;
+    font-weight: 200;
+    margin-bottom: 10px;
+    color: #fff;
+    font-family: "Lazy-Dog";
+}
+
+.hero-subtitle{
+    font-size: 50px;
+    font-weight: 400;
+    color: #fff; ;
+}
+
+.hero-btn{
+    width: 100%;
+    z-index: 2;
+    cursor: pointer;
+    flex-basis: 100%;
+}
