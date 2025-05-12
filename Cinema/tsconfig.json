@@ -1,0 +1,44 @@
+{
+  "compilerOptions": {
+    "types": [
+      "node"
+    ],
+    "target": "ES2022", // Modern JS target
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ], // Needed for web apps
+    "allowJs": false, // No JS files allowed
+    "skipLibCheck": true, // Skips type checks of node_modules
+    "strict": true, // Enables all strict type-checking
+    "forceConsistentCasingInFileNames": true, // Enforce case-sensitive paths
+    "noEmit": true, // Don't emit JS output
+    "esModuleInterop": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler", // Better for Next.js App Router
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve", // Next.js handles JSX
+    "incremental": true, // Faster subsequent builds
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ] // Path alias for cleaner imports
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "next-env.d.ts",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
