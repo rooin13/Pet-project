@@ -1,41 +1,40 @@
 {
   "compilerOptions": {
-    "types": [
-      "node"
-    ],
-    "target": "ES2022", // Modern JS target
+    "target": "ES2017",
     "lib": [
-      "DOM",
-      "DOM.Iterable",
-      "ESNext"
-    ], // Needed for web apps
-    "allowJs": false, // No JS files allowed
-    "skipLibCheck": true, // Skips type checks of node_modules
-    "strict": true, // Enables all strict type-checking
-    "forceConsistentCasingInFileNames": true, // Enforce case-sensitive paths
-    "noEmit": true, // Don't emit JS output
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
     "esModuleInterop": true,
-    "module": "ESNext",
-    "moduleResolution": "Bundler", // Better for Next.js App Router
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve", // Next.js handles JSX
-    "incremental": true, // Faster subsequent builds
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ] // Path alias for cleaner imports
-    },
+    "jsx": "preserve",
+    "incremental": true,
     "plugins": [
       {
         "name": "next"
       }
-    ]
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
   },
   "include": [
+    "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "next-env.d.ts",
+    "next.config.mjs",
+    "postcss.config.mjs",
+    "postcss.config.mjs",
     ".next/types/**/*.ts"
   ],
   "exclude": [
