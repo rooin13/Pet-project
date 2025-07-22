@@ -1,0 +1,22 @@
+import { RELATION_DELEGATES } from "./config/delegates";
+import { CATEGORY_FILTER_FIELD_MAP } from "./config/fieldMap";
+
+export interface FilterOption {
+    field: string;
+    title: string;
+    label: string;
+}
+
+export interface FilterGroupProps {
+    title: string;
+    options: { label: string; value: string }[];
+}
+
+
+export type DelegateType = {
+    findMany: (args: {
+        where: any;
+        distinct: string[];
+        select: { name: true };
+    }) => Promise<{ name: string }[]>;
+};

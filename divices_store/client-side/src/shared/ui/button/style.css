@@ -1,0 +1,10 @@
+.main-btn:hover{
+    outline: 4px solid #91a5ff;
+}
+
+.main-btn{
+    font-size: 1rem;
+    cursor: pointer;
+     transition: outline 0.09s ease-in-out;
+     outline: 2px solid #91a5ff;
+}

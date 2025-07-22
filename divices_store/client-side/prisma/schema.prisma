@@ -1,0 +1,231 @@
+// Fully extended Prisma schema with all FilterCategory models, reworked Variations and separated Series
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+enum Role {
+    USER
+    ADMIN
+}
+
+enum OrderStatus {
+    PENDING
+    SUCCEEDED
+    CANCELLED
+}
+
+model User {
+    id               Int               @id @default(autoincrement())
+    fullName         String
+    email            String            @unique
+    password         String
+    provider         String?
+    providerId       String?
+    role             Role              @default(USER)
+    createdAt        DateTime          @default(now())
+    updatedAt        DateTime          @updatedAt
+    orders           Order[]
+    cart             Cart?
+    verified         DateTime
+    verificationCode VerificationCode?
+}
+
+model Cart {
+    id          Int        @id @default(autoincrement())
+    userId      Int?       @unique
+    user        User?      @relation(fields: [userId], references: [id])
+    token       String?    @unique
+    items       CartItem[]
+    totalAmount Int        @default(0)
+    createdAt   DateTime   @default(now())
+    updatedAt   DateTime   @default(now())
+}
+
+model VerificationCode {
+    id        Int      @id @default(autoincrement())
+    code      String
+    user      User     @relation(fields: [userId], references: [id])
+    userId    Int      @unique
+    createdAt DateTime @default(now())
+
+    @@unique([userId, code])
+}
+
+model Product {
+    id               Int                      @id @default(autoincrement())
+    name             String
+    imagesUrl        Json
+    price            Float
+    slug             String                   @unique
+    description      String
+    category         Category                 @relation(fields: [categoryId], references: [id])
+    categoryId       Int
+    variations       Variation[]
+    brand            Brand?                   @relation(fields: [brandId], references: [id])
+    brandId          Int?
+    colors           Color[]                  @relation("ProductColors")
+    miceSeries       MiceSeries[]             @relation("ProductMiceSeries")
+    keyboardSeries   KeyboardSeries[]         @relation("ProductKeyboardSeries")
+    webCamSeries     WebCamSeries[]           @relation("ProductWebCamSeries")
+    miceFeatures     MiceFeature[]            @relation("ProductMiceFeatures")
+    webCamFeatures   WebCamFeature[]          @relation("ProductWebCamFeatures")
+    certified        CertifiedCompatibility[] @relation("ProductCertified")
+    handPreferences  HandPreference[]         @relation("ProductHandPref")
+    handSizes        HandSize[]               @relation("ProductHandSizes")
+    scrollTypes      AdvancedScrollType[]     @relation("ProductScrollTypes")
+    connectivity     Connectivity[]           @relation("ProductConnectivity")
+    platform         Platform[]               @relation("ProductPlatform")
+    webcamResolution ResolutionFrameRate[]    @relation("ProductResolution")
+    worksWith        WorksWith[]              @relation("ProductWorksWith")
+    keyboardLayouts  KeyboardLayoutSize[]     @relation("ProductKeyboardLayouts")
+    keyboardExtras   KeyboardExtraFeature[]   @relation("ProductKeyboardExtras")
+    createdAt        DateTime                 @default(now())
+    updatedAt        DateTime                 @updatedAt
+}
+
+model Variation {
+    id        Int        @id @default(autoincrement())
+    product   Product    @relation(fields: [productId], references: [id])
+    productId Int
+    color     String
+    size      String
+    price     Float?
+    cartItems CartItem[]
+}
+
+model Category {
+    id       Int       @id @default(autoincrement())
+    name     String
+    imageUrl String
+    products Product[]
+}
+
+model CartItem {
+    id          Int       @id @default(autoincrement())
+    variation   Variation @relation(fields: [variationId], references: [id])
+    variationId Int
+    cart        Cart      @relation(fields: [cartId], references: [id])
+    cartId      Int
+    quantity    Int
+}
+
+model Order {
+    id          Int         @id @default(autoincrement())
+    user        User?       @relation(fields: [userId], references: [id])
+    userId      Int?
+    token       String?
+    totalAmount Int
+    items       Json
+    status      OrderStatus
+    paymentId   String?
+    createdAt   DateTime    @default(now())
+    updatedAt   DateTime    @updatedAt
+}
+
+model Brand {
+    id       Int       @id @default(autoincrement())
+    name     String    @unique
+    products Product[]
+}
+
+model Color {
+    id       Int       @id @default(autoincrement())
+    name     String    @unique
+    products Product[] @relation("ProductColors")
+}
+
+model MiceSeries {
+    id       Int       @id @default(autoincrement())
+    name     String    @unique
+    products Product[] @relation("ProductMiceSeries")
+}
+
+model KeyboardSeries {
+    id       Int       @id @default(autoincrement())
+    name     String    @unique
+    products Product[] @relation("ProductKeyboardSeries")
+}
+
+model WebCamSeries {
+    id       Int       @id @default(autoincrement())
+    name     String    @unique
+    products Product[] @relation("ProductWebCamSeries")
+}
+
+model MiceFeature {
+    id       Int       @id @default(autoincrement())
+    name     String    @unique
+    products Product[] @relation("ProductMiceFeatures")
+}
+
+model WebCamFeature {
+    id       Int       @id @default(autoincrement())
+    name     String    @unique
+    products Product[] @relation("ProductWebCamFeatures")
+}
+
+model CertifiedCompatibility {
+    id       Int       @id @default(autoincrement())
+    name     String    @unique
+    products Product[] @relation("ProductCertified")
+}
+
+model HandPreference {
+    id       Int       @id @default(autoincrement())
+    name     String    @unique
+    products Product[] @relation("ProductHandPref")
+}
+
+model HandSize {
+    id       Int       @id @default(autoincrement())
+    name     String    @unique
+    products Product[] @relation("ProductHandSizes")
+}
+
+model AdvancedScrollType {
+    id       Int       @id @default(autoincrement())
+    name     String    @unique
+    products Product[] @relation("ProductScrollTypes")
+}
+
+model Connectivity {
+    id       Int       @id @default(autoincrement())
+    name     String    @unique
+    products Product[] @relation("ProductConnectivity")
+}
+
+model Platform {
+    id       Int       @id @default(autoincrement())
+    name     String    @unique
+    products Product[] @relation("ProductPlatform")
+}
+
+model ResolutionFrameRate {
+    id       Int       @id @default(autoincrement())
+    name     String    @unique
+    products Product[] @relation("ProductResolution")
+}
+
+model WorksWith {
+    id       Int       @id @default(autoincrement())
+    name     String    @unique
+    products Product[] @relation("ProductWorksWith")
+}
+
+model KeyboardLayoutSize {
+    id       Int       @id @default(autoincrement())
+    name     String    @unique
+    products Product[] @relation("ProductKeyboardLayouts")
+}
+
+model KeyboardExtraFeature {
+    id       Int       @id @default(autoincrement())
+    name     String    @unique
+    products Product[] @relation("ProductKeyboardExtras")
+}

@@ -1,0 +1,7 @@
+.header {
+	@apply sticky flex  w-full items-center justify-between mx-auto  bg-white;
+
+	> nav {
+		@apply items-center gap-5;
+	}
+}
