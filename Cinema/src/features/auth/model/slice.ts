@@ -23,7 +23,7 @@ export const getUserThunk = createAsyncThunk(
         try {
             const res = await getUserProfile();
             if (res) {
-                thunkAPI.dispatch(loginSuccess(res))
+                thunkAPI.dispatch(loginSuccess())
                 return res
             }
 
@@ -34,7 +34,11 @@ export const getUserThunk = createAsyncThunk(
 );
 
 
-export const registerThunk = createAsyncThunk(
+export const registerThunk = createAsyncThunk<
+    any,
+    RegisterDataType,
+    { rejectValue: number }
+>(
     "auth/register",
     async (data: RegisterDataType, thunkAPI) => {
         try {
@@ -46,24 +50,34 @@ export const registerThunk = createAsyncThunk(
             return res;
 
         } catch (e: any) {
-            return thunkAPI.rejectWithValue(e.response?.data?.message || "Ошибка");
+            if (e.response.status > 500) {
+                console.log("ошибка сервера")
+
+            } if (e.response.status === 409) {
+                return thunkAPI.rejectWithValue(409);
+            }
         }
     }
 );
-export const loginThunk = createAsyncThunk(
-    "auth/login",
+
+
+export const loginThunk = createAsyncThunk<
+    any,
+    LoginDataType,
+    { rejectValue: number }
+>(
+    'auth/login',
     async (data: LoginDataType, thunkAPI) => {
         try {
             const response = await postLoginUser(data);
-
-            if (response) {
-                thunkAPI.dispatch(loginSuccess())
-            }
             return response;
         } catch (e: any) {
-            return thunkAPI.rejectWithValue(
-                e.response?.data?.message || "Ошибка входа"
-            );
+            if (e.response.status > 500) {
+                console.log("ошибка сервера")
+
+            } if (e.response.status === 400) {
+                return thunkAPI.rejectWithValue(400);
+            }
         }
     }
 );
@@ -106,7 +120,7 @@ const authSlice = createSlice({
             .addCase(loginThunk.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isAuthenticated = false;
-                state.error = action.payload as string;
+                state.error = action.payload !== undefined ? String(action.payload) : null;
 
             })
             .addCase(registerThunk.pending, state => {
@@ -120,7 +134,7 @@ const authSlice = createSlice({
             .addCase(registerThunk.rejected, (state, action) => {
                 state.isAuthenticated = false;
                 state.isLoading = false;
-                state.error = action.payload as string;
+                state.error = action.payload !== undefined ? String(action.payload) : null;
             })
             .addCase(getUserThunk.pending, state => {
                 state.isLoading = true;
@@ -141,4 +155,5 @@ const authSlice = createSlice({
 export const authReducer = authSlice.reducer;
 export const { loginSuccess, logout } = authSlice.actions;
 export const selectIsAuthenticated = (state: any) => state.auth.isAuthenticated;
+
 

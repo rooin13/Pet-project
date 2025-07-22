@@ -1,0 +1,74 @@
+[
+    {
+        "id": "1",
+        "img": "/images/productTestImg.png",
+        "title": "Customised Cufflinks ",
+        "price": 545.99
+    },
+    {
+        "id": "2",
+        "img": "/images/productTestImg.png",
+        "title": "Customised Cufflinks ",
+        "price": 400.99
+    },
+    {
+        "id": "3",
+        "img": "/images/productTestImg.png",
+        "title": "Customised Cufflinks ",
+        "price": 300.99
+    },
+    {
+        "id": "4",
+        "img": "/images/productTestImg.png",
+        "title": "Customised Cufflinks ",
+        "price": 500.99
+    },
+    {
+        "id": "5",
+        "img": "/images/productTestImg.png",
+        "title": "Customised Cufflinks ",
+        "price": 340.99
+    },
+    {
+        "id": "6",
+        "img": "/images/productTestImg.png",
+        "title": "Customised Cufflinks ",
+        "price": 230.99
+    },
+    {
+        "id": "7",
+        "img": "/images/productTestImg.png",
+        "title": "Customised Cufflinks ",
+        "price": 600.99
+    },
+    {
+        "id": "8",
+        "img": "/images/productTestImg.png",
+        "title": "Customised Cufflinks ",
+        "price": 600.99
+    },
+    {
+        "id": "9",
+        "img": "/images/productTestImg.png",
+        "title": "Customised Cufflinks ",
+        "price": 444.99
+    },
+    {
+        "id": "10",
+        "img": "/images/productTestImg.png",
+        "title": "Customised Cufflinks ",
+        "price": 300.99
+    },
+    {
+        "id": "11",
+        "img": "/images/productTestImg.png",
+        "title": "Customised Cufflinks ",
+        "price": 224.99
+    },
+    {
+        "id": "12",
+        "img": "/images/productTestImg.png",
+        "title": "Customised Cufflinks ",
+        "price": 990.99
+    }
+]

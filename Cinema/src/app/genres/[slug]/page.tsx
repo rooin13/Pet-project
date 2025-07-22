@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: Props) {
 export default async function MoviePage({ params }: Props) {
 	return (
 		<>
-			<div className="page-wrapper p-8 relative">
+			<div className="page-wrapper p-8 relative min-h-300">
 				<Link className="group inline-flex" href={"/genres"}>
 					<svg
 						width={44}
@@ -30,10 +30,10 @@ export default async function MoviePage({ params }: Props) {
 						{params.slug.toLocaleUpperCase()}
 					</h3>
 				</Link>
+				<MovieListWithPagination
+					slug={params.slug}
+				></MovieListWithPagination>
 			</div>
-			<MovieListWithPagination
-				slug={params.slug}
-			></MovieListWithPagination>
 		</>
 	);
 }

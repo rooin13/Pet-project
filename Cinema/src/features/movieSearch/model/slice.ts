@@ -1,5 +1,7 @@
 // src/features/movieSearch/model/slice.ts
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { IMovie } from "@/entities/movie/model/types";
+import { getMovieByTitle } from "@/shared/lib/api/moviesApi/api";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface MovieSearchState {
     query: string;
@@ -8,6 +10,21 @@ interface MovieSearchState {
 const initialState: MovieSearchState = {
     query: "",
 };
+
+
+export const getMoviesThunk = createAsyncThunk(
+    "movieSearch/getMovies",
+    async (data: string, thunkAPI) => {
+        try {
+            const res = await getMovieByTitle(data);
+
+            return res;
+
+        } catch (e: any) {
+            return thunkAPI.rejectWithValue(e.response?.data?.message || "Ошибка");
+        }
+    }
+);
 
 const movieSearchSlice = createSlice({
     name: "movieSearch",

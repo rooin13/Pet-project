@@ -28,6 +28,7 @@ export const Profile = () => {
 					<svg
 						width={18}
 						height={18}
+						fill="white"
 						className="absolute top-2 transition-transform duration-300 group-hover:-translate-x-2"
 					>
 						<use xlinkHref={`/images/icons/icons.xml#like`} />

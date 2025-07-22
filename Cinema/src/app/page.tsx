@@ -10,7 +10,9 @@ export default function Home() {
 	return (
 		<div>
 			{/* <Link href="/movieGenres">Go to Movie Genres</Link> */}
-			<RandomMovie />
+			<div className="min-h-140">
+				<RandomMovie></RandomMovie>
+			</div>
 			<TopMovies></TopMovies>
 		</div>
 	);

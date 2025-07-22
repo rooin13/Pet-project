@@ -1,0 +1,9 @@
+.arrow {
+    display: inline-block;
+    transition: transform 0.3s ease; /* Плавный переход */
+   }
+   
+   /* Наведение на кнопку изменяет положение стрелки */
+   .subscribe-form__btn:hover + .arrow {
+    transform: translateX(5px); /* Двигаем стрелку вправо на 5px */
+   }

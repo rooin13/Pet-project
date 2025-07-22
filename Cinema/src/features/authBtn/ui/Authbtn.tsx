@@ -1,52 +1,39 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "@/store";
-import {
-	getUserThunk,
-	logoutThunk,
-	selectIsAuthenticated,
-} from "@/features/auth/model/slice";
+import { useState } from "react";
+import { useUser, useLogin, useRegister, useLogout } from ".";
 import { LoginForm } from "@/features/auth/ui/LoginForm";
 import { RegisterForm } from "@/features/auth/ui/RegistrationForm";
 
 export const AuthBtn = () => {
-	const dispatch = useAppDispatch();
-	const isAuth = useAppSelector(selectIsAuthenticated);
+	const { data: user, isLoading, error } = useUser();
+	const loginMutation = useLogin();
+	const registerMutation = useRegister();
+	const logoutMutation = useLogout();
 
 	const [isOpen, setIsOpen] = useState(false);
 	const [isRegister, setIsRegister] = useState(false);
-
-	useEffect(() => {
-		dispatch(getUserThunk());
-	}, [dispatch]);
-
-	useEffect(() => {
-		if (isAuth) {
-			setIsOpen(false);
-		}
-	}, [isAuth]);
 
 	const openForm = () => setIsOpen(true);
 	const closeForm = () => setIsOpen(false);
 	const toggleForm = () => setIsRegister((prev) => !prev);
 
+	if (isLoading) return <div>Loading...</div>;
+
 	return (
 		<>
-			{isAuth ? (
-				<button
-					onClick={() => dispatch(logoutThunk())}
-					className="bg-red-600 text-white py-2 px-4 rounded cursor-pointer"
+			{user ? (
+				<p
+					className="text-white py-2 px-4 rounded cursor-pointer"
+					onClick={() => logoutMutation.mutate()}
 				>
-					Logout
-				</button>
+					{user.email} (Logout)
+				</p>
 			) : (
 				<button
 					onClick={() => {
 						setIsRegister(false);
 						openForm();
 					}}
-					className="bg-blue-600 text-white py-2 px-4 rounded w-40 cursor-pointer"
+					className="text-white py-2 px-4 rounded w-40 cursor-pointer"
 				>
 					Sign Up
 				</button>
@@ -54,9 +41,19 @@ export const AuthBtn = () => {
 
 			{isOpen &&
 				(isRegister ? (
-					<RegisterForm onSwitch={toggleForm} onClose={closeForm} />
+					<RegisterForm
+						onSwitch={toggleForm}
+						onClose={closeForm}
+						onSubmit={registerMutation.mutate}
+						error={registerMutation.error}
+					/>
 				) : (
-					<LoginForm onSwitch={toggleForm} onClose={closeForm} />
+					<LoginForm
+						onSwitch={toggleForm}
+						onClose={closeForm}
+						onSubmit={loginMutation.mutate}
+						error={loginMutation.error}
+					/>
 				))}
 		</>
 	);

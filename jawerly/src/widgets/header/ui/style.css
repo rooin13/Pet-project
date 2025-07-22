@@ -1,0 +1,13 @@
+.sticky-nav {
+  /* ... */
+  transform: translateY(0); /* Начальное положение в видимой области */
+  transition: transform 0.3s ease-in-out; /* Плавное изменение положения */
+ }
+
+ .sticky-nav.sticky {
+  transform: translateY(0); /* Переместить `nav` наверх при прокрутке */
+ }
+ 
+.hidden{
+  display: none;
+}

@@ -1,5 +1,5 @@
-import MovieGenresList from "@/widgets/movieGenres/ui/movieGenresList/movieGenresList";
 import { getGenres } from "@/shared/lib/api/genresApi/api";
+import MovieGenresList from "@/widgets/movieGenres/ui/movieGenresList/movieGenresList";
 
 export const metadata = {
 	title: "Genres",

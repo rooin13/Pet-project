@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { userReducer } from "@/entities/user/model/slice";
+import userReducer from "@/entities/user/model/slice";
 import { authReducer } from "@/features/auth/model/slice";
 import { useDispatch, useSelector, TypedUseSelectorHook } from "react-redux";
 import { movieSearchReducer } from "@/features/movieSearch/model/slice";

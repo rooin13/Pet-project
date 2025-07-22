@@ -1,0 +1,33 @@
+.sticky-navbar-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    width: 100%;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: space-between;
+
+    transition: all ease .5s;
+  }
+  
+  .sticky-navbar-nav header svg path {
+
+    transition: fill ease .5s;
+  }
+
+  
+  .sticky-navbar-nav.sticky-navbar-mobile {
+ 
+  }
+  
+  .sticky-navbar-nav.sticky-navbar-hidden {
+    transform: translateY(-100%);
+  }
+
+
+
+  .sticky-navbar-top header svg path {
+    fill: white;
+    transition: fill ease .5s;
+  }
