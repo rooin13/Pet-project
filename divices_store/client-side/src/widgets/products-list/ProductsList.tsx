@@ -2,18 +2,28 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { itemVariants } from "@/shared/lib/animations/animation";
-import { usePaginatedProducst } from "./model/usePaginatedProducts"; // 💡 путь к хуку
+import { usePaginatedProducts } from "./model/usePaginatedProducts";
 import ProductItem from "@/entities/product/ui/ProductItem";
-import Loading from "@/app/(public)/shop/c/[slug]/loading";
 import { Skeleton } from "@/shared/ui";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
+import { useWatchFilters } from "@/features/filtration/model/hooks/useWatchFilters";
+import { useFiltersFromUrl } from "@/features/filtration/model/hooks/useFiltersFromUrl";
 
 interface Props {
 	slug: string;
 }
 
 export default function ProductsList({ slug }: Props) {
+	// Получаем фильтры из Redux (подставь правильный селектор)
+	useWatchFilters();
+	useFiltersFromUrl();
+	const filters = useSelector(
+		(state: RootState) => state.filters.selectedOptions
+	);
+
 	const { products, isLoading, hasMore, observerRef, lastBatchStart } =
-		usePaginatedProducst(slug);
+		usePaginatedProducts(slug, filters);
 
 	return (
 		<>
@@ -67,6 +77,7 @@ export default function ProductsList({ slug }: Props) {
 					))}
 				</div>
 			)}
+
 			<div ref={observerRef} className="h-10 z-40 absolute bottom-170" />
 			{!hasMore && <p>No more products</p>}
 		</>

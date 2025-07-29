@@ -14,5 +14,4 @@ export const Api = {
     getAllSlugs,
     byCategory,
     categories
-
 }   

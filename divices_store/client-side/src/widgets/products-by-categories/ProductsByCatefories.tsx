@@ -5,22 +5,20 @@ import Button from "@/shared/ui/button/Button";
 import {
 	SheetContent,
 	SheetDescription,
-	SheetHeader,
-	SheetTitle,
 	SheetTrigger,
 } from "@/shared/ui/sheet";
 import { Sheet } from "@/shared/ui/sheet";
 import { Filtration } from "@/features/filtration/ui/Filtration";
-import { capitalizeFirstLetter } from "@/shared/lib/utils/capitalizeFirstLetter";
-import { FilterOption } from "@/features/filtration/model/types";
 import { FilterGroupProps } from "@/features/filtration/ui/FilterGroup";
+import { useWatchFilters } from "@/features/filtration/model/hooks/useWatchFilters";
+import { useFiltersFromUrl } from "@/features/filtration/model/hooks/useFiltersFromUrl";
 
 interface Props {
 	currentCategory: string;
 	initialFilters: FilterGroupProps[];
 }
 
-export const ProductsByCatefories = ({
+export const ProductsByCategories = ({
 	currentCategory,
 	initialFilters,
 }: Props) => {

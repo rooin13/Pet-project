@@ -1,0 +1,27 @@
+import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/index";
+
+export const useApplyFilters = () => {
+    const router = useRouter();
+    const { priceRange, selectedOptions, sortBy } = useSelector(
+        (state: RootState) => state.filters
+    );
+
+    const applyFilters = () => {
+        const params = new URLSearchParams();
+
+        params.set("minPrice", priceRange[0].toString());
+        params.set("maxPrice", priceRange[1].toString());
+
+        Object.entries(selectedOptions).forEach(([key, values]) => {
+            values.forEach((v) => params.append(key, v));
+        });
+
+        if (sortBy) params.set("sort", sortBy);
+
+        router.push(`?${params.toString()}`);
+    };
+
+    return applyFilters;
+};

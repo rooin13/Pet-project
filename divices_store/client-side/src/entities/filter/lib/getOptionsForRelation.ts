@@ -1,7 +1,7 @@
 
-import { RELATION_DELEGATES, RelationKey } from "./config/delegates";
-import { Category } from "./config/fieldMap";
-import { DelegateType } from "./types";
+import { RELATION_DELEGATES, RelationKey } from "../config/delegates";
+import { Category } from "../config/fieldMap";
+import { DelegateType } from "../../../features/filtration/model/types";
 
 export async function getOptionsForRelation(
     relation: RelationKey,

@@ -1,5 +1,5 @@
-import { RELATION_DELEGATES } from "./config/delegates";
-import { CATEGORY_FILTER_FIELD_MAP } from "./config/fieldMap";
+import { RELATION_DELEGATES } from "../../../entities/filter/config/delegates";
+import { CATEGORY_FILTER_FIELD_MAP } from "../../../entities/filter/config/fieldMap";
 
 export interface FilterOption {
     field: string;

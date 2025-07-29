@@ -2,7 +2,7 @@ import { RelationKey } from "./delegates";
 
 export const CATEGORY_FILTER_FIELD_MAP: Record<string, Partial<Record<RelationKey, string>>> = {
     mice: {
-        brand: "Manufacturer",
+        brand: "Brand",
         connectivity: "Connection Type",
         miceFeatures: "Mouse Features",
         handPreferences: "Hand Preferences",
@@ -11,7 +11,7 @@ export const CATEGORY_FILTER_FIELD_MAP: Record<string, Partial<Record<RelationKe
         miceSeries: "Model Series",
     },
     keyboards: {
-        brand: "Manufacturer",
+        brand: "Brand",
         connectivity: "Connection Type",
         colors: "Available Colors",
         keyboardLayouts: "Layout & Size",
@@ -25,7 +25,7 @@ export const CATEGORY_FILTER_FIELD_MAP: Record<string, Partial<Record<RelationKe
         worksWith: "Supported Platforms",
     },
     headphones: {
-        brand: "Manufacturer",
+        brand: "Brand",
         colors: "Available Colors",
     },
 } satisfies Record<Category, Partial<Record<RelationKey, string>>>;
