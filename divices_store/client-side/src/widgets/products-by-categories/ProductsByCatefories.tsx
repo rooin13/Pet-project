@@ -8,10 +8,10 @@ import {
 	SheetTrigger,
 } from "@/shared/ui/sheet";
 import { Sheet } from "@/shared/ui/sheet";
-import { Filtration } from "@/features/filtration/ui/Filtration";
+import Filtration from "@/features/filtration/ui/Filtration";
 import { FilterGroupProps } from "@/features/filtration/ui/FilterGroup";
-import { useWatchFilters } from "@/features/filtration/model/hooks/useWatchFilters";
-import { useFiltersFromUrl } from "@/features/filtration/model/hooks/useFiltersFromUrl";
+import { useState } from "react";
+import { SortSelect } from "@/shared/ui/sortSelect";
 
 interface Props {
 	currentCategory: string;
@@ -22,9 +22,13 @@ export const ProductsByCategories = ({
 	currentCategory,
 	initialFilters,
 }: Props) => {
+	const [sortBy, setSortBy] = useState<
+		"price-asc" | "price-desc" | "popular"
+	>("popular");
+
 	return (
 		<>
-			<div className="page-wrapper p-8 relative min-h-300 bg-debug">
+			<div className="page-wrapper md:p-8 pt-4 mr-3 relative min-h-300 bg-debug">
 				<Link className="group inline-flex" href={"/shop"}>
 					<svg
 						width={44}
@@ -37,14 +41,20 @@ export const ProductsByCategories = ({
 						{currentCategory.toLocaleUpperCase()}
 					</h3>
 				</Link>
-				<div className="mb-20">
+				<div className="mb-20 flex justify-between">
 					<Sheet>
 						<SheetTrigger asChild>
-							<Button classname="text-black">All filtres</Button>
+							<Button classname="text-black mr-4 md:mr-30">
+								All filtres
+							</Button>
 						</SheetTrigger>
+						<SortSelect
+							sortBy={sortBy}
+							setSortBy={setSortBy}
+						></SortSelect>
 
 						<SheetContent
-							className="scroll-auto w-150! overflow-y-auto data-[state=open]:animate-slide-in-left data-[state=closed]:animate-slide-out-left py-6 px-8 text-black bg-white border-black "
+							className="scroll-aut w-80! md:w-150! px-4 sm:px-6 overflow-y-auto data-[state=open]:animate-slide-in-left data-[state=closed]:animate-slide-out-left py-6 px-8 text-black bg-white border-black "
 							side="left"
 						>
 							<Filtration
@@ -56,7 +66,9 @@ export const ProductsByCategories = ({
 						</SheetContent>
 					</Sheet>
 				</div>
+
 				<ProductsList
+					sortBy={sortBy}
 					slug={currentCategory.toLowerCase()}
 				></ProductsList>
 			</div>

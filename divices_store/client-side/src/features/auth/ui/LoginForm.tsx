@@ -39,7 +39,6 @@ export const LoginForm = () => {
 					/> */}
 					<p className="font-normal text-black text-3xl">Hex</p>
 				</Link>
-				{/* Email */}
 				<div className="w-full relative">
 					<svg
 						fill={errors.email ? "red" : "gray"}
@@ -63,7 +62,7 @@ export const LoginForm = () => {
 						</p>
 					)}
 				</div>
-				{/* Password */}
+
 				<div className="w-full relative">
 					<svg
 						fill={errors.password ? "red" : "gray"}

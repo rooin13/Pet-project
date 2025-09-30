@@ -22,9 +22,6 @@ export const CheckboxWithLabel: React.FC<Props> = ({
 		(state) => state.filters.selectedOptions
 	);
 
-	
-
-	console.log("Current selectedOptions from Redux:", selectedOptions);
 	const selectedValues = selectedOptions[title] ?? [];
 
 	const id = `checkbox-${title}-${label}`;

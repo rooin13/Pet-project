@@ -11,7 +11,7 @@ import { FaSearch } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
 import { useAppDispatch } from "@/store";
-import { Api } from "@/shared/lib/api/client/client";
+import { Api } from "@/shared/lib/api/common/client";
 import { Product } from "@prisma/client";
 import { PAGES } from "@/shared/lib/config/pages.config";
 
@@ -65,7 +65,7 @@ export const Search: React.FC<SearchProps> = ({ closeSheet }) => {
 
 	return (
 		<div
-			className="max-w-200 relative bg-white rounded-xl min-w-80 lg:min-w-200 outline-black	 outline-1 "
+			className="max-w-200 relative  bg-white rounded-xl min-w-80 lg:min-w-200 outline-black	 outline-1 "
 			ref={ref}
 		>
 			<button className="text-black text-xl font-semibold w-full cursor-pointer group rounded-xl">
@@ -85,59 +85,50 @@ export const Search: React.FC<SearchProps> = ({ closeSheet }) => {
 					className="w-full text-black font-light bg-white p-2.5 pl-4 placeholder:text-shadow-white rounded-xl bg-secondary  focus:outline-none focus:ring-2 focus:ring-blue-500"
 				/>
 			</button>
-
 			<ul
 				ref={listRef}
 				className={
 					showList
-						? "bg-secondery text-black  absolute top-20 w-full z-10 rounded-xl overflow-hidden"
+						? "bg-secondery text-black absolute top-20 w-full z-10 rounded-xl overflow-hidden"
 						: "hidden z-0"
 				}
 			>
-				{showList
-					? filteredProducts
-							.flat()
-							.sort((a, b) => b.name.localeCompare(a.name))
-							.map((product) => (
-								<Link
-									onClick={() => {
-										closeSheet && closeSheet();
-									}}
-									key={product.id}
-									href={PAGES.PRUDUCT(product)}
-								>
-									<li
-										className="hover:bg-primary/20  transition-colors duration-150 rounded-xl flex   bg-secondary pl-2 pb-1 pt-3 w-full"
-										key={product.id}
-									>
-										<Image
-											alt="poster"
-											className="mr-3  rounded-xl"
-											width={35}
-											height={35}
-											src={
-												Array.isArray(
-													product.imagesUrl
-												) &&
-												product.imagesUrl.length > 0 &&
-												typeof product.imagesUrl[0] ===
-													"string"
-													? product.imagesUrl[0]
-													: "/placeholder.png"
-											}
-										/>
-										<div className="flex flex-col flex-wrap  rounded-xl  bg-secondary">
-											<ul>
-												<ul className="flex  text-foreground items-center space-x-2 text-xs flex-row "></ul>
-											</ul>
-											<p className="  text-base font-bold">
-												{product.name}
-											</p>
-										</div>
-									</li>
-								</Link>
-							))
-					: ""}
+				{showList &&
+					filteredProducts
+						.flat()
+						.sort((a, b) => b.name.localeCompare(a.name))
+						.map((product) => (
+							<Link
+								onClick={() => closeSheet && closeSheet()}
+								key={product.id}
+								href={PAGES.PRODUCT(product)}
+							>
+								<li className="hover:bg-primary/20 transition-colors duration-150 rounded-xl flex bg-secondary pl-2 pb-2 pt-2 w-full">
+									<Image
+										alt="poster"
+										className="mr-3 rounded-xl"
+										width={35}
+										height={35}
+										src={
+											Array.isArray(product.imagesUrl) &&
+											product.imagesUrl.length > 0 &&
+											typeof product.imagesUrl[0] ===
+												"string"
+												? product.imagesUrl[0]
+												: "/placeholder.png"
+										}
+									/>
+									<div className="flex flex-col flex-wrap rounded-xl bg-secondary">
+										<ul>
+											<ul className="flex text-foreground items-center space-x-2 text-xs flex-row"></ul>
+										</ul>
+										<p className="text-base font-bold">
+											{product.name}
+										</p>
+									</div>
+								</li>
+							</Link>
+						))}
 			</ul>
 		</div>
 	);

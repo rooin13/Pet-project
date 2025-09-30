@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { Product } from "@prisma/client";
-import { getProductImages } from "@/shared/lib/utils/getProductImage";
+import { getProductImages } from "@/shared/lib/utils/productUtils";
 import { PAGES } from "@/shared/lib/config/pages.config";
 
 const ProductItem: React.FC<Product> = (product) => {
@@ -19,10 +19,10 @@ const ProductItem: React.FC<Product> = (product) => {
 	};
 
 	return (
-		<div className="bg-secondery rounded-2xl  w-full overflow-hidden flex flex-col ">
+		<div className="bg-secondery rounded-2xl  w-full h-90 overflow-hidden flex flex-col ">
 			<div className="relative overflow-hidden  items-center  mb-1  ">
 				<Link
-					href={PAGES.PRUDUCT(product)}
+					href={PAGES.PRODUCT(product)}
 					onMouseEnter={handleMouseEnter}
 					onMouseLeave={handleMouseLeave}
 				>

@@ -1,4 +1,4 @@
-import { getFiltersByCategory } from "@/entities/filter/lib/getFiltersByCategory";
+import { getFiltersByCategory } from "@/entities/filter/model/getFiltersByCategory";
 import { ProductsByCategories } from "@/widgets/products-by-categories/ProductsByCatefories";
 
 export default async function Page({ params }: { params: { slug: string } }) {

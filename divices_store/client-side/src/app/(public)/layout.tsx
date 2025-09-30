@@ -8,12 +8,9 @@ import { queryClient } from "@/providers/QueryProveder";
 import { PrismaClient } from "@prisma/client";
 import { withAccelerate } from "@prisma/extension-accelerate";
 
-import Header from "@/widgets/header/Header";
 // import Footer from "@/widgets/footer/ui/Footer";
 
 import { ModalRenderer } from "@/features/modal/ui/ModalRenderer";
-
-import { cn } from "@/shared/lib/utils/cn";
 
 import {
 	description,
@@ -50,6 +47,7 @@ export default function RootLayout({
 		<QueryClientProvider client={queryClient}>
 			<StoreProvider>
 				<SliderSection></SliderSection>
+
 				<div className="flex-1 container mx-auto px-6">
 					<main className="relative pb-8" id="main">
 						{children}

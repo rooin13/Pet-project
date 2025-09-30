@@ -24,6 +24,9 @@ import {
 import type { Metadata } from "next";
 import SliderSection from "@/widgets/slider-section/ui/SliderSection";
 import ProgressBar from "@/providers/ProgressBar";
+import { SessionProvider } from "next-auth/react";
+import { Providers } from "@/providers/SessionProvider";
+import Script from "next/script";
 
 const play = Play({
 	weight: ["400", "700"],
@@ -49,21 +52,30 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en">
+			<head>
+				<Script
+					src={`https://maps.googleapis.com/maps/api/js?key=AIzaSyA1D8zv4r59RhFZmCC04zQCU_hJivdqwr4&libraries=places`}
+					strategy="beforeInteractive"
+				/>
+			</head>
 			<body
 				className={cn(
 					play.className,
 					"min-h-screen   bg-white bg-back"
 				)}
 			>
-				<QueryClientProvider client={queryClient}>
-					<StoreProvider>
-						<Header />
-						<div className="relative">
-							<ProgressBar />
-						</div>
-						{children}{" "}
-					</StoreProvider>
-				</QueryClientProvider>
+				<Providers>
+					<QueryClientProvider client={queryClient}>
+						<StoreProvider>
+							<Header />
+							<div className="relative">
+								<ProgressBar />
+							</div>
+
+							{children}
+						</StoreProvider>
+					</QueryClientProvider>
+				</Providers>
 			</body>
 		</html>
 	);

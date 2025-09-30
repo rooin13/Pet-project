@@ -1,6 +1,6 @@
 import { Product } from "@prisma/client";
 import qs from "qs";
-import { instance } from "../instance";
+import { instance } from "../common/instance";
 
 export const byCategory = async (
     slug: string,
@@ -16,7 +16,7 @@ export const byCategory = async (
     };
 
     const queryString = qs.stringify(params, { arrayFormat: "repeat" });
-    // arrayFormat: "repeat" — будет сериализовывать массивы как key=val1&key=val2
+
 
     const { data } = await instance.get<Product[]>(`/products/by-category?${queryString}`);
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useUser, useLogin, useRegister, useLogout } from ".";
+import { useUser, useLogin, useRegister, useLogout } from "../model/hooks";
 import { LoginForm } from "@/features/auth/ui/LoginForm";
 import { RegisterForm } from "@/features/auth/ui/RegistrationForm";
 

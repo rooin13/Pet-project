@@ -1,6 +1,4 @@
 // src/features/movieSearch/model/slice.ts
-import { IMovie } from "@/entities/movie/model/types";
-import { getMovieByTitle } from "@/shared/lib/api/movies-api/api";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { isAxiosError } from "axios";
 

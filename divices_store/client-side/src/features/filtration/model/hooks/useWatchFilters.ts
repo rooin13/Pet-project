@@ -25,6 +25,6 @@ export const useWatchFilters = () => {
 
         if (sortBy) params.set("sort", sortBy);
 
-        router.push(`?${params.toString()}`);
+        router.push(`?${params.toString()}`, { scroll: false });
     }, [priceRange, selectedOptions, sortBy]);
 };

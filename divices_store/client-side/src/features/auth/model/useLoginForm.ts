@@ -1,51 +1,33 @@
-// файл: features/auth/model/useLoginForm.ts
 import { useForm } from "react-hook-form";
-
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "./schema";
-import { SubmitHandler } from "react-hook-form";
-
 import type { LoginDataType } from "./types";
-import { useLogin } from "@/features/auth/model/hooks";
-import { isAxiosError } from "axios";
-
+import type { SubmitHandler } from "react-hook-form";
+import { authApi } from "@/shared/lib/api/auth/authApi";
 
 export function useLoginForm(onSuccess: () => void) {
+  const form = useForm<LoginDataType>({
+    resolver: zodResolver(loginSchema),
+  });
 
-    const form = useForm<LoginDataType>({
-        resolver: zodResolver(loginSchema),
-    });
+  const { handleSubmit, setError, ...rest } = form;
 
-    const { handleSubmit, setError, ...rest } = form;
+  const onSubmit: SubmitHandler<LoginDataType> = async (data) => {
+    try {
+      await authApi.login(data.email, data.password);
+      onSuccess();
+    } catch (error: any) {
+      setError("password", {
+        type: "manual",
+        message: error.message || "Invalid email or password",
+      });
+      setError("email", { type: "manual", message: "" });
+    }
+  };
 
-    const loginMutation = useLogin();
-
-    const onSubmit: SubmitHandler<LoginDataType> = (data) => {
-        loginMutation.mutate(data, {
-            onSuccess: () => {
-                onSuccess()
-            },
-            onError: (error) => {
-                if (isAxiosError(error)) {
-                    if (error?.response?.status === 400) {
-                        setError("password", {
-                            type: "manual",
-                            message: "Invalid email or password",
-                        });
-                        setError("email", { type: "manual", message: "" });
-                    }
-
-                } else {
-                    console.error("Unexpected error:", error);
-                }
-            },
-        });
-    };
-
-
-    return {
-        form,
-        handleSubmit: handleSubmit(onSubmit),
-    };
+  return {
+    form,
+    handleSubmit: handleSubmit(onSubmit),
+    ...rest,
+  };
 }

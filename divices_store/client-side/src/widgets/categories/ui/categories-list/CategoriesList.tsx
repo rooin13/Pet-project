@@ -8,33 +8,36 @@ interface CategoriesProps {
 	categories: Category[];
 }
 
-const CategoriesList: React.FC<CategoriesProps> = async ({ categories }) => {
+const CategoriesList: React.FC<CategoriesProps> = ({ categories }) => {
 	return (
 		<div>
-			<ul className="flex  flex-wrap gap-8 space-y-3">
-				{categories.map((category, idx) => (
-					<Link
-						key={idx + category.id}
-						href={PAGES.CATEGORY(category)}
-						className="flex-1/10 shrink-0"
+			<ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+				{categories.map((category) => (
+					<li
+						key={category.id}
+						className="rounded-3xl bg-secondery overflow-hidden flex flex-col items-center justify-center"
 					>
-						<li className="rounded-3xl bg-secondery overflow-hidden flex items-center align-bottom justify-center flex-col  relative">
-							<div>
+						<Link
+							href={PAGES.CATEGORY(category)}
+							className="w-full h-full flex flex-col items-center"
+						>
+							<div className="w-full relative">
 								<Image
-									className="w-45 h-45"
-									alt="Genre image"
 									src={category.imageUrl}
+									alt={category.name}
 									width={300}
 									height={200}
-								></Image>
+									className="w-full h-auto object-contain"
+								/>
 							</div>
-							<div className=" w-full flex items-center h-20 justify-center">
-								<p className="text-black text-1xl">
+
+							<div className="w-full py-2 flex items-center justify-center">
+								<p className="text-black text-base sm:text-lg font-medium text-center">
 									{category.name}
 								</p>
 							</div>
-						</li>
-					</Link>
+						</Link>
+					</li>
 				))}
 			</ul>
 		</div>

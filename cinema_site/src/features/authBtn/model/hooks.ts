@@ -3,18 +3,21 @@ import { getUserProfile, postLoginUser, postRegisterUser, getLogoutUser } from '
 
 // Хук для получения профиля пользователя
 export function useUser() {
-    return useQuery(['userProfile'], getUserProfile, {
-        retry: false, // если не авторизован, ошибка не будет пытаться повториться
-        staleTime: 1000 * 60 * 5, // кеш 5 минут
+    return useQuery({
+        queryKey: ['userProfile'],
+        queryFn: getUserProfile,
+        retry: false,
+        staleTime: 1000 * 60 * 5,
     });
 }
 
 // Хук для логина
 export function useLogin() {
     const queryClient = useQueryClient();
-    return useMutation(postLoginUser, {
+    return useMutation({
+        mutationFn: postLoginUser,
         onSuccess: () => {
-            queryClient.invalidateQueries(['userProfile']); // обновить профиль после логина
+            queryClient.invalidateQueries({ queryKey: ['userProfile'] });
         },
     });
 }
@@ -22,9 +25,10 @@ export function useLogin() {
 // Хук для регистрации
 export function useRegister() {
     const queryClient = useQueryClient();
-    return useMutation(postRegisterUser, {
+    return useMutation({
+        mutationFn: postRegisterUser,
         onSuccess: () => {
-            queryClient.invalidateQueries(['userProfile']); // обновить профиль после регистрации
+            queryClient.invalidateQueries({ queryKey: ['userProfile'] });
         },
     });
 }
@@ -32,9 +36,10 @@ export function useRegister() {
 // Хук для логаута
 export function useLogout() {
     const queryClient = useQueryClient();
-    return useMutation(getLogoutUser, {
+    return useMutation({
+        mutationFn: getLogoutUser,
         onSuccess: () => {
-            queryClient.invalidateQueries(['userProfile']); // сбросить профиль после логаута
+            queryClient.invalidateQueries({ queryKey: ['userProfile'] });
         },
     });
 }

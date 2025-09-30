@@ -7,7 +7,7 @@ export interface FilterGroupProps {
 }
 
 export const FilterGroup: FC<FilterGroupProps> = ({ title, options }) => (
-	<div className="mr-10 gridd">
+	<div className="mr-10 grid">
 		<h4 className="mb-3 text-foreground font-semibold text-lg">{title}</h4>
 		{options.map((option) => (
 			<CheckboxWithLabel

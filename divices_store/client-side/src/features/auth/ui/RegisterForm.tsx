@@ -3,7 +3,6 @@
 import { Modal } from "@/features/modal/ui/Modal";
 import { useRegisterForm } from "@/features/auth/model/useRegisterForm";
 import Link from "next/link";
-import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { closeModal, toggleModalType } from "@/features/modal/model/modalSlice";
 import { isDirty } from "zod";
@@ -28,19 +27,13 @@ export const RegisterForm = () => {
 		>
 			<form
 				onSubmit={handleSubmit}
-				className="space-y-4 flex flex-col items-center"
+				className="space-y-4 px-4 flex flex-col items-center"
 			>
 				<Link
 					href="/"
 					className="cursor-pointer flex items-center gap-2"
 				>
-					<Image
-						src="/images/logo.svg"
-						alt="logo"
-						width={24}
-						height={24}
-					/>
-					<p className="font-normal text-black text-3xl">marusya</p>
+					<p className="font-normal text-black text-3xl">Hex</p>
 				</Link>
 
 				{/* Name Field */}

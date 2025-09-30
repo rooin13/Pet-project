@@ -63,7 +63,6 @@ export const RandomMovie = () => {
 		plot.length > 200 ? plot.slice(0, 200).trimEnd() + "…" : plot;
 
 	const titleLetters = Array.from(title);
-	const plotLetters = Array.from(zipedPlot);
 
 	return (
 		<div className="flex flex-col-reverse lg:flex-row items-center justify-center pt-10 pb-20 min-h-100">
@@ -126,11 +125,7 @@ export const RandomMovie = () => {
 					animate="visible"
 					style={{ whiteSpace: "pre-wrap" }}
 				>
-					{plotLetters.map((char, i) => (
-						<motion.span key={i} variants={typewriterLetter}>
-							{char}
-						</motion.span>
-					))}
+					{zipedPlot}
 				</motion.p>
 				<motion.div
 					className="flex space-x-4 mt-6"

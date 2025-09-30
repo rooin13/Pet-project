@@ -1,4 +1,3 @@
-// features/filtration/model/slice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type PriceRange = [number, number];
@@ -7,12 +6,14 @@ export interface FiltersState {
 	priceRange: PriceRange;
 	selectedOptions: Record<string, string[]>;
 	sortBy: "price-asc" | "price-desc" | null;
+	initialized: boolean; // 🔹 новый флаг
 }
 
 const initialState: FiltersState = {
-	priceRange: [0, 1000],
+	priceRange: [1, 1000],
 	selectedOptions: {},
 	sortBy: null,
+	initialized: false, // по умолчанию false
 };
 
 export const filtersSlice = createSlice({
@@ -33,7 +34,6 @@ export const filtersSlice = createSlice({
 			const next = exists
 				? prev.filter((item) => item !== value)
 				: [...prev, value];
-			console.log("✅ State after toggle:", JSON.stringify(state.selectedOptions, null, 2));
 			return {
 				...state,
 				selectedOptions: {
@@ -44,14 +44,17 @@ export const filtersSlice = createSlice({
 		},
 		setFiltersFromUrl(state, action: PayloadAction<Record<string, string[]>>) {
 			state.selectedOptions = action.payload;
+			state.initialized = true;
 		},
 		resetFilters(state) {
 			state.selectedOptions = {};
 			state.priceRange = [0, 1000];
 			state.sortBy = null;
+			state.initialized = false; // сброс
 		},
-		clearFilters: (state) => {
+		clearFilters(state) {
 			state.selectedOptions = {};
+			state.initialized = false; // сброс
 		},
 		setSortBy(state, action: PayloadAction<FiltersState["sortBy"]>) {
 			state.sortBy = action.payload;
@@ -59,5 +62,5 @@ export const filtersSlice = createSlice({
 	},
 });
 
-export const { setPriceRange, setFiltersFromUrl, toggleOption, resetFilters, setSortBy } = filtersSlice.actions;
+export const { setPriceRange, setFiltersFromUrl, toggleOption, resetFilters, clearFilters, setSortBy } = filtersSlice.actions;
 export default filtersSlice.reducer;

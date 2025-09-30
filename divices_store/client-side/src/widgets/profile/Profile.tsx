@@ -1,19 +1,20 @@
 "use client";
 
-import { useAuthUser, useLogout } from "@/features/auth/model/hooks";
+import { useAuthUser } from "@/features/auth/model/hooks";
+import { authApi } from "@/shared/lib/api/auth/authApi";
 import Button from "@/shared/ui/button/Button";
 import React, { useState } from "react";
 
 const Profile = () => {
-	const logoutMutation = useLogout();
-	const { data: user, isPending, error } = useAuthUser();
+	// const logoutMutation = useLogout();
+	const { data: user, isPending } = useAuthUser();
 	const [activeTab, setActiveTab] = useState<"favorites" | "settings">(
 		"favorites"
 	);
 
-	const handleLogout = async () => {
-		await logoutMutation.mutate();
-	};
+	// const handleLogout = async () => {
+	// 	await logoutMutation.mutate();
+	// };
 
 	return (
 		<div className="pt-20 pb-100 min-h-200">
@@ -26,14 +27,14 @@ const Profile = () => {
 					onClick={() => setActiveTab("favorites")}
 					className="relative group cursor-pointer"
 				>
-					<svg
+					{/* <svg
 						width={18}
 						height={18}
 						fill="white"
 						className="absolute top-2 transition-transform duration-300 group-hover:-translate-x-2"
-					>
-						<use xlinkHref={`/images/icons/icons.xml#like`} />
-					</svg>
+					> */}
+					{/* <use xlinkHref={`/images/icons/icons.xml#like`} /> */}
+					{/* </svg> */}
 					<p className="pl-6 text-2xl text-left text-black">
 						Favorites
 					</p>
@@ -62,17 +63,6 @@ const Profile = () => {
 					{activeTab === "favorites" && (
 						<div className="text-black">
 							<h4 className="text-xl mb-4">Your Favorites:</h4>
-							<ul className="list-disc pl-6">
-								{user.favorites?.length ? (
-									user.favorites.map((movie, i) => (
-										<li key={i} className="mb-2">
-											{movie}
-										</li>
-									))
-								) : (
-									<p>No favorite movies found.</p>
-								)}
-							</ul>
 						</div>
 					)}
 
@@ -82,7 +72,7 @@ const Profile = () => {
 								<strong>Full name:</strong>
 							</p>
 							<p className="flex-grow-0 flex-shrink-0 text-2xl font-bold text-left text-black mb-8">
-								{user.fullName}
+								{user.name}
 							</p>
 							<p className="flex-grow-0 flex-shrink-0 text-lg text-left text-black mb">
 								<strong>Email:</strong>
@@ -92,7 +82,7 @@ const Profile = () => {
 							</p>
 							<Button
 								type="primary"
-								onClick={() => handleLogout()}
+								onClick={() => authApi.logout()}
 							>
 								Logout
 							</Button>

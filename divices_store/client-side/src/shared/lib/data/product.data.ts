@@ -1385,42 +1385,43 @@ export const products: TProduct[] = [
 ];
 
 
-
-// Генерируем тип на основе указанного include
-
-
-
-
-
-export const variations: Variation[] = [
-    // Mice - черный и белый
+// 1. Ручные вариации
+export const baseVariations: Variation[] = [
     { id: 1, color: "Black", size: "", price: 30, productId: 1 },
     { id: 2, color: "White", size: "", price: 32, productId: 1 },
-
-    // Keyboards - Full и Mini
     { id: 3, color: "Black", size: "Full", price: 179, productId: 3 },
     { id: 4, color: "White", size: "Mini", price: 181, productId: 7 },
-
-    // Headphones - черный и белый
     { id: 5, color: "Black", size: "", price: 219, productId: 9 },
     { id: 6, color: "White", size: "", price: 221, productId: 9 },
-
-    // Mats - цвета и размеры
     { id: 7, color: "Black", size: "Large", price: 49, productId: 15 },
     { id: 8, color: "Blue", size: "Medium", price: 39, productId: 19 },
     { id: 9, color: "RGB", size: "XL", price: 79, productId: 24 },
-
-    // Webcams - черный и серебристый
     { id: 10, color: "Black", size: "", price: 199, productId: 29 },
     { id: 11, color: "Silver", size: "", price: 199, productId: 29 },
-
-    ...Array.from({ length: 35 }, (_, idx) => ({
-        id: idx + 1,
-        color: "Black",
-        size: "",
-        price: 50,
-        productId: idx + 1,
-    }))
 ];
+
+// 2. Все вариации (ручные + автоматические)
+export const variations: Variation[] = [
+    ...baseVariations,
+    ...products
+        .filter(p => !baseVariations.some(v => v.productId === p.id)) // для которых ещё нет ручных вариаций
+        .map(p => ({
+            id: 1000 + p.id, // уникальный id
+            color: "Black",
+            size: "",
+            price: p.price, // берём цену из продукта
+            productId: p.id,
+        })),
+];
+
+
+
+
+
+
+
+
+
+
 
 

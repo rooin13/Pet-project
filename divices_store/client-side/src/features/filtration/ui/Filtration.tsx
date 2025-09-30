@@ -1,7 +1,4 @@
-"use client";
-
-import { FC, useEffect, useMemo, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { FC } from "react";
 import { PriceRangeSlider } from "./PriceRangeSlider";
 import { FilterGroup, FilterGroupProps } from "./FilterGroup";
 
@@ -10,76 +7,24 @@ interface FiltrationProps {
 	isLoading: boolean;
 }
 
-function buildQueryString(filters: Record<string, string[]>) {
-	const params = new URLSearchParams();
-	Object.entries(filters).forEach(([key, values]) => {
-		values.forEach((v) => {
-			if (v) params.append(key, v);
-		});
-	});
-	return params.toString();
-}
-
-export const Filtration: FC<FiltrationProps> = ({
-	filterGroups,
-	isLoading,
-}) => {
-	const router = useRouter();
-	const searchParams = useSearchParams();
-
-	const [filters, setFilters] = useState<Record<string, string[]>>({});
-
-	// Считываем фильтры из URL при первой загрузке
-	useEffect(() => {
-		const obj: Record<string, string[]> = {};
-		for (const [key, value] of searchParams.entries()) {
-			if (!obj[key]) obj[key] = [];
-			obj[key].push(value);
-		}
-		setFilters(obj);
-	}, []);
-
-	const handleCheckboxChange = (
-		checked: boolean,
-		groupName: string,
-		value: string
-	) => {
-		setFilters((prev) => {
-			const prevValues = prev[groupName] || [];
-			const newValues = checked
-				? [...prevValues, value]
-				: prevValues.filter((v) => v !== value);
-
-			const newFilters = {
-				...prev,
-				[groupName]: newValues,
-			};
-
-			const search = buildQueryString(newFilters);
-			router.push(`?${search}`); // URL обновляется, что перезапустит SSR
-
-			return newFilters;
-		});
-	};
-
+const Filtration: FC<FiltrationProps> = ({ filterGroups, isLoading }) => {
 	return (
-		<div className="pb-10">
-			<h3 className="mb-10 text-2xl">Filters</h3>
+		<div className="pb-6 sm:pb-10 px-4 sm:px-6 md:px-8 flex flex-col max-w-full">
+			<h3 className="mb-6 sm:mb-10 text-xl sm:text-2xl font-semibold max-w-full">
+				Filters
+			</h3>
 
 			{isLoading ? (
-				<div className="text-gray-500 text-sm mb-6">
+				<div className="text-gray-500 text-sm mb-4 sm:mb-6">
 					Loading filters...
 				</div>
 			) : (
 				<>
 					<PriceRangeSlider />
-					<div className="grid grid-cols-2 gap-4">
+
+					<div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-6">
 						{filterGroups.map((group) => (
-							<FilterGroup
-								key={group.title}
-								title={group.title}
-								options={group.options}
-							/>
+							<FilterGroup key={group.title} {...group} />
 						))}
 					</div>
 				</>
@@ -87,3 +32,5 @@ export const Filtration: FC<FiltrationProps> = ({
 		</div>
 	);
 };
+
+export default Filtration;

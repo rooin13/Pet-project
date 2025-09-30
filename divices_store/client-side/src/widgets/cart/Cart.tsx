@@ -1,78 +1,83 @@
-import type { FC } from "react";
-
-import CartItem from "./cart-item/CartItem";
-import { cartItemData } from "@/shared/lib/data/cart.data";
+"use client";
+import { FC } from "react";
+import CartItem from "./cart-item/ui/CartItem";
+import { useGetCartQuery } from "../../shared/lib/api/cart/cartApi";
+import Link from "next/link";
 
 const Cart: FC = () => {
+	const { data: cart, isLoading, isError } = useGetCartQuery();
 	const shippingFee = 15;
-	const getSubTotalPrice = () => {
-		const price = cartItemData.reduce(
-			(total, item) => total + item.product.price * item.quantity,
-			0
-		);
-		const formatedPrice = new Intl.NumberFormat("en-US", {
-			style: "currency",
-			currency: "USD",
-		}).format(price);
-		return { formatedPrice, price };
-	};
-	const getTotalPrice = () => {
-		const price =
-			getSubTotalPrice().price > 39
-				? getSubTotalPrice().price
-				: getSubTotalPrice().price + 15;
-		const formatedPrice = new Intl.NumberFormat("en-US", {
-			style: "currency",
-			currency: "USD",
-		}).format(price);
-		return { formatedPrice };
-	};
+
+	if (isLoading) return <p className="p-10">Loading cart...</p>;
+	if (isError || !cart) return <p className="p-10">Failed to load cart</p>;
+
+	const cartItems = cart.items;
+	const subtotal = cart.totalAmount;
+	const shipping = subtotal > 39 ? 0 : shippingFee;
+	const total = subtotal + shipping;
 
 	return (
-		<div className="pt-12 pb-10 flex justify-between gap-8 ">
-			<div className="basis-2/3">
-				<h2 className="text-5xl mb-10 font-light inline-block">Cart</h2>
-				{cartItemData.length > 0 || (
-					<h3 className="text-2xl mb-10 inline-flex">
+		<div className="pt-8 pb-10 flex flex-col md:flex-row gap-8">
+			{/* Список товаров */}
+			<div className="w-full md:basis-2/3">
+				<h2 className="text-3xl sm:text-4xl md:text-5xl mb-6 sm:mb-10 font-light inline-block">
+					Cart
+				</h2>
+				{cartItems.length === 0 ? (
+					<h3 className="text-xl sm:text-2xl mb-6 sm:mb-10">
 						Your shopping cart is empty.
 					</h3>
+				) : (
+					cartItems
+						.slice()
+						.sort((a, b) => a.id - b.id)
+						.map((item) => <CartItem item={item} key={item.id} />)
 				)}
-				{cartItemData.map((item) => (
-					<CartItem item={item} key={item.id}></CartItem>
-				))}
 			</div>
-			<div className="basis-1/3">
-				<div className="bg-white rounded-xl pb-5 px-10 pt-5 mb-5">
-					<h3 className=" text-1xl font-bold">
-						{/* <LocalShippingIcon className='mr-3'></LocalShippingIcon> */}
+
+			{/* Блок Summary */}
+			<div className="w-full md:basis-1/3 flex flex-col gap-5">
+				<div className="bg-white rounded-xl pb-4 px-6 sm:pb-5 sm:px-10">
+					<h3 className="text-sm sm:text-base font-bold">
 						Free shipping on orders over $39.00
 					</h3>
 				</div>
-				<div className="flex flex-col bg-white  rounded-xl pb-5 px-10 pt-5">
-					<h3 className="text-2xl font-bold mb-10">Summary</h3>
-					<div className="flex justify-between border-b-primary border-b-2 pb-10">
-						<ul className=" pb-10 flex-col   flex-nowrap space-y-2">
+
+				<div className="flex flex-col bg-white rounded-xl pb-4 px-6 sm:pb-5 sm:px-10">
+					<h3 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-10">
+						Summary
+					</h3>
+
+					<div className="flex flex-col sm:flex-row justify-between border-b-2 border-b-primary pb-4 sm:pb-10">
+						<ul className="flex flex-col space-y-2 sm:space-y-4">
 							<li>Subtotal</li>
 							<li>Estimated Shipping</li>
 							<li>Total Savings</li>
 						</ul>
-						<ul className="mb-5    ">
-							<li> {getSubTotalPrice().formatedPrice}</li>
+						<ul className="flex flex-col space-y-2 sm:space-y-4 text-right mt-2 sm:mt-0">
+							<li>${subtotal.toFixed(2)}</li>
 							<li>
-								{getSubTotalPrice().price > 39
-									? "-"
-									: `$${shippingFee}`}
+								{shipping > 0
+									? `$${shipping}`
+									: "Free shipping"}
 							</li>
 							<li>$0.00</li>
 						</ul>
 					</div>
-					<div className="flex justify-between pt-5">
+
+					<div className="flex justify-between pt-4 sm:pt-5">
 						<h2 className="font-bold">Total</h2>
-						<p className="font-bold">
-							{getTotalPrice().formatedPrice}
-						</p>
+						<p className="font-bold">${total.toFixed(2)}</p>
 					</div>
-					<div></div>
+
+					<Link href={"/checkout"}>
+						<button
+							disabled={cartItems.length === 0}
+							className="w-full cursor-pointer hover:bg-gray-800 mt-6 sm:mt-10 bg-black text-white py-3 rounded-lg disabled:opacity-50"
+						>
+							Proceed to Checkout
+						</button>
+					</Link>
 				</div>
 			</div>
 		</div>

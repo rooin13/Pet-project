@@ -13,6 +13,27 @@
 
 }
 
+html, body {
+  overflow-x: hidden;
+}
+.us-transition-wrapper {
+  transition: max-height 0.24s ease, opacity 0.24s ease;
+  overflow: hidden;
+}
+
+.us-transition-wrapper.open {
+  max-height: 200px; /* Примерно максимальная высота Us (подбери вручную) */
+  opacity: 1;
+}
+
+.us-transition-wrapper.closed {
+  max-height: 0;
+  opacity: 0;
+}
+/*  */
+header {
+  transition: opacity 0.3s ease;
+}
 .your-content {
   @apply w-[150px] py-6 px-8 text-black bg-white border-black;
 }
@@ -41,6 +62,8 @@
 
 
 }
+
+
 
 #nprogress .peg {
   box-shadow: 0 2 6px #3A59C5, 0 0 7px #3A59C5 !important;

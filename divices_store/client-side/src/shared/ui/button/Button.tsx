@@ -18,15 +18,15 @@ const Button = ({
 	onClick,
 }: TProps) => {
 	const classNames = {
-		primary: `bg-secondery text-black border-none `,
-		outline: `bg-white text-blue-600 border border-azure`,
+		primary: `bg-secondery text-black border-none w-full `,
+		outline: `bg-white text-blue-600 w-full `,
 	};
 
 	return (
 		<button
 			disabled={disabled}
 			onClick={onClick}
-			className={`rounded-md z-20 main-btn px-9  py-3 text-xs text-center font-bold ${classNames[type]} ${classname}`}
+			className={`rounded-md z-20 main-btn md:px-9 px-3  py-3 text-xs text-center font-bold ${classNames[type]} ${classname}`}
 		>
 			{children}
 		</button>

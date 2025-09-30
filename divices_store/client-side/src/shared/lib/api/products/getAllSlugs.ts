@@ -1,4 +1,4 @@
-import { instance } from "../instance";
+import { instance } from "../common/instance";
 import { Product } from "@prisma/client";
 
 // Тип с только нужным полем

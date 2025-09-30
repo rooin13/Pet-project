@@ -1,70 +1,99 @@
-import { useEffect, useRef, useState } from "react";
-import { Api } from "@/shared/lib/api/client/client";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { Product } from "@prisma/client";
 
-type Filters = Record<string, string[]>;
+interface Filters {
+    [key: string]: string[];
+}
 
-export const usePaginatedProducts = (
-    slug: string,
-    filters: Filters = {}
-) => {
-    const [products, setProducts] = useState<Product[]>([]);
+interface Params {
+    categorySlug: string;
+    filters: Filters;
+    sortBy: "price-asc" | "price-desc" | "popular";
+    limit?: number;
+    priceRange: [number, number];
+    initialized?: boolean; // проверка, что фильтры из URL подтянулись
+}
+
+export const usePaginatedProducts = ({
+    categorySlug,
+    filters,
+    sortBy,
+    limit = 12,
+    priceRange,
+    initialized = true,
+}: Params) => {
     const [page, setPage] = useState(1);
-    const [isLoading, setIsLoading] = useState(false);
+    const [products, setProducts] = useState<Product[]>([]);
     const [hasMore, setHasMore] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isError, setIsError] = useState(false);
     const [lastBatchStart, setLastBatchStart] = useState(0);
-    const observerRef = useRef(null);
-    const limit = 20;
+    const observerRef = useRef<HTMLDivElement | null>(null);
 
-    // Сброс при смене категории или фильтров
+    // 🧠 Мемоизируем параметры запроса
+    const searchParams = useMemo(() => {
+        const params = new URLSearchParams();
+        params.set("sort", sortBy);
+        params.set("query", categorySlug);
+        params.set("limit", String(limit));
+        params.set("page", String(page));
+        params.set("minPrice", String(priceRange[0]));
+        params.set("maxPrice", String(priceRange[1]));
+
+        Object.entries(filters).forEach(([key, values]) => {
+            values.forEach(val => params.append(key, val));
+        });
+
+        return params.toString();
+    }, [categorySlug, filters, sortBy, page, limit, priceRange]);
+
+    // ⚠️ Сброс при смене фильтров или цены
     useEffect(() => {
-        setPage(1);
         setProducts([]);
+        setPage(1);
         setHasMore(true);
-    }, [slug, JSON.stringify(filters)]); // JSON.stringify чтобы следить за глубокими изменениями фильтров
+        setLastBatchStart(0);
+    }, [categorySlug, JSON.stringify(filters), sortBy, JSON.stringify(priceRange)]);
 
+    // 🚀 Получение данных
     useEffect(() => {
-        if (!hasMore) return;
+        if (!initialized) return; // не fetch пока фильтры/цена не подтянулись
+        if (!hasMore || isLoading) return;
 
-        const load = async () => {
-            setIsLoading(true);
-            try {
-                const data = await Api.byCategory.byCategory(slug, page, limit, filters);
+        setIsLoading(true);
+        setIsError(false);
 
-                if (data.length === 0) setHasMore(false);
+        fetch(`/api/products/by-category?${searchParams}`)
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to load products");
+                return res.json();
+            })
+            .then((newProducts: Product[]) => {
+                setProducts(prev => page === 1 ? newProducts : [...prev, ...newProducts]);
+                if (newProducts.length < limit) setHasMore(false);
+                setLastBatchStart(page === 1 ? 0 : products.length);
+                setPage(p => p + 1);
+            })
+            .catch(() => setIsError(true))
+            .finally(() => setIsLoading(false));
+    }, [searchParams, page, hasMore, isLoading, limit, products.length, filters, priceRange, initialized]);
 
-                setLastBatchStart((page) => (page === 1 ? 0 : products.length));
-                setProducts((prev) => (page === 1 ? data : [...prev, ...data]));
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        load();
-    }, [slug, page, JSON.stringify(filters)]);
-
+    // 📦 Инфини скролл
     useEffect(() => {
         if (isLoading || !hasMore) return;
         const observer = new IntersectionObserver(
             ([entry]) => {
-                if (entry.isIntersecting) setPage((p) => p + 1);
+                if (entry.isIntersecting) setPage(p => p + 1);
             },
             { threshold: 1 }
         );
 
-        const el = observerRef.current;
-        if (el) observer.observe(el);
+        if (observerRef.current) observer.observe(observerRef.current);
 
         return () => {
-            if (el) observer.unobserve(el);
+            if (observerRef.current) observer.unobserve(observerRef.current);
         };
     }, [isLoading, hasMore]);
 
-    return {
-        products,
-        isLoading,
-        hasMore,
-        observerRef,
-        lastBatchStart,
-    };
+    return { products, isLoading, isError, hasMore, observerRef, lastBatchStart };
 };

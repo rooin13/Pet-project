@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Slab:wght@400;700&display=swap');
+
+#root {
+   --font-sans: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --font-serif: 'Roboto Slab', serif;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-y: hidden;
+  
+}
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+body {
+  margin: 0;
+ font-family: var(--font-sans);
+  color: white;
+}
+
+.section {
+  height: 100vh;
+  width: 100%;        /* занимает всю ширину экрана */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+
+.white-section {
+	background: white;
+	overflow: hidden; /* чтобы круг не вылазил за пределы */
+}
+
+.black {
+	background: black;
+	color: white;
+}
+
+.circle {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 200px;
+	height: 200px;
+	background: black;
+	border-radius: 50%;
+	transform: translate(-50%, -50%) scale(0);
+	z-index: 0;
+}
+.title {
+	position: relative;
+	color: white;
+	z-index: 1;
+}

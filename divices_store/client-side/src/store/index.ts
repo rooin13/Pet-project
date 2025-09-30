@@ -4,6 +4,8 @@ import { useDispatch, useSelector, TypedUseSelectorHook } from "react-redux";
 import { SearchReducer } from "@/features/search/model/slice";
 import modalReducer from "@/features/modal/model/modalSlice";
 import filtersReducer from "@/features/filtration/model/slice";
+import uiReducer from "@/widgets/header/model/slice";
+import { cartApi } from "@/shared/lib/api/cart/cartApi";
 
 
 export const store = configureStore({
@@ -12,9 +14,13 @@ export const store = configureStore({
         Search: SearchReducer,
         modal: modalReducer,
         filters: filtersReducer,
-
+        ui: uiReducer,
+        [cartApi.reducerPath]: cartApi.reducer,
 
     },
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(cartApi.middleware),
+
     devTools: process.env.NODE_ENV !== "production",
 });
 

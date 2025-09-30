@@ -5,7 +5,7 @@ export { Label } from "./label"
 export { NavigationMenu } from "./navigation-menu"
 export { Popover } from "./popover"
 export { RadioGroup } from "./radio-group"
-export { Select } from "./select"
+
 export { Skeleton } from "./skeleton"
 export { Tooltip } from "./tooltip"
 

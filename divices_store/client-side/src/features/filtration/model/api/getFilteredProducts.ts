@@ -1,44 +1,49 @@
-// pages/api/products/index.ts
 import { prisma } from "@/shared/lib/prisma/prisma";
-import { Prisma } from "@prisma/client";
-import { NextApiRequest, NextApiResponse } from "next";
+import { Category } from "@/entities/filter/config/filterFieldMap";
+import { getFiltersFromUrl } from "../utils/queryString";
+import { buildWhereClause, buildIncludeClause } from "../utils/filtersQuery";
+import { ParsedFilters } from "../types";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const {
-        minPrice = "0",
-        maxPrice = "1000000",
-        sort,
-        ...filters
-    } = req.query;
+type SortOption = "price-asc" | "price-desc" | "popular";
 
-    try {
-        const where: Prisma.ProductWhereInput = {
-            price: {
-                gte: Number(minPrice),
-                lte: Number(maxPrice),
-            },
-            AND: Object.entries(filters).map(([field, value]) => ({
-                [field]: {
-                    in: Array.isArray(value) ? value : [value],
-                },
-            })),
-        };
+interface Params {
+    url: URL;
+}
 
-        const orderBy =
-            sort === "price-asc"
-                ? { price: "asc" as Prisma.SortOrder }
-                : sort === "price-desc"
-                    ? { price: "desc" as Prisma.SortOrder }
-                    : undefined;
+export async function getFilteredProducts({ url }: Params) {
+    const { query, page, limit, filters, sort, minPrice, maxPrice }: ParsedFilters = getFiltersFromUrl(url);
 
-        const products = await prisma.product.findMany({
-            where,
-            orderBy,
-        });
+    const category = query.toLowerCase() as Category;
+    const skip = (page - 1) * limit;
 
-        return res.status(200).json(products);
-    } catch (e) {
-        console.error("[products API]", e);
-        return res.status(500).json({ message: "Internal server error" });
+    // 🔹 Добавляем цену в where
+    const where = {
+        ...buildWhereClause(category, query, filters),
+        price: {
+            gte: minPrice,
+            lte: maxPrice,
+        },
+    };
+
+    const include = buildIncludeClause(category);
+
+    let orderBy: { [key: string]: "asc" | "desc" } | undefined = undefined;
+
+    if (sort === "price-asc") {
+        orderBy = { price: "asc" };
+    } else if (sort === "price-desc") {
+        orderBy = { price: "desc" };
+    } else if (sort === "popular") {
+        orderBy = { createdAt: "desc" };
     }
+
+    const products = await prisma.product.findMany({
+        where,
+        include,
+        orderBy,
+        skip,
+        take: limit,
+    });
+
+    return products;
 }

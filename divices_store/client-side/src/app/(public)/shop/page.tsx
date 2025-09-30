@@ -18,7 +18,7 @@ export default async function Page() {
 	if (!categories) return null;
 
 	return (
-		<section className="bg-white pt-10 ">
+		<section className="bg-white pt-10 md:px-10 px-3 ">
 			<h2 className="text-black font-semibold text-6xl mb-15">Shop</h2>
 
 			<div className="w-full relative mb-40">

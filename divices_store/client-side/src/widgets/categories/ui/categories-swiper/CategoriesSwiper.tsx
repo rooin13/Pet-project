@@ -38,7 +38,6 @@ export const CategoriesSwiper: React.FC<CategoriesProps> = ({ categories }) => {
 	}, [categories]);
 
 	if (!categories || !isReady) {
-		// Можно здесь же добавить skeleton-заглушки с фиксированными размерами
 		return (
 			<div className="flex gap-6">
 				{Array.from({ length: 4 }).map((_, i) => (
@@ -65,17 +64,17 @@ export const CategoriesSwiper: React.FC<CategoriesProps> = ({ categories }) => {
 							href={PAGES.CATEGORY(category)}
 							className="w-full h-full flex flex-col"
 						>
-							<div className="flex-grow max-h-75 relative  mr-12 ml-12">
+							{" "}
+							<div className="flex-grow max-h-75 relative	 overflow-hidden rounded-3xl">
 								<Image
 									src={category.imageUrl}
 									alt={category.name}
 									fill
 									style={{
-										objectFit: "inherit",
-										borderRadius: "1.5rem",
+										objectFit: "contain", // или "contain", если хочешь, чтобы не обрезало
 									}}
 									sizes="(max-width: 768px) 220vw, 220vw"
-									priority={true}
+									priority
 								/>
 							</div>
 							<div className="bg-primary w-full h-13 flex items-center justify-center rounded-b-3xl mt-2">
@@ -92,10 +91,11 @@ export const CategoriesSwiper: React.FC<CategoriesProps> = ({ categories }) => {
 			<button
 				onClick={() => slider.current?.prev()}
 				aria-label="Previous Slide"
+				className="left-[-7vw] md:left-[-4vw] "
 				style={{
 					position: "absolute",
 					top: "50%",
-					left: "-4vw",
+
 					transform: "translateY(-50%)",
 					zIndex: 10,
 					width: 30,
@@ -120,12 +120,13 @@ export const CategoriesSwiper: React.FC<CategoriesProps> = ({ categories }) => {
 
 			{/* Next Button */}
 			<button
+				className=" md:right-[-5vw] right-[-10vw]"
 				onClick={() => slider.current?.next()}
 				aria-label="Next Slide"
 				style={{
 					position: "absolute",
 					top: "50%",
-					right: "-4vw",
+
 					transform: "translateY(-50%)",
 					zIndex: 10,
 					width: 30,

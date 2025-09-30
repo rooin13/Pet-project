@@ -21,11 +21,13 @@ import {
     keyboardLayouts as keyboardLayoutsConst,
     keyboardExtras as keyboardExtrasConst,
 } from '../src/shared/lib/data/product.data';
+import { id } from 'zod/v4/locales';
 
 const prisma = new PrismaClient();
 
 async function main() {
     try {
+
         // await down()
         await up()
     } catch (e) {
@@ -35,38 +37,18 @@ async function main() {
     }
 }
 async function up() {
-    await prisma.user.createMany({
-        data: [{ fullName: 'John Doe', email: 'john@example.com', password: hashSync('password123', 10), verified: new Date() },
-        {
-            fullName: 'Janifer Doe', email: 'jenifer@example.com', password: hashSync('password123', 10), verified: new Date()
-        }
-        ],
-        skipDuplicates: true,
+    await prisma.cartItem.deleteMany();
+    await prisma.cart.deleteMany();
+    await prisma.product.deleteMany();
+    await prisma.variation.deleteMany();
 
-    },)
+
     await prisma.category.createMany({
         data: categories,
         skipDuplicates: true,
     });
 
 
-    await prisma.cart.createMany({
-        data: [
-            {
-                id: 1,
-                totalAmount: 0,
-                userId: 1,
-                token: "228337"
-            },
-            {
-                id: 2,
-                totalAmount: 0,
-                userId: 2,
-                token: "337228"
-            }
-        ],
-        skipDuplicates: true,
-    })
 
 
     await prisma.color.createMany({ data: [...colorsConst] as Prisma.ColorCreateManyInput[], skipDuplicates: true });
@@ -89,6 +71,7 @@ async function up() {
 
     await prisma.product.createMany({
         data: products.map(p => ({
+            id: p.id,
             slug: p.slug,
             name: p.name,
             description: p.description,
@@ -102,39 +85,18 @@ async function up() {
         skipDuplicates: true,
     });
 
-    await prisma.variation.createMany({
-        data: variations.map((v: typeof variations[number]) => ({
-            productId: v.productId,
-            color: v.color,
-            size: v.size,
-            price: v.price,
-        })),
-        skipDuplicates: true,
-    });
+    for (const v of variations) {
+        await prisma.variation.create({
+            data: {
+                productId: v.productId,
+                color: v.color,
+                size: v.size,
+                price: v.price,
+            },
+        });
+    }
 
 
-
-    await prisma.cartItem.createMany(
-        {
-            data: [
-                {
-                    id: 1,
-                    variationId: 3,
-                    cartId: 1,
-                    quantity: 2
-                },
-                {
-                    id: 2,
-                    variationId: 4,
-                    cartId: 2,
-                    quantity: 2
-                }
-            ],
-            skipDuplicates: true,
-
-        }
-
-    )
 
     const ops: Prisma.PrismaPromise<any>[] = [];
 

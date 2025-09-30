@@ -5,36 +5,42 @@ import { itemVariants } from "@/shared/lib/animations/animation";
 import { usePaginatedProducts } from "./model/usePaginatedProducts";
 import ProductItem from "@/entities/product/ui/ProductItem";
 import { Skeleton } from "@/shared/ui";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
+import { useAppSelector } from "@/store";
 import { useWatchFilters } from "@/features/filtration/model/hooks/useWatchFilters";
 import { useFiltersFromUrl } from "@/features/filtration/model/hooks/useFiltersFromUrl";
 
 interface Props {
 	slug: string;
+	sortBy: "price-asc" | "price-desc" | "popular"; // 🆕 добавили сортировку
 }
 
-export default function ProductsList({ slug }: Props) {
-	// Получаем фильтры из Redux (подставь правильный селектор)
-	useWatchFilters();
-	useFiltersFromUrl();
-	const filters = useSelector(
-		(state: RootState) => state.filters.selectedOptions
-	);
+export default function ProductsList({ slug, sortBy }: Props) {
+	useFiltersFromUrl(); // Подтягиваем фильтры из URL
+	useWatchFilters(); // Слушаем изменения фильтров
 
-	const { products, isLoading, hasMore, observerRef, lastBatchStart } =
-		usePaginatedProducts(slug, filters);
+	const filters = useAppSelector((state) => state.filters.selectedOptions);
+	const priceRange = useAppSelector((state) => state.filters.priceRange);
+	const initialized = useAppSelector((state) => state.filters.initialized);
+	const {
+		products,
+		isLoading,
+		isError,
+		hasMore,
+		observerRef,
+		lastBatchStart,
+	} = usePaginatedProducts({
+		categorySlug: slug,
+		filters,
+		sortBy,
+		priceRange,
+		// 🔹 fetch будет внутри usePaginatedProducts проверять initialized
+		initialized,
+	});
 
 	return (
 		<>
-			<motion.ul
-				className="grid gap-8 relative
-                             grid-cols-1 
-                             sm:grid-cols-2 
-                             md:grid-cols-3 
-                             lg:grid-cols-4 
-                             mb-10"
-			>
+			{/* Список продуктов */}
+			<motion.ul className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-10 relative">
 				<AnimatePresence>
 					{products.map((product, index) => {
 						const localIndex =
@@ -59,15 +65,9 @@ export default function ProductsList({ slug }: Props) {
 				</AnimatePresence>
 			</motion.ul>
 
+			{/* Скелетоны при загрузке */}
 			{isLoading && (
-				<div
-					className="grid gap-8
-                  grid-cols-1 
-                  sm:grid-cols-2 
-                  md:grid-cols-3 
-                  lg:grid-cols-4 
-                  mb-10"
-				>
+				<div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-10">
 					{Array.from({ length: 8 }).map((_, i) => (
 						<div key={i} className="space-y-3">
 							<Skeleton className="h-[200px] w-full rounded-xl" />

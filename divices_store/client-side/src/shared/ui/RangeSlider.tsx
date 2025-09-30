@@ -20,15 +20,17 @@ export const RangeSlider = ({
 	step = 10,
 }: RangeSliderProps) => {
 	return (
-		<div className="w-full">
-			<div className="flex justify-between text-sm mb-2 text-muted-foreground">
+		<div className="flex flex-col items-start w-full">
+			{/* Фиксированные метки на краях */}
+			<div className="flex justify-between w-[250px] sm:w-full text-sm mb-2 text-muted-foreground">
 				<span>{value[0]} $</span>
 				<span>{value[1]} $</span>
 			</div>
 
 			<Slider.Root
 				className={cn(
-					"relative flex items-center select-none touch-none h-5"
+					"relative flex items-center select-none touch-none h-5",
+					"w-full sm:w-full" // ширина слайдера на мобильных
 				)}
 				value={value}
 				onValueChange={onChange}
