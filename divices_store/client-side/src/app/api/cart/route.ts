@@ -3,14 +3,22 @@ import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken"; // для декодирования JWT
 import { getToken } from "next-auth/jwt";
 
+const ALLOWED_ORIGINS = new Set([
+    'http://localhost:3000',
+    process.env.NEXT_PUBLIC_APP_URL || '',
+]);
+
 export function createCorsHeaders(req: NextRequest) {
-    const ALLOWED_ORIGIN = req.headers.get("origin") || "";
-    return {
-        "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
-        "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Credentials": "true",
+    const origin = req.headers.get('origin') || '';
+    const allow = origin && ALLOWED_ORIGINS.has(origin) ? origin : '';
+    const headers: Record<string, string> = {
+        'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Credentials': 'true',
+        'Vary': 'Origin',
     };
+    if (allow) headers['Access-Control-Allow-Origin'] = allow;
+    return headers;
 }
 
 
@@ -37,11 +45,19 @@ export async function GET(req: NextRequest) {
                     cartToken ? { token: cartToken } : undefined,
                 ].filter(Boolean) as any,
             },
-            include: {
+            select: {
+                id: true,
+                token: true,
                 items: {
-                    include: {
+                    select: {
+                        id: true,
+                        quantity: true,
                         variation: {
-                            include: { product: true },
+                            select: {
+                                id: true,
+                                price: true,
+                                product: { select: { id: true, name: true } },
+                            },
                         },
                     },
                 },
@@ -57,11 +73,19 @@ export async function GET(req: NextRequest) {
                     userId: userId || undefined,
                     token: newToken,
                 },
-                include: {
+                select: {
+                    id: true,
+                    token: true,
                     items: {
-                        include: {
+                        select: {
+                            id: true,
+                            quantity: true,
                             variation: {
-                                include: { product: true },
+                                select: {
+                                    id: true,
+                                    price: true,
+                                    product: { select: { id: true, name: true } },
+                                },
                             },
                         },
                     },

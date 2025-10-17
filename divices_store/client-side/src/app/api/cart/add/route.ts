@@ -2,30 +2,35 @@ import { prisma } from "@/shared/lib/prisma/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt"; // getToken корректно работает в route handlers
 import { createCorsHeaders } from "../route";
+import { z } from 'zod';
 
-const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET || ""; // не оставляй default в продакшн
+if (!process.env.NEXTAUTH_SECRET) {
+    throw new Error('NEXTAUTH_SECRET is required');
+}
+const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET;
+
+const AddSchema = z.object({
+    variationId: z.number().int().positive(),
+    quantity: z.number().int().positive().max(50),
+});
 
 export async function POST(req: NextRequest) {
     try {
-        const { variationId, quantity } = await req.json();
-
-        if (!variationId || !quantity) {
+        const json = await req.json();
+        const parsed = AddSchema.safeParse(json);
+        if (!parsed.success) {
             return NextResponse.json(
-                { success: false, error: "variationId и quantity обязательны" },
+                { success: false, error: "Invalid payload" },
                 { status: 400, headers: createCorsHeaders(req) }
             );
-        } try {
-
-            const getAll = (req.cookies as any).getAll;
-            const all = typeof getAll === "function" ? await getAll() : getAll;
-            console.log("req.cookies.getAll():", all);
-        } catch (e) {
-            console.log("req.cookies.getAll() err", e);
         }
+        const { variationId, quantity } = parsed.data;
+
+
 
         const tokenPayload = await getToken({ req, secret: NEXTAUTH_SECRET });
 
-        console.log("getToken payload:", tokenPayload);
+        // do not log tokens in production
         const userId: number | null =
             tokenPayload?.id ? Number(tokenPayload.id) :
                 tokenPayload?.sub ? Number(tokenPayload.sub) :

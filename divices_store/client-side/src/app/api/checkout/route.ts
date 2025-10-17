@@ -4,8 +4,11 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: "2025-08-27.basil",
+if (!process.env.STRIPE_SECRET_KEY) {
+    throw new Error('STRIPE_SECRET_KEY is required');
+}
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+    // используем версию по умолчанию аккаунта или укажем стабильную из dashboard при необходимости
 });
 
 export async function POST(req: NextRequest) {

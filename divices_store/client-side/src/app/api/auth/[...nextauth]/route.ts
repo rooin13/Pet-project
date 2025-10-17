@@ -1,9 +1,9 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/shared/lib/prisma/prisma";
 import bcrypt from "bcrypt";
 
-const prisma = new PrismaClient();
+// используем общий singleton PrismaClient
 
 export const authOptions: NextAuthOptions = ({
 
@@ -73,7 +73,7 @@ export const authOptions: NextAuthOptions = ({
                 httpOnly: true,
                 sameSite: 'lax',
                 path: '/',
-                secure: false
+                secure: process.env.NODE_ENV === 'production'
             },
         },
     },
