@@ -1,5 +1,5 @@
 import { getFiltersByCategory } from "@/entities/filter/model/getFiltersByCategory";
-import { ProductsByCategories } from "@/widgets/products-by-categories/ProductsByCatefories";
+import { ProductsByCategories } from "@/widgets/products-by-categories/ProductsByCategories";
 
 export default async function Page({ params }: { params: { slug: string } }) {
 	const filters = await getFiltersByCategory(params.slug);

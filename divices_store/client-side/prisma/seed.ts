@@ -1,5 +1,5 @@
 import { slugifyName } from '../src/shared/lib/utils/slugify';
-import { categories, products, variations } from '../src/shared/lib/data/product.data';
+import { categories, products, variations } from '../src/shared/lib/prisma/data/product.data';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { hashSync } from 'bcrypt';
 import {
@@ -20,7 +20,7 @@ import {
     worksWith as worksWithConst,
     keyboardLayouts as keyboardLayoutsConst,
     keyboardExtras as keyboardExtrasConst,
-} from '../src/shared/lib/data/product.data';
+} from '../src/shared/lib/prisma/data/product.data';
 import { id } from 'zod/v4/locales';
 
 const prisma = new PrismaClient();
@@ -39,8 +39,9 @@ async function main() {
 async function up() {
     await prisma.cartItem.deleteMany();
     await prisma.cart.deleteMany();
-    await prisma.product.deleteMany();
+    // Delete dependent records first to satisfy FK constraints
     await prisma.variation.deleteMany();
+    await prisma.product.deleteMany();
 
 
     await prisma.category.createMany({

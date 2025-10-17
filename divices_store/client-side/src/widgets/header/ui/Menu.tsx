@@ -8,7 +8,7 @@ import {
 	NavigationMenuItem,
 	NavigationMenuList,
 	NavigationMenuTrigger,
-} from "@/shared/ui/navigation-menu";
+} from "@/shared/ui/NavigationMenu";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -26,7 +26,7 @@ import {
 	SheetTrigger,
 	SheetHeader,
 	SheetTitle,
-} from "@/shared/ui/sheet";
+} from "@/shared/ui/Sheet";
 
 const Logo = memo(() => (
 	<NavigationMenuItem className="flex items-center justify-between">

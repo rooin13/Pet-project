@@ -5,7 +5,7 @@ import {
 	SheetHeader,
 	SheetTitle,
 	SheetTrigger,
-} from "@/shared/ui/sheet";
+} from "@/shared/ui/Sheet";
 
 import React, { useState } from "react";
 import SearchIcon from "../search-icon/SearchIcon";

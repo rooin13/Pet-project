@@ -6,12 +6,12 @@ import {
 	SheetContent,
 	SheetDescription,
 	SheetTrigger,
-} from "@/shared/ui/sheet";
-import { Sheet } from "@/shared/ui/sheet";
+} from "@/shared/ui/Sheet";
+import { Sheet } from "@/shared/ui/Sheet";
 import Filtration from "@/features/filtration/ui/Filtration";
 import { FilterGroupProps } from "@/features/filtration/ui/FilterGroup";
 import { useState } from "react";
-import { SortSelect } from "@/shared/ui/sortSelect";
+import { SortSelect } from "@/shared/ui/SortSelect";
 
 interface Props {
 	currentCategory: string;

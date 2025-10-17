@@ -1,7 +1,7 @@
 "use client";
 
 import { FC, ReactNode } from "react";
-import { Popover, PopoverTrigger, PopoverContent } from "@/shared/ui/popover";
+import { Popover, PopoverTrigger, PopoverContent } from "@/shared/ui/Popover";
 import Image from "next/image";
 import Link from "next/link";
 import { useGetCartQuery } from "@/shared/lib/api/cart/cartApi";
