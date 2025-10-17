@@ -87,6 +87,9 @@ model Product {
     keyboardExtras   KeyboardExtraFeature[]   @relation("ProductKeyboardExtras")
     createdAt        DateTime                 @default(now())
     updatedAt        DateTime                 @updatedAt
+
+    @@index([categoryId])
+    @@index([price])
 }
 
 model Variation {
@@ -97,6 +100,8 @@ model Variation {
     size      String
     price     Float?
     cartItems CartItem[]
+
+    @@index([productId])
 }
 
 model Category {
@@ -113,6 +118,10 @@ model CartItem {
     cart        Cart      @relation(fields: [cartId], references: [id])
     cartId      Int
     quantity    Int
+
+    @@unique([cartId, variationId])
+    @@index([cartId])
+    @@index([variationId])
 }
 
 model Order {

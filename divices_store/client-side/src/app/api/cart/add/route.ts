@@ -3,6 +3,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt"; // getToken корректно работает в route handlers
 import { createCorsHeaders } from "../route";
 import { z } from 'zod';
+const rateWindowMs = 10_000;
+const rateMax = 8;
+const ipHits = new Map<string, { count: number; resetAt: number }>();
 
 if (!process.env.NEXTAUTH_SECRET) {
     throw new Error('NEXTAUTH_SECRET is required');
@@ -16,6 +19,19 @@ const AddSchema = z.object({
 
 export async function POST(req: NextRequest) {
     try {
+        // Простое rate limit по IP
+        const ip = req.headers.get('x-forwarded-for') || 'local';
+        const now = Date.now();
+        const rec = ipHits.get(ip) || { count: 0, resetAt: now + rateWindowMs };
+        if (now > rec.resetAt) {
+            rec.count = 0;
+            rec.resetAt = now + rateWindowMs;
+        }
+        rec.count += 1;
+        ipHits.set(ip, rec);
+        if (rec.count > rateMax) {
+            return NextResponse.json({ success: false, error: 'Too Many Requests' }, { status: 429, headers: createCorsHeaders(req) });
+        }
         const json = await req.json();
         const parsed = AddSchema.safeParse(json);
         if (!parsed.success) {

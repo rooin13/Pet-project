@@ -7,7 +7,10 @@ export async function GET(req: NextRequest) {
     const products = await getFilteredProducts({ url: req.nextUrl });
 
     return NextResponse.json(products, {
-        headers: createCorsHeaders(req),
+        headers: {
+            ...createCorsHeaders(req),
+            'Cache-Control': 'public, max-age=30, s-maxage=60',
+        },
     });
 }
 
