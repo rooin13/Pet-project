@@ -89,7 +89,7 @@ export const Search: React.FC<SearchProps> = ({ closeSheet }) => {
 				ref={listRef}
 				className={
 					showList
-						? "bg-secondery text-black absolute top-20 w-full z-10 rounded-xl overflow-hidden"
+						? "bg-secondary text-black absolute top-20 w-full z-10 rounded-xl overflow-hidden"
 						: "hidden z-0"
 				}
 			>

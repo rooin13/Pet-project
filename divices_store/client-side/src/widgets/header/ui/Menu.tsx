@@ -44,7 +44,7 @@ const Logo = memo(() => (
 Logo.displayName = "Logo";
 
 const ShopContent = memo(() => (
-	<NavigationMenuContent className="bg-secondery h-100 z-30 text-black">
+	<NavigationMenuContent className="bg-secondary h-100 z-30 text-black">
 		<div className="w-screen flex justify-center p-4">
 			<div className="max-w-[1500px] justify-between w-full flex items-start gap-8">
 				<div className="grid grid-cols-3 gap-3 h-20">

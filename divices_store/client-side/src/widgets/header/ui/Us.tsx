@@ -2,7 +2,7 @@ import React from "react";
 
 function Us() {
 	return (
-		<div className=" bg-secondery">
+		<div className=" bg-secondary">
 			<div className=" py-2 mx-auto max-w-385 px-10">
 				<ul className="flex mx-auto text-sm items-center   justify-end gap-5 bg-secondary text-black ">
 					<li>Hex</li>

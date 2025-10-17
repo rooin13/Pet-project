@@ -17,7 +17,7 @@ export default function CartLayout({
 			<div
 				className={cn(
 					play.className,
-					"fixed inset-0 bg-secondery -z-10"
+					"fixed inset-0 bg-secondary -z-10"
 				)}
 			/>
 

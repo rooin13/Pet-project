@@ -18,7 +18,7 @@ export const CartPopover: FC<CartPopoverProps> = ({ trigger }) => {
 		<Popover>
 			<PopoverTrigger>{trigger}</PopoverTrigger>
 
-			<PopoverContent className="w-80 p-0 pt-2 pb-2 pl-1 bg-secondery">
+			<PopoverContent className="w-80 p-0 pt-2 pb-2 pl-1 bg-secondary">
 				{isLoading && <p>Loading...</p>}
 				{isError && <p>Error loading cart</p>}
 				{cart && cart.items.length === 0 && <p>Your cart is empty</p>}

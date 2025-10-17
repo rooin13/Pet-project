@@ -57,7 +57,7 @@ export const CategoriesSwiper: React.FC<CategoriesProps> = ({ categories }) => {
 				{categories.map((category) => (
 					<div
 						key={category.id}
-						className="keen-slider__slide rounded-3xl bg-secondery overflow-hidden flex flex-col items-center justify-center relative"
+						className="keen-slider__slide rounded-3xl bg-secondary overflow-hidden flex flex-col items-center justify-center relative"
 						style={{ height: "280px" }}
 					>
 						<Link

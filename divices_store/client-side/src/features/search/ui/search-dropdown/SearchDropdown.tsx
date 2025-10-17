@@ -24,8 +24,8 @@ export default function SearchDropdown() {
 				</SheetTrigger>
 
 				<SheetContent
-					className="fixed top-0 left-0 w-full py-3 px-5 text-black bg-secondery border-black items-center justify-center z-50
-   								data-[state=open]:animate-[slide-in-top_0.3s_ease-out_forwards] data-[state=closed]:animate-[slide-out-top_0.3s_ease-in_forwards]"
+					className="fixed top-0 left-0 w-full py-3 px-5 text-black bg-secondary border-black items-center justify-center z-50
+	   								data-[state=open]:animate-[slide-in-top_0.3s_ease-out_forwards] data-[state=closed]:animate-[slide-out-top_0.3s_ease-in_forwards]"
 					side="top"
 				>
 					<SheetHeader className="pb-50">

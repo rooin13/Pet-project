@@ -19,7 +19,7 @@ const ProductItem: React.FC<Product> = (product) => {
 	};
 
 	return (
-		<div className="bg-secondery rounded-2xl  w-full h-90 overflow-hidden flex flex-col ">
+		<div className="bg-secondary rounded-2xl  w-full h-90 overflow-hidden flex flex-col ">
 			<div className="relative overflow-hidden  items-center  mb-1  ">
 				<Link
 					href={PAGES.PRODUCT(product)}

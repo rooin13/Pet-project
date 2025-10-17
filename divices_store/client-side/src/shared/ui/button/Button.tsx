@@ -18,7 +18,7 @@ const Button = ({
 	onClick,
 }: TProps) => {
 	const classNames = {
-		primary: `bg-secondery text-black border-none w-full `,
+		primary: `bg-secondary text-black border-none w-full `,
 		outline: `bg-white text-blue-600 w-full `,
 	};
 

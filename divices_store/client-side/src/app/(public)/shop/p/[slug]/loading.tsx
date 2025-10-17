@@ -44,7 +44,7 @@ export default function Loading() {
 					{[1, 2, 3].map((i) => (
 						<div
 							key={i}
-							className="flex items-start space-x-3 p-4 bg-secondery rounded-xl"
+							className="flex items-start space-x-3 p-4 bg-secondary rounded-xl"
 						>
 							<div className="w-8 h-8 bg-gray-300 rounded"></div>
 							<div className="flex-1 space-y-2">

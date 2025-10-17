@@ -54,7 +54,7 @@ export const ProductsByCategories = ({
 						></SortSelect>
 
 						<SheetContent
-							className="scroll-aut w-80! md:w-150! px-4 sm:px-6 overflow-y-auto data-[state=open]:animate-slide-in-left data-[state=closed]:animate-slide-out-left py-6 px-8 text-black bg-white border-black "
+							className="scroll-aut w-80! md:w-150!  sm:px-6 overflow-y-auto data-[state=open]:animate-slide-in-left data-[state=closed]:animate-slide-out-left py-6 px-8 text-black bg-white border-black "
 							side="left"
 						>
 							<Filtration
