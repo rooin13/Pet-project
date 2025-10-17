@@ -3,7 +3,7 @@ import { Play } from "next/font/google";
 
 import { StoreProvider } from "@/providers/StoreProvider";
 import { QueryClientProvider, useQueryClient } from "@tanstack/react-query";
-import { queryClient } from "@/providers/QueryProveder";
+import { queryClient } from "@/providers/QueryProvider";
 
 import { PrismaClient } from "@prisma/client";
 import { withAccelerate } from "@prisma/extension-accelerate";

@@ -23,21 +23,24 @@ export function createCorsHeaders(req: NextRequest) {
 
 
 
-const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET || "";
+const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET; // может быть undefined для гостя
 
 export async function GET(req: NextRequest) {
     try {
-
-        const tokenPayload = await getToken({ req, secret: NEXTAUTH_SECRET });
+        console.log('[cart.GET] start');
+        const tokenPayload = await getToken({ req, secret: NEXTAUTH_SECRET || undefined });
         const userId: number | null =
             tokenPayload?.id ? Number(tokenPayload.id) :
                 tokenPayload?.sub ? Number(tokenPayload.sub) :
                     null;
+        console.log('[cart.GET] tokenPayload present:', Boolean(tokenPayload), 'userId:', userId);
 
         // Для гостя — читаем cartToken
         const cartToken = userId ? null : req.cookies.get("cartToken")?.value;
+        console.log('[cart.GET] cartToken from cookie:', cartToken);
 
         // Ищем корзину (приоритет userId)
+        console.log('[cart.GET] findFirst cart by OR', { userId, hasCartToken: Boolean(cartToken) });
         let cart = await prisma.cart.findFirst({
             where: {
                 OR: [
@@ -63,11 +66,13 @@ export async function GET(req: NextRequest) {
                 },
             },
         });
+        console.log('[cart.GET] found cart?', Boolean(cart), cart ? { id: cart.id, hasToken: Boolean(cart.token) } : null);
 
         // если корзины нет — создаём (и для гостя пометим, что нужно поставить cookie)
         let setCartCookieValue: string | null = null;
         if (!cart) {
             const newToken = userId ? undefined : crypto.randomUUID();
+            console.log('[cart.GET] creating cart with', { userId, newToken });
             cart = await prisma.cart.create({
                 data: {
                     userId: userId || undefined,
@@ -91,6 +96,7 @@ export async function GET(req: NextRequest) {
                     },
                 },
             });
+            console.log('[cart.GET] created cart', { id: cart.id, token: cart.token });
 
             if (!userId && cart.token) setCartCookieValue = cart.token;
         }
@@ -130,9 +136,10 @@ export async function GET(req: NextRequest) {
             });
         }
 
+        console.log('[cart.GET] success, items:', cart?.items?.length || 0, 'setCartCookieValue:', Boolean(setCartCookieValue));
         return res;
     } catch (err: any) {
-        console.error("❌ Ошибка получения корзины:", err);
+        console.error("❌ Ошибка получения корзины:", err?.message, err?.stack);
         return NextResponse.json(
             { items: [], totalAmount: 0, error: "Internal server error" },
             { status: 500, headers: createCorsHeaders(req) }

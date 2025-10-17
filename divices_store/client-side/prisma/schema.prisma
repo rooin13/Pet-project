@@ -90,7 +90,7 @@ model Product {
 
     @@index([categoryId])
     @@index([price])
-  @@index([categoryId, price])
+    @@index([categoryId, price])
 }
 
 model Variation {

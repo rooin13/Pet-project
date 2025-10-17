@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
 
     // Возвращаем именно массив products и добавляем CORS-заголовки
     return NextResponse.json(products, {
-        headers: createCorsHeaders(),
+        headers: { ...createCorsHeaders(), 'Cache-Control': 'public, max-age=30, s-maxage=120' },
     })
 }
 

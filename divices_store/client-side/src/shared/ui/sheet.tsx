@@ -13,7 +13,13 @@ function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
 function SheetTrigger({
 	...props
 }: React.ComponentProps<typeof SheetPrimitive.Trigger>) {
-	return <SheetPrimitive.Trigger data-slot="sheet-trigger" {...props} />;
+	// Avoid nested <button>: delegate rendering to child
+	const { children } = props as any;
+	return (
+		<SheetPrimitive.Trigger data-slot="sheet-trigger" asChild>
+			{children}
+		</SheetPrimitive.Trigger>
+	);
 }
 
 function SheetClose({

@@ -1,39 +1,32 @@
-import { userSchema } from "@/entities/user/model/schema"
-import { prisma } from "@/shared/lib/prisma/prisma"
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/shared/lib/prisma/prisma";
 
 export async function GET(req: NextRequest) {
-    const query = req.nextUrl.searchParams.get("query") || ""
-
-    const products = await prisma.product.findFirst({
-        where: {
-            name: {
-                contains: query,
-                mode: "insensitive"
-            }
-        },
-
-    })
-
-
-    return NextResponse.json(products, {
-        headers: createCorsHeaders(),
-    })
-}
-
-const ALLOWED_ORIGIN = "http://26.78.240.194:3000"
-
-function createCorsHeaders() {
-    return {
-        "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
-        "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
+    const slug = req.nextUrl.searchParams.get('slug');
+    if (!slug) {
+        return NextResponse.json({ error: 'slug is required' }, { status: 400 });
     }
-}
 
-export async function OPTIONS() {
-    return new NextResponse(null, {
-        status: 204,
-        headers: createCorsHeaders(),
-    })
+    const product = await prisma.product.findUnique({
+        where: { slug },
+        select: {
+            id: true,
+            name: true,
+            slug: true,
+            price: true,
+            imagesUrl: true,
+            description: true,
+            brand: { select: { id: true, name: true } },
+            category: { select: { id: true, name: true } },
+            variations: { select: { id: true, color: true, size: true, price: true } },
+        },
+    });
+
+    if (!product) {
+        return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    }
+
+    return NextResponse.json(product, {
+        headers: { 'Cache-Control': 'public, max-age=60, s-maxage=300' },
+    });
 }

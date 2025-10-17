@@ -8,10 +8,7 @@ const rateWindowMs = 10_000;
 const rateMax = 8;
 const ipHits = new Map<string, { count: number; resetAt: number }>();
 
-if (!process.env.NEXTAUTH_SECRET) {
-    throw new Error('NEXTAUTH_SECRET is required');
-}
-const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET;
+const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET; // может быть undefined для гостя
 
 const AddSchema = z.object({
     variationId: z.number().int().positive(),
@@ -20,9 +17,11 @@ const AddSchema = z.object({
 
 export async function POST(req: NextRequest) {
     try {
+        console.log('[cart.ADD] start');
         // Определяем пользователя. Для гостя CSRF не требуем — используем httpOnly cartToken
-        const tokenPayload = await getToken({ req, secret: NEXTAUTH_SECRET });
+        const tokenPayload = await getToken({ req, secret: NEXTAUTH_SECRET || undefined });
         const userId: number | null = tokenPayload?.id ? Number(tokenPayload.id) : tokenPayload?.sub ? Number(tokenPayload.sub) : null;
+        console.log('[cart.ADD] tokenPayload present:', Boolean(tokenPayload), 'userId:', userId);
         // Простое rate limit по IP
         const ip = req.headers.get('x-forwarded-for') || 'local';
         const now = Date.now();
@@ -37,6 +36,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ success: false, error: 'Too Many Requests' }, { status: 429, headers: createCorsHeaders(req) });
         }
         const json = await req.json();
+        console.log('[cart.ADD] body:', json);
         const parsed = AddSchema.safeParse(json);
         if (!parsed.success) {
             return NextResponse.json(
@@ -45,12 +45,15 @@ export async function POST(req: NextRequest) {
             );
         }
         const { variationId, quantity } = parsed.data;
+        console.log('[cart.ADD] parsed:', { variationId, quantity });
 
 
 
         // do not log tokens in production (userId уже определён выше)
         const cartToken = userId ? null : req.cookies.get("cartToken")?.value;
+        console.log('[cart.ADD] cartToken from cookie:', cartToken);
 
+        console.log('[cart.ADD] findFirst cart by OR', { userId, hasCartToken: Boolean(cartToken) });
         let cart = await prisma.cart.findFirst({
             where: {
                 OR: [
@@ -59,6 +62,7 @@ export async function POST(req: NextRequest) {
                 ].filter(Boolean) as any,
             },
         });
+        console.log('[cart.ADD] found cart?', Boolean(cart));
 
 
         let setCartCookieValue: string | null = null;
@@ -66,6 +70,7 @@ export async function POST(req: NextRequest) {
 
         if (!cart) {
             const newToken = userId ? undefined : crypto.randomUUID();
+            console.log('[cart.ADD] creating cart with', { userId, newToken });
             cart = await prisma.cart.create({
                 data: {
                     userId: userId || undefined,
@@ -74,7 +79,6 @@ export async function POST(req: NextRequest) {
             });
 
             if (!userId && cart.token) {
-
                 setCartCookieValue = cart.token;
             }
         }
@@ -93,6 +97,7 @@ export async function POST(req: NextRequest) {
                 data: { cartId: cart.id, variationId, quantity },
             });
         }
+        console.log('[cart.ADD] upserted item id:', cartItem.id);
 
         const updatedCart = await prisma.cart.findUnique({
             where: { id: cart.id },
@@ -117,9 +122,10 @@ export async function POST(req: NextRequest) {
                 maxAge: 60 * 60 * 24 * 30,
             });
         }
+        console.log('[cart.ADD] success, setCartCookieValue:', Boolean(setCartCookieValue));
         return res;
     } catch (err: any) {
-        console.error("❌ Ошибка добавления в корзину:", err);
+        console.error("❌ Ошибка добавления в корзину:", err?.message, err?.stack);
         return NextResponse.json(
             { success: false, error: "Internal server error" },
             { status: 500, headers: createCorsHeaders(req) }

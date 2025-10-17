@@ -4,10 +4,8 @@ import { NextResponse } from "next/server"
 export async function GET() {
     const allProducts = await prisma.product.findMany()
 
-    const response = NextResponse.json(allProducts)
-
-    return NextResponse.json(response, {
-        headers: createCorsHeaders(),
+    return NextResponse.json(allProducts, {
+        headers: { ...createCorsHeaders(), 'Cache-Control': 'public, max-age=60, s-maxage=300' },
     })
 }
 

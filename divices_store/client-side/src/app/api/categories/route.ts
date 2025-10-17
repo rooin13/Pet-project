@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server"
 export async function GET() {
     const categories = await prisma.category.findMany()
     return NextResponse.json(categories, {
-        headers: createCorsHeaders(),
+        headers: { ...createCorsHeaders(), 'Cache-Control': 'public, max-age=300, s-maxage=600' },
     })
 }
 

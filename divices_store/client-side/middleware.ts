@@ -8,14 +8,15 @@ export function middleware(req: NextRequest) {
     res.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
     res.headers.set('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
     if (process.env.NODE_ENV === 'production') {
-        // базовый CSP, скорректировать под домены CDN/Stripe
+        // Базовый CSP для продакшена с поддержкой Stripe
         res.headers.set('Content-Security-Policy', [
             "default-src 'self'",
             "img-src 'self' data: blob:",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+            "script-src 'self' https://js.stripe.com",
             "style-src 'self' 'unsafe-inline'",
-            "connect-src 'self' https://api.stripe.com",
-            "frame-src 'self' https://js.stripe.com",
+            "connect-src 'self' https://api.stripe.com https://checkout.stripe.com",
+            "frame-src https://js.stripe.com https://checkout.stripe.com",
+            "object-src 'none'",
         ].join('; '));
         // HSTS
         res.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
