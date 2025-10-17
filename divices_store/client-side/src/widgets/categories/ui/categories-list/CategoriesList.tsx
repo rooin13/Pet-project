@@ -15,7 +15,7 @@ const CategoriesList: React.FC<CategoriesProps> = ({ categories }) => {
 				{categories.map((category) => (
 					<li
 						key={category.id}
-						className="rounded-3xl bg-secondery overflow-hidden flex flex-col items-center justify-center"
+						className="rounded-3xl bg-secondary overflow-hidden flex flex-col items-center justify-center"
 					>
 						<Link
 							href={PAGES.CATEGORY(category)}

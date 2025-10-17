@@ -35,9 +35,8 @@
     "**/*.tsx",
     "next.config.mjs",
     "postcss.config.mjs",
-    "postcss.config.mjs",
     ".next/types/**/*.ts"
-, "src/widgets/nav-carousel/model/CorouselApi.js", "src/widgets/categories/ui/categories-list", "src/shared/lib/utils/product.data.js", "src/shared/lib/utils/test-db.js"  ],
+  ],
   "exclude": [
     "node_modules"
   ]
