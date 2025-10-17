@@ -7,21 +7,31 @@ export async function GET(req: NextRequest) {
     const products = await getFilteredProducts({ url: req.nextUrl });
 
     return NextResponse.json(products, {
-        headers: createCorsHeaders(),
+        headers: createCorsHeaders(req),
     });
 }
 
-function createCorsHeaders() {
-    return {
-        "Access-Control-Allow-Origin": "http://26.78.240.194:3000",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-        "Access-Control-Allow-Headers": "Content-Type",
+const ALLOWED_ORIGINS = new Set([
+    'http://localhost:3000',
+    'http://localhost:3001',
+    process.env.NEXT_PUBLIC_APP_URL || '',
+]);
+
+function createCorsHeaders(req: NextRequest) {
+    const origin = req.headers.get('origin') || '';
+    const allow = origin && ALLOWED_ORIGINS.has(origin) ? origin : '';
+    const headers: Record<string, string> = {
+        'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Vary': 'Origin',
     };
+    if (allow) headers['Access-Control-Allow-Origin'] = allow;
+    return headers;
 }
 
-export async function OPTIONS() {
+export async function OPTIONS(req: NextRequest) {
     return new NextResponse(null, {
         status: 204,
-        headers: createCorsHeaders(),
+        headers: createCorsHeaders(req),
     });
 }

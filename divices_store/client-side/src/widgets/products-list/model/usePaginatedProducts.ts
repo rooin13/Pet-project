@@ -29,6 +29,7 @@ export const usePaginatedProducts = ({
     const [isError, setIsError] = useState(false);
     const [lastBatchStart, setLastBatchStart] = useState(0);
     const observerRef = useRef<HTMLDivElement | null>(null);
+    const isFetchingRef = useRef(false);
 
     // 🧠 Мемоизируем параметры запроса
     const searchParams = useMemo(() => {
@@ -58,12 +59,15 @@ export const usePaginatedProducts = ({
     // 🚀 Получение данных
     useEffect(() => {
         if (!initialized) return; // не fetch пока фильтры/цена не подтянулись
-        if (!hasMore || isLoading) return;
+        if (!hasMore) return;
+        if (isFetchingRef.current) return;
 
+        isFetchingRef.current = true;
         setIsLoading(true);
         setIsError(false);
 
-        fetch(`/api/products/by-category?${searchParams}`)
+        const controller = new AbortController();
+        fetch(`/api/products/by-category?${searchParams}`, { signal: controller.signal })
             .then(res => {
                 if (!res.ok) throw new Error("Failed to load products");
                 return res.json();
@@ -72,11 +76,18 @@ export const usePaginatedProducts = ({
                 setProducts(prev => page === 1 ? newProducts : [...prev, ...newProducts]);
                 if (newProducts.length < limit) setHasMore(false);
                 setLastBatchStart(page === 1 ? 0 : products.length);
-                setPage(p => p + 1);
+                // не увеличиваем страницу автоматически — следующий fetch по intersect
             })
-            .catch(() => setIsError(true))
-            .finally(() => setIsLoading(false));
-    }, [searchParams, page, hasMore, isLoading, limit, products.length, filters, priceRange, initialized]);
+            .catch((e) => {
+                if (e?.name !== 'AbortError') setIsError(true);
+            })
+            .finally(() => {
+                isFetchingRef.current = false;
+                setIsLoading(false);
+            });
+
+        return () => controller.abort();
+    }, [searchParams, page, hasMore, initialized]);
 
     // 📦 Инфини скролл
     useEffect(() => {

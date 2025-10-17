@@ -56,7 +56,7 @@ export async function GET(req: NextRequest) {
                             select: {
                                 id: true,
                                 price: true,
-                                product: { select: { id: true, name: true } },
+                                product: { select: { id: true, name: true, slug: true, imagesUrl: true, description: true } },
                             },
                         },
                     },
@@ -84,7 +84,7 @@ export async function GET(req: NextRequest) {
                                 select: {
                                     id: true,
                                     price: true,
-                                    product: { select: { id: true, name: true } },
+                                    product: { select: { id: true, name: true, slug: true, imagesUrl: true, description: true } },
                                 },
                             },
                         },
