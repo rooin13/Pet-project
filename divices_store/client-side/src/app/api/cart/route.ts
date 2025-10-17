@@ -109,6 +109,16 @@ export async function GET(req: NextRequest) {
 
         // Формируем ответ и при необходимости ставим cookie
         const res = NextResponse.json({ items, totalAmount }, { headers: createCorsHeaders(req) });
+        // Выдаём гостевой CSRF-токен, если его нет (для X-CSRF-Token)
+        if (!req.cookies.get('csrf-token')) {
+            res.cookies.set('csrf-token', crypto.randomUUID(), {
+                httpOnly: true,
+                sameSite: 'lax',
+                secure: process.env.NODE_ENV === 'production',
+                path: '/',
+                maxAge: 60 * 60 * 24,
+            });
+        }
 
         if (setCartCookieValue) {
             res.cookies.set("cartToken", setCartCookieValue, {

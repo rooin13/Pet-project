@@ -4,6 +4,8 @@ import { getBaseUrl } from "../common/getBaseUrl";
 
 const getCsrfToken = () => {
     if (typeof document === 'undefined') return null;
+    const own = document.cookie.split('; ').find(c => c.startsWith('csrf-token='));
+    if (own) return decodeURIComponent(own.split('=')[1] || '');
     const raw = document.cookie.split('; ').find(c => c.startsWith('next-auth.csrf-token='));
     if (!raw) return null;
     const val = decodeURIComponent(raw.split('=')[1] || '');

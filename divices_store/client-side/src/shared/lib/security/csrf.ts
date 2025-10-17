@@ -1,8 +1,11 @@
 import type { NextRequest } from 'next/server';
 
 export function extractCsrfFromCookie(req: NextRequest): string | null {
+    // Пытаемся взять наш кастомный cookie
+    const custom = req.cookies.get('csrf-token')?.value;
+    if (custom) return custom;
+    // Либо токен NextAuth (формат token|hash)
     const raw = req.cookies.get('next-auth.csrf-token')?.value || '';
-    // формат: token|hash
     const token = raw.split('|')[0];
     return token || null;
 }

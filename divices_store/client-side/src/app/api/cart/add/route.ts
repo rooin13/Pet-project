@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt"; // getToken корректно работает в route handlers
 import { createCorsHeaders } from "../route";
 import { z } from 'zod';
-import { validateCsrf } from '@/shared/lib/security/csrf';
+// CSRF не требуем для корзины (гость/юзер) — защита cookie+rate limit; CSRF оставлен на checkout
 const rateWindowMs = 10_000;
 const rateMax = 8;
 const ipHits = new Map<string, { count: number; resetAt: number }>();
@@ -20,9 +20,9 @@ const AddSchema = z.object({
 
 export async function POST(req: NextRequest) {
     try {
-        if (!validateCsrf(req)) {
-            return NextResponse.json({ success: false, error: 'Invalid CSRF token' }, { status: 403, headers: createCorsHeaders(req) });
-        }
+        // Определяем пользователя. Для гостя CSRF не требуем — используем httpOnly cartToken
+        const tokenPayload = await getToken({ req, secret: NEXTAUTH_SECRET });
+        const userId: number | null = tokenPayload?.id ? Number(tokenPayload.id) : tokenPayload?.sub ? Number(tokenPayload.sub) : null;
         // Простое rate limit по IP
         const ip = req.headers.get('x-forwarded-for') || 'local';
         const now = Date.now();
@@ -48,13 +48,7 @@ export async function POST(req: NextRequest) {
 
 
 
-        const tokenPayload = await getToken({ req, secret: NEXTAUTH_SECRET });
-
-        // do not log tokens in production
-        const userId: number | null =
-            tokenPayload?.id ? Number(tokenPayload.id) :
-                tokenPayload?.sub ? Number(tokenPayload.sub) :
-                    null;
+        // do not log tokens in production (userId уже определён выше)
         const cartToken = userId ? null : req.cookies.get("cartToken")?.value;
 
         let cart = await prisma.cart.findFirst({
