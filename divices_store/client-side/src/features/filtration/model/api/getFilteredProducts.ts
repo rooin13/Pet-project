@@ -25,7 +25,15 @@ export async function getFilteredProducts({ url }: Params) {
         },
     };
 
-    const include = buildIncludeClause(category);
+    // Отдаём только необходимые поля для листинга (без тяжёлых связей)
+    const select = {
+        id: true,
+        name: true,
+        slug: true,
+        price: true,
+        imagesUrl: true,
+        brandId: true,
+    } as const;
 
     let orderBy: { [key: string]: "asc" | "desc" } | undefined = undefined;
 
@@ -39,7 +47,7 @@ export async function getFilteredProducts({ url }: Params) {
 
     const products = await prisma.product.findMany({
         where,
-        include,
+        select,
         orderBy,
         skip,
         take: limit,
