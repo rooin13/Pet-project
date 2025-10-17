@@ -3,6 +3,7 @@ import { prisma } from "@/shared/lib/prisma/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
 import Stripe from "stripe";
+import { validateCsrf } from '@/shared/lib/security/csrf';
 
 if (!process.env.STRIPE_SECRET_KEY) {
     throw new Error('STRIPE_SECRET_KEY is required');
@@ -13,6 +14,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 
 export async function POST(req: NextRequest) {
     try {
+        if (!validateCsrf(req)) {
+            return NextResponse.json({ success: false, error: 'Invalid CSRF token' }, { status: 403 });
+        }
         const session = await getServerSession(authOptions);
         if (!session?.user?.email) {
             return NextResponse.json({ success: false, error: "Not authenticated" }, { status: 401 });
