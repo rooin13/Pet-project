@@ -18,6 +18,7 @@ export const RELATION_DELEGATES = {
     certified: prisma.certifiedCompatibility,
     webcamResolution: prisma.resolutionFrameRate,
     worksWith: prisma.worksWith,
+    platform: prisma.platform,
 } as const;
 
 export type RelationKey = keyof typeof RELATION_DELEGATES;

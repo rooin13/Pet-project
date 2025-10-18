@@ -1,16 +1,59 @@
 "use client";
 
-import { Canvas, useFrame } from "@react-three/fiber";
 import { useEffect, useRef, useState, Suspense } from "react";
-import { useGLTF } from "@react-three/drei";
-import * as THREE from "three";
-import { useMediaQuery } from "react-responsive";
+
+// Ленивый импорт всех 3D библиотек
+const loadThreeLibs = async () => {
+	const [fiber, drei, three] = await Promise.all([
+		import("@react-three/fiber"),
+		import("@react-three/drei"),
+		import("three"),
+	]);
+	return { fiber, drei, three };
+};
 
 export default function KeyboardScene() {
+	const [libs, setLibs] = useState<any>(null);
 	const [progress, setProgress] = useState(0);
-	const isMobile = useMediaQuery({ maxWidth: 768 });
+	const [isMobile, setIsMobile] = useState(false);
+	const [isMounted, setIsMounted] = useState(false);
 
+	// Монтирование
 	useEffect(() => {
+		setIsMounted(true);
+	}, []);
+
+	// Загрузка библиотек
+	useEffect(() => {
+		if (!isMounted) return;
+
+		loadThreeLibs()
+			.then((loadedLibs) => {
+				console.log("3D libraries loaded");
+				setLibs(loadedLibs);
+			})
+			.catch((err) => {
+				console.error("Failed to load 3D libraries:", err);
+			});
+	}, [isMounted]);
+
+	// Проверка размера экрана
+	useEffect(() => {
+		if (!isMounted) return;
+
+		const checkMobile = () => {
+			setIsMobile(window.innerWidth <= 768);
+		};
+		checkMobile();
+
+		window.addEventListener("resize", checkMobile);
+		return () => window.removeEventListener("resize", checkMobile);
+	}, [isMounted]);
+
+	// Обработка скролла
+	useEffect(() => {
+		if (!isMounted) return;
+
 		const section = document.getElementById("keyboard-section");
 		if (!section) return;
 
@@ -24,7 +67,7 @@ export default function KeyboardScene() {
 			const clampedProgress = Math.min(Math.max(rawProgress, 0), 1);
 
 			setProgress((prev) => {
-				if (Math.abs(prev - clampedProgress) < 0.001) return prev; // если почти не изменилось, не обновляем
+				if (Math.abs(prev - clampedProgress) < 0.001) return prev;
 				return clampedProgress;
 			});
 		};
@@ -32,44 +75,71 @@ export default function KeyboardScene() {
 
 		window.addEventListener("scroll", handleScroll);
 		return () => window.removeEventListener("scroll", handleScroll);
-	}, []);
+	}, [isMounted]);
+
+	// Пока библиотеки не загружены - показываем заглушку
+	if (!isMounted || !libs) {
+		return (
+			<div className="w-full h-full flex items-center justify-center">
+				<div className="text-white text-lg">Loading 3D Scene...</div>
+			</div>
+		);
+	}
+
+	const { Canvas } = libs.fiber;
+	const { useGLTF } = libs.drei;
 
 	return (
 		<Canvas
 			style={{ height: isMobile ? "80%" : "100%" }}
 			camera={{ position: [0, 4, 4], fov: 50 }}
+			gl={{ preserveDrawingBuffer: true }}
 		>
 			<ambientLight intensity={1} />
 			<directionalLight position={[22, 10, 90]} intensity={12} />
 			<Suspense fallback={null}>
-				<RotatingKeyboard progress={progress} />
+				<RotatingKeyboard
+					progress={progress}
+					useFrame={libs.fiber.useFrame}
+					useGLTF={useGLTF}
+					THREE={libs.three}
+				/>
 			</Suspense>
 		</Canvas>
 	);
 }
 
-function RotatingKeyboard({ progress }: { progress: number }) {
-	const groupRef = useRef<THREE.Group>(null);
+function RotatingKeyboard({
+	progress,
+	useFrame,
+	useGLTF,
+	THREE,
+}: {
+	progress: number;
+	useFrame: any;
+	useGLTF: any;
+	THREE: any;
+}) {
+	const groupRef = useRef<any>(null);
 	const gltf = useGLTF("/models/keyboard.glb");
 
-	// useFrame вызываем всегда, даже если сцена ещё не загрузилась
 	useFrame(() => {
-		if (groupRef.current && gltf.scene) {
-			const targetRotation = progress * Math.PI * 1;
+		if (groupRef.current && gltf?.scene) {
+			const targetRotation = progress * Math.PI;
 			groupRef.current.rotation.y = targetRotation;
 		}
 	});
 
-	// если сцена ещё не загрузилась, ничего не рендерим, но хуки уже вызваны
-	if (!gltf.scene) return null;
+	if (!gltf?.scene) {
+		return null;
+	}
 
 	return (
 		<primitive
-			position={[0, 1, 0]}
 			ref={groupRef}
 			object={gltf.scene}
+			position={[0, 1, 0]}
 			scale={0.54}
-			dispose={null}
 		/>
 	);
 }

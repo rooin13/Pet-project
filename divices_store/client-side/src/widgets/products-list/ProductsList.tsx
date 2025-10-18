@@ -40,7 +40,7 @@ export default function ProductsList({ slug, sortBy }: Props) {
 	return (
 		<>
 			{/* Список продуктов */}
-			<motion.ul className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-10 relative">
+			<motion.ul className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-10 relative">
 				<AnimatePresence>
 					{products.map((product, index) => {
 						const localIndex =
@@ -67,7 +67,7 @@ export default function ProductsList({ slug, sortBy }: Props) {
 
 			{/* Скелетоны при загрузке */}
 			{isLoading && (
-				<div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-10">
+				<div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-10">
 					{Array.from({ length: 8 }).map((_, i) => (
 						<div key={i} className="space-y-3">
 							<Skeleton className="h-[200px] w-full rounded-xl" />

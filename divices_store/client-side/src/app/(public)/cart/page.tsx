@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 const CartPage: FC = () => {
 	return (
-		<section className="container ">
+		<section className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 lg:px-12">
 			<Cart />
 		</section>
 	);

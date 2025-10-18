@@ -9,6 +9,7 @@ export const CATEGORY_FILTER_FIELD_MAP: Record<string, Partial<Record<RelationKe
         handSizes: "Grip Size",
         scrollTypes: "Scroll Types",
         miceSeries: "Model Series",
+        platform: "Platform",
     },
     keyboards: {
         brand: "Brand",
@@ -17,14 +18,27 @@ export const CATEGORY_FILTER_FIELD_MAP: Record<string, Partial<Record<RelationKe
         keyboardLayouts: "Layout & Size",
         keyboardExtras: "Extra Features",
         keyboardSeries: "Keyboard Series",
+        platform: "Platform",
     },
     webcams: {
+        brand: "Brand",
         webCamFeatures: "Webcam Features",
         certified: "Certified Compatibility",
         webcamResolution: "Resolution & FPS",
         worksWith: "Supported Platforms",
+        platform: "Platform",
+        connectivity: "Connection Type",
     },
     headphones: {
+        brand: "Brand",
+        colors: "Available Colors",
+        connectivity: "Connection Type",
+    },
+    mats: {
+        brand: "Brand",
+        colors: "Available Colors",
+    },
+    bundle: {
         brand: "Brand",
         colors: "Available Colors",
     },

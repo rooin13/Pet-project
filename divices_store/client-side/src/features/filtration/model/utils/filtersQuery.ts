@@ -3,15 +3,27 @@ import { Category, CATEGORY_FILTER_FIELD_MAP } from "@/entities/filter/config/fi
 import { RelationKey } from "@/entities/filter/config/delegates";
 import { RELATION_TYPE } from "../config/relationType";
 
+// Маппинг URL slug → название категории в БД
+const CATEGORY_NAME_MAP: Record<Category, string> = {
+    mice: "Mice",
+    keyboards: "Keyboards",
+    headphones: "Headphones",
+    webcams: "Webcams",
+    mats: "Mats",
+    bundle: "Bundle",
+};
+
 export function buildWhereClause(
     category: Category,
     query: string,
     filters: Record<string, string[]>
 ) {
+    const categoryName = CATEGORY_NAME_MAP[category] || query;
+
     const where: any = {
         category: {
             name: {
-                equals: query,
+                equals: categoryName,
                 mode: "insensitive",
             },
         },
@@ -53,11 +65,12 @@ export function buildIncludeClause(category: Category) {
 
 export function buildFilterWhere(query: string, filters: Record<string, string[]>) {
     const category = query.toLowerCase() as Category;
+    const categoryName = CATEGORY_NAME_MAP[category] || query;
 
     const where: any = {
         category: {
             name: {
-                equals: query,
+                equals: categoryName,
                 mode: "insensitive",
             },
         },

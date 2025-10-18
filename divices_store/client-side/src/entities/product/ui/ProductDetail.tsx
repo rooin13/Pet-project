@@ -5,13 +5,17 @@ import Button from "@/shared/ui/button/Button";
 import { Product, Variation } from "@prisma/client";
 import Image from "next/image";
 import { useState } from "react";
-import { CartPopover } from "./cartPopover"; // путь к твоему Popover
+import { CartPopover } from "./CartPopover"; // путь к твоему Popover
+import { Breadcrumbs } from "@/shared/ui/Breadcrumbs";
+import { Truck, Percent, ShoppingCart } from "lucide-react";
 
 type ProductWithVariations = Product & { variations: Variation[] };
 
 export const ProductDetails = (product: ProductWithVariations) => {
 	const [selectedVariation, setSelectedVariation] =
 		useState<Variation | null>(product.variations[0] ?? null);
+	const [imageLoaded, setImageLoaded] = useState(false);
+
 	const [addItem] = useAddItemMutation();
 
 	const handleAddToCart = async () => {
@@ -31,44 +35,97 @@ export const ProductDetails = (product: ProductWithVariations) => {
 	};
 
 	return (
-		<div className="container mx-auto px-4 sm:px-6 lg:px-10 p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-10 pt-16 lg:pt-20">
+		<div className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 lg:px-12 py-6 lg:py-12 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12">
+			{/* BREADCRUMBS */}
+			<div className="lg:col-span-12">
+				{(() => {
+					const categoryName =
+						(product as any)?.category?.name ||
+						(product as any)?.categoryName;
+					const categorySlug =
+						(product as any)?.category?.slug ||
+						(product as any)?.categorySlug ||
+						(categoryName
+							? String(categoryName).toLowerCase()
+							: undefined);
+					const crumbs = [
+						{ label: "Home", href: "/" },
+						{ label: "Shop", href: "/shop" },
+					] as { label: string; href?: string }[];
+					if (categoryName)
+						crumbs.push({
+							label: categoryName,
+							href: categorySlug
+								? `/shop/c/${categorySlug}`
+								: undefined,
+						});
+					crumbs.push({ label: product.name });
+					return <Breadcrumbs items={crumbs} />;
+				})()}
+			</div>
+
 			{/* LEFT SIDE */}
-			<div className="lg:col-span-2 flex flex-col space-y-4 lg:space-y-6">
-				<h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-black mb-4 sm:mb-8">
+			<div className="lg:col-span-7 flex flex-col gap-5 lg:gap-8">
+				<h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-black">
 					{product.name}
-				</h2>
-				<p className="text-gray-500 font-light text-sm sm:text-base max-w-full sm:max-w-3xl mt-1 sm:mt-2">
-					{product.description}
-				</p>
-				<div className="relative w-3/4 md:w-2/4 ">
-					{product.imagesUrl && (
-						<Image
-							src={
-								Array.isArray(product.imagesUrl) &&
-								product.imagesUrl.length > 0 &&
-								typeof product.imagesUrl[0] === "string"
-									? product.imagesUrl[0]
-									: "/placeholder.png"
-							}
-							alt={product.name}
-							width={1000}
-							height={1000}
-							className="rounded-xl w-full h-auto max-h-[300px] sm:max-h-[400px] lg:max-h-[500px] object-contain"
-						/>
-					)}
+				</h1>
+				{/* Встроенное описание из БД сразу под заголовком */}
+				{product.description && (
+					<p className="text-black/70 font-light text-sm sm:text-base max-w-3xl">
+						{product.description}
+					</p>
+				)}
+				<div className="grid grid-cols-2 gap-5">
+					{/* Верхний левый квадрат с изображением */}
+					<div className="bg-white rounded-2xl p-2 shadow-md relative">
+						{!imageLoaded && (
+							<div className="absolute inset-0 rounded-xl bg-secondary/30 animate-pulse" />
+						)}
+						{product.imagesUrl && (
+							<Image
+								src={
+									Array.isArray(product.imagesUrl) &&
+									product.imagesUrl.length > 0 &&
+									typeof product.imagesUrl[0] === "string"
+										? product.imagesUrl[0]
+										: "/placeholder.png"
+								}
+								alt={product.name}
+								width={800}
+								height={800}
+								className="rounded-xl w-full h-full aspect-square object-contain"
+								onLoadingComplete={() => setImageLoaded(true)}
+							/>
+						)}
+					</div>
+					{/* Остальные три пустых квадрата */}
+					<div className="bg-white rounded-2xl p-2 shadow-sm">
+						<div className="rounded-xl w-full h-full aspect-square bg-secondary/20" />
+					</div>
+					<div className="bg-white rounded-2xl p-2 shadow-sm">
+						<div className="rounded-xl w-full h-full aspect-square bg-secondary/20" />
+					</div>
+					<div className="bg-white rounded-2xl p-2 shadow-sm">
+						<div className="rounded-xl w-full h-full aspect-square bg-secondary/20" />
+					</div>
 				</div>
 			</div>
 
 			{/* RIGHT SIDE */}
-			<div className="flex flex-col space-y-4 sm:space-y-6 lg:space-y-8">
-				<div className="bg-white p-4 sm:p-6 lg:p-8 pt-0 rounded-2xl space-y-4 sm:space-y-6">
-					<p className="text-2xl sm:text-3xl mb-4 sm:mb-8 font-light text-gray-600">
-						${product.price}
-					</p>
+			<div className="lg:col-span-5 lg:sticky lg:top-24 flex flex-col gap-8 sm:gap-10">
+				<div className="bg-white p-6 sm:p-7 lg:p-9 rounded-2xl space-y-6 sm:space-y-8 shadow-lg">
+					<div className="flex items-baseline justify-between">
+						<p className="text-2xl sm:text-3xl font-light text-black">
+							${product.price}
+						</p>
+						<span className="text-xs px-2 py-1 rounded-full bg-secondary text-black">
+							In stock
+						</span>
+					</div>
 
 					{product.variations.length > 0 && (
-						<div className="border-b border-gray-400 pb-6 mb-6 sm:pb-8 sm:mb-8">
-							<p className="mb-2 sm:mb-4 text-lg sm:text-xl font-light text-black">
+						<div className="border-b border-gray-300 pb-6 mb-6">
+							<p className="mb-3 text-lg sm:text-xl font-light text-black">
 								Select option
 							</p>
 							<div className="flex flex-wrap gap-2 sm:gap-3">
@@ -76,7 +133,7 @@ export const ProductDetails = (product: ProductWithVariations) => {
 									const isSelected =
 										selectedVariation?.id === variation.id;
 
-									let bgClass = "bg-white text-black"; // по умолчанию
+									let bgClass = "bg-white text-black"; // default
 									let borderClass = "border-gray-300";
 									let outlineClass = "";
 
@@ -92,7 +149,7 @@ export const ProductDetails = (product: ProductWithVariations) => {
 										) {
 											bgClass = "bg-white text-black";
 											outlineClass =
-												"ring-2 ring-gray-400"; // добавляем видимый outline для белого
+												"ring-2 ring-gray-400";
 										} else {
 											bgClass = `bg-[${variation.color.toLowerCase()}] text-white`;
 										}
@@ -105,12 +162,7 @@ export const ProductDetails = (product: ProductWithVariations) => {
 											onClick={() =>
 												setSelectedVariation(variation)
 											}
-											className={`
-   	       px-3 sm:px-4 py-1 sm:py-2 rounded-xl border cursor-pointer
-          text-xs sm:text-sm transition-colors duration-200
-          ${bgClass} ${borderClass} ${outlineClass}
-          hover:border-gray-500
-        `}
+											className={`px-3 sm:px-4 py-1 sm:py-2 rounded-xl border cursor-pointer text-xs sm:text-sm transition-colors duration-200 ${bgClass} ${borderClass} ${outlineClass} hover:border-gray-500`}
 										>
 											{variation.color}{" "}
 											{variation.size &&
@@ -125,14 +177,38 @@ export const ProductDetails = (product: ProductWithVariations) => {
 					<CartPopover
 						trigger={
 							<Button
-								type="outline"
+								type="primary"
 								onClick={handleAddToCart}
 								disabled={!selectedVariation}
 							>
-								Add to Cart
+								ADD TO CART
 							</Button>
 						}
 					/>
+
+					<div className="space-y-4">
+						<div className="rounded-lg border border-black/10 p-3 text-sm text-black/80 flex items-center gap-2 shadow-sm">
+							<Truck className="size-8" />
+							<span>
+								Get it by Wed — Free standard shipping on orders
+								over $39
+							</span>
+						</div>
+						<div className="rounded-lg border border-black/10 p-3 text-sm text-black/80 flex items-center gap-2 shadow-sm">
+							<Percent className="size-8" />
+							<span>
+								Save 30% on Premium Keyboards when you buy MX
+								Master 4
+							</span>
+						</div>
+						<div className="rounded-lg border border-black/10 p-3 text-sm text-black/80 flex items-center gap-2 shadow-sm">
+							<ShoppingCart className="size-8" />
+							<span>
+								Save 30% on select Mice with Signature Slim
+								Series
+							</span>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

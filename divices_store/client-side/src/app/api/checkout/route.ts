@@ -25,17 +25,20 @@ export async function POST(req: NextRequest) {
         }
 
         const body = await req.json();
-        const { firstName, lastName, address, zipCode, cartItems } = body;
+        const { firstName, lastName, email, phone, address, city, state, zipCode, country, cartItems } = body;
 
         if (
             !firstName ||
             !lastName ||
+            !email ||
             !address ||
+            !city ||
             !zipCode ||
+            !country ||
             !Array.isArray(cartItems) ||
             cartItems.length === 0
         ) {
-            return NextResponse.json({ success: false, error: "Missing fields" }, { status: 400 });
+            return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
         }
         const user = await prisma.user.findUnique({
             where: { email: session.user.email },
@@ -104,28 +107,50 @@ export async function POST(req: NextRequest) {
             };
         });
 
-        const totalAmount = line_items.reduce((sum, li) => sum + (li.price_data.unit_amount / 100) * li.quantity, 0);
+        const totalAmount = Math.round(line_items.reduce((sum, li) => sum + (li.price_data.unit_amount / 100) * li.quantity, 0));
+
+        if (process.env.NODE_ENV === 'development') {
+            console.log("📦 Creating order with data:", {
+                userId: user.id,
+                totalAmount,
+                itemsCount: items.length,
+                billing: { firstName, lastName, email, city, country },
+            });
+        }
 
         const order = await prisma.order.create({
             data: {
-                userId: user.id,
-                token: crypto.randomUUID(),
+                user: {
+                    connect: { id: user.id }
+                },
+                token: globalThis.crypto.randomUUID(),
                 totalAmount,
-                items: items,
+                items: items as any,
                 status: "PENDING",
+                // Billing Details
+                firstName: firstName.trim(),
+                lastName: lastName.trim(),
+                email: email.trim(),
+                phone: phone && phone.trim() !== "" ? phone.trim() : null,
+                address: address.trim(),
+                city: city.trim(),
+                state: state && state.trim() !== "" ? state.trim() : null,
+                zipCode: zipCode.trim(),
+                country: country.trim(),
             },
         });
 
         // 2️⃣ Создаём Stripe Checkout Session (по доверенным данным)
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
         const stripeSession = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],
             mode: "payment",
             customer_email: user.email,
             line_items,
-            success_url: `${process.env.NEXT_PUBLIC_APP_URL}/order-success?orderId=${order.id}`,
-            cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/checkout?orderId=${order.id}`,
-            metadata: { orderId: order.id },
+            success_url: `${appUrl}/order-success?orderId=${order.id}`,
+            cancel_url: `${appUrl}/checkout?orderId=${order.id}`,
+            metadata: { orderId: String(order.id) },
         });
 
         if (process.env.NODE_ENV !== 'production') {
@@ -133,8 +158,20 @@ export async function POST(req: NextRequest) {
         }
 
         return NextResponse.json({ success: true, url: stripeSession.url });
-    } catch (err) {
-        console.error("Stripe checkout error:", err);
-        return NextResponse.json({ success: false, error: "Server error" }, { status: 500 });
+    } catch (err: any) {
+        console.error("❌ Checkout error:", err);
+        console.error("Error message:", err.message);
+        console.error("Error stack:", err.stack);
+
+        // Более информативная ошибка для разработки
+        const errorMessage = process.env.NODE_ENV === 'development'
+            ? err.message
+            : "Server error";
+
+        return NextResponse.json({
+            success: false,
+            error: errorMessage,
+            details: process.env.NODE_ENV === 'development' ? err.stack : undefined
+        }, { status: 500 });
     }
 }

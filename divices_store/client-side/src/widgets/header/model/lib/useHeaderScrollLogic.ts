@@ -5,8 +5,8 @@ import { setAtTop, setIsHeaderTransparent } from "../slice";
 
 export const useHeaderScrollLogic = (isHome: boolean) => {
     const dispatch = useAppDispatch();
-    const atTop = useAppSelector((state) => state.ui.atTop);
-    const isHeaderTransparent = useAppSelector((state) => state.ui.isHeaderTransparent);
+    const atTop = useAppSelector((state) => state?.ui?.atTop ?? true);
+    const isHeaderTransparent = useAppSelector((state) => state?.ui?.isHeaderTransparent ?? false);
 
     const atTopRef = useRef(atTop);
     const isHeaderTransparentRef = useRef(isHeaderTransparent);

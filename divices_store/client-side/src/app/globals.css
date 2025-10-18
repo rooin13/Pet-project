@@ -7,10 +7,8 @@
 
 
 @theme{
- 
   --color-primary: #B2C0FF;
   --color-secondary: #edf5f5;
-
 }
 
 html, body {
@@ -141,4 +139,23 @@ a {
 
 button{
   border: none;
+}
+
+/* Screen Reader Only - Accessibility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Focus visible для keyboard navigation */
+*:focus-visible {
+  outline: 2px solid #3A59C5;
+  outline-offset: 2px;
 }

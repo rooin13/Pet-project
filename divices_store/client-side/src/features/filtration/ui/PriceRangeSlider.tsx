@@ -20,7 +20,7 @@ export const PriceRangeSlider: FC = () => {
 	};
 
 	return (
-		<div className="mb-10 max-w-150">
+		<div className="mb-6 max-w-150">
 			<RangeSlider
 				value={value}
 				onChange={handleChange}

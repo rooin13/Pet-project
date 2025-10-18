@@ -1,54 +1,65 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
 import { Product } from "@prisma/client";
 import { getProductImages } from "@/shared/lib/utils/productUtils";
 import { PAGES } from "@/shared/lib/config/pages.config";
+import { useProductHover } from "../model/hooks/useProductHover";
+import { formatPriceSimple } from "@/shared/lib/utils/formatters";
 
-const ProductItem: React.FC<Product> = (product) => {
+type ProductWithVariations = Product & {
+	variations: { color: string; size?: string }[];
+};
+
+const ProductItem: React.FC<ProductWithVariations> = (product) => {
 	const imageRef = useRef<HTMLImageElement>(null);
-	const [isHovered, setIsHovered] = useState(false);
-
-	const handleMouseEnter = () => {
-		setIsHovered(true);
-	};
-
-	const handleMouseLeave = () => {
-		setIsHovered(false);
-	};
+	const { isHovered, handleMouseEnter, handleMouseLeave } = useProductHover();
 
 	return (
-		<div className="bg-secondary rounded-2xl  w-full h-90 overflow-hidden flex flex-col ">
-			<div className="relative overflow-hidden  items-center  mb-1  ">
+		<article
+			className="bg-secondary rounded-2xl w-full h-90 overflow-hidden flex flex-col"
+			aria-label={`${product.name} - $${product.price.toFixed(0)}.99`}
+		>
+			<div className="relative overflow-hidden items-center mb-1 flex-1">
 				<Link
 					href={PAGES.PRODUCT(product)}
 					onMouseEnter={handleMouseEnter}
 					onMouseLeave={handleMouseLeave}
+					aria-label={`View details for ${product.name}`}
 				>
-					<div className="overflow-hidden ">
+					<div className="overflow-hidden h-full">
 						<Image
 							ref={imageRef}
 							src={getProductImages(product)[0].url}
-							alt={getProductImages(product)[0].alt}
+							alt={`${product.name} - ${
+								getProductImages(product)[0].alt
+							}`}
 							width={500}
 							height={500}
-							className={`transition-transform  w-full duration-700 ease-in-out ${
+							className={`transition-transform w-full h-full object-contain duration-700 ease-in-out ${
 								isHovered ? "scale-105" : ""
 							}`}
 						/>
 					</div>
 				</Link>
 			</div>
-			<div className="pb-6 px-7 flex flex-col items-start">
-				<h3 className="font-base text-1xl text-black mb-3">
+			<div className="pb-4 px-4 flex flex-col items-start">
+				<h3 className="font-base text-1xl text-black mb-2">
 					{product.name}
 				</h3>
-				<p className="mt-2 text-black font-light ">{`$${product.price.toFixed(
-					0
-				)}.99 `}</p>
+				<div className="flex items-center justify-between w-full">
+					<p
+						className="text-black font-thin"
+						aria-label={`Price: ${formatPriceSimple(
+							product.price
+						)}`}
+					>
+						{formatPriceSimple(product.price)}
+					</p>
+				</div>
 			</div>
-		</div>
+		</article>
 	);
 };
 

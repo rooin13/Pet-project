@@ -15,10 +15,10 @@ const Header: FC = () => {
 	const pathname = usePathname();
 	const isHome = pathname === "/";
 
-	// Redux state
-	const atTop = useAppSelector((state) => state.ui.atTop);
+	// Redux state with fallback
+	const atTop = useAppSelector((state) => state?.ui?.atTop ?? true);
 	const isHeaderTransparent = useAppSelector(
-		(state) => state.ui.isHeaderTransparent
+		(state) => state?.ui?.isHeaderTransparent ?? false
 	);
 	const isTransparent = atTop || isHeaderTransparent;
 

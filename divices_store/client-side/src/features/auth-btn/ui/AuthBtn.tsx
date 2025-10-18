@@ -14,14 +14,20 @@ export const AuthBtn = () => {
 	return (
 		<>
 			{user ? (
-				<Link href="/profile" className="group">
-					<p
+				<Link
+					href="/profile"
+					className="group"
+					aria-label={`Go to profile${
+						user.name ? ` (${user.name})` : ""
+					}`}
+				>
+					<User
+						size={23}
 						className={`${
 							atTop ? " text-black" : " text-white"
-						}  text-xl font-semibold cursor-pointer`}
-					>
-						<User size={23} className="group-hover:opacity-70" />
-					</p>
+						} group-hover:opacity-70`}
+						aria-hidden="true"
+					/>
 				</Link>
 			) : (
 				<button
@@ -29,8 +35,13 @@ export const AuthBtn = () => {
 						atTop ? " text-black" : " text-white"
 					}  text- text-xl font-semibold cursor-pointer group`}
 					onClick={() => dispatch(openModal("login"))}
+					aria-label="Sign in to your account"
 				>
-					<User size={23} className="group-hover:opacity-70" />
+					<User
+						size={23}
+						className="group-hover:opacity-70"
+						aria-hidden="true"
+					/>
 				</button>
 			)}
 		</>

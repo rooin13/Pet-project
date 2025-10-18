@@ -10,3 +10,5 @@ export { Skeleton } from "./Skeleton"
 export { Tooltip } from "./Tooltip"
 
 export { Checkbox } from "./Checkbox"
+export * from "./Spinner";
+export { default as Spinner } from "./Spinner";

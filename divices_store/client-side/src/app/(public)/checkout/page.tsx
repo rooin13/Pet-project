@@ -1,101 +1,108 @@
 "use client";
 
 import { FC } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useGetCartQuery } from "@/shared/lib/api/cart/cartApi";
+import { useCart } from "@/widgets/cart/model/useCart";
+import { useCheckout } from "@/features/checkout-form/model/hooks/useCheckout";
 import CartItem from "@/widgets/cart/cart-item/ui/CartItem";
 import BillingForm from "@/features/checkout-form/ui/BillingForm";
-import {
-	CheckoutForm,
-	checkoutSchema,
-} from "@/features/checkout-form/model/validation";
 
 const CheckoutPage: FC = () => {
-	const { data: cart, isLoading } = useGetCartQuery();
-
 	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-	} = useForm<CheckoutForm>({
-		resolver: zodResolver(checkoutSchema),
-	});
+		cartItems,
+		subtotal,
+		shipping,
+		total,
+		isLoading: cartLoading,
+	} = useCart();
+	const { user, userLoading, isSubmitting, form, onSubmit } = useCheckout();
 
-	if (isLoading) return <p className="p-10">Loading checkout...</p>;
-	if (!cart) return <p className="p-10">Cart is empty.</p>;
+	if (cartLoading || userLoading)
+		return <p className="p-10 text-black">Loading checkout...</p>;
+	if (cartItems.length === 0)
+		return <p className="p-10 text-black">Your cart is empty.</p>;
 
-	const cartItems = cart.items;
-	const subtotal = cart.totalAmount;
-	const shipping = subtotal > 39 ? 0 : 15;
-	const total = subtotal + shipping;
-
-	const onSubmit = async (data: CheckoutForm) => {
-		console.log("Form submitted:", data);
-
-		try {
-			const res = await fetch("/api/checkout", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					...data,
-					cartItems, // array с variation + quantity
-					total, // можно, но Stripe считает line_items отдельно
-				}),
-			});
-
-			const result = await res.json();
-
-			if (result.success && result.url) {
-				if (
-					result.success &&
-					result.url &&
-					typeof window !== "undefined"
-				) {
-					window.location.href = result.url;
-				}
-			} else {
-				alert("Error: " + result.error);
-			}
-		} catch (err) {
-			console.error(err);
-			alert("Unexpected error occurred");
-		}
-	};
+	const handleFormSubmit = form.handleSubmit((data) =>
+		onSubmit(data, cartItems, total)
+	);
 
 	return (
-		<div className="pt-12 pb-5 space-y-6">
-			<div className="bg-white rounded-xl md:p-6">
-				<h2 className="text-3xl font-light text-center text-white bg-black rounded-md pl-4 mb-6">
+		<main className="pb-5 space-y-6">
+			<section
+				className="bg-white rounded-xl md:p-6"
+				aria-label="Order summary"
+			>
+				<h1 className="text-3xl font-light text-center text-white bg-black rounded-md pl-4 mb-6">
 					Checkout
-				</h2>
+				</h1>
 
 				{cartItems.map((item) => (
 					<CartItem item={item} key={item.id} />
 				))}
 
-				<div className="mt-6 flex font-bold text-lg">
-					<span className="text-black mr-4">Total:</span>
-					<span className="text-black">${total.toFixed(2)}</span>
+				<div className="mt-6 border-t pt-4">
+					<div className="flex justify-between text-base mb-2">
+						<span className="text-gray-600">Subtotal:</span>
+						<span className="text-black">
+							${subtotal.toFixed(2)}
+						</span>
+					</div>
+					<div className="flex justify-between text-base mb-2">
+						<span className="text-gray-600">Shipping:</span>
+						<span className="text-black">
+							{shipping === 0
+								? "Free"
+								: `$${shipping.toFixed(2)}`}
+						</span>
+					</div>
+					<div className="flex justify-between font-bold text-xl mt-4 pt-4 border-t">
+						<span className="text-black">Total:</span>
+						<span className="text-black">${total.toFixed(2)}</span>
+					</div>
 				</div>
-			</div>
+			</section>
 
-			<div className="bg-white rounded-xl  md:p-6 flex flex-col gap-6">
+			<section
+				className="bg-white rounded-xl md:p-6 flex flex-col gap-6"
+				aria-label="Billing information"
+			>
 				<form
-					onSubmit={handleSubmit(onSubmit)}
+					onSubmit={handleFormSubmit}
 					className="flex flex-col w-full gap-6"
 				>
-					<BillingForm register={register} errors={errors} />
+					<BillingForm
+						register={form.register}
+						errors={form.formState.errors}
+						setValue={form.setValue}
+					/>
 
 					<button
 						type="submit"
-						className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800"
+						disabled={isSubmitting || !user}
+						className={`w-full py-3 rounded-lg font-semibold transition-colors ${
+							isSubmitting || !user
+								? "bg-gray-400 text-gray-200 cursor-not-allowed"
+								: "bg-black text-white hover:bg-gray-800"
+						}`}
+						aria-label={
+							!user
+								? "Sign in required to place order"
+								: "Place order"
+						}
 					>
-						Place Order
+						{isSubmitting ? "Processing..." : "Place Order"}
 					</button>
+
+					{!user && (
+						<p
+							className="text-center text-red-600 text-sm"
+							role="alert"
+						>
+							Please sign in to place your order
+						</p>
+					)}
 				</form>
-			</div>
-		</div>
+			</section>
+		</main>
 	);
 };
 

@@ -11,6 +11,11 @@ const Scroll3DSection = dynamic(
 	() => import("@/widgets/keyboard-scene/KeyboardScene"),
 	{
 		ssr: false,
+		loading: () => (
+			<div className="w-full h-full flex items-center justify-center">
+				<div className="text-white">Loading...</div>
+			</div>
+		),
 	}
 );
 

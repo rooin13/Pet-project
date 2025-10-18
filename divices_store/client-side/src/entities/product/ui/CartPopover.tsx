@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useGetCartQuery } from "@/shared/lib/api/cart/cartApi";
 import { getImageSrc } from "@/shared/lib/utils/productUtils";
+import { Spinner } from "@/shared/ui";
 
 interface CartPopoverProps {
 	trigger: ReactNode; // сюда передаем кнопку Add to Cart
@@ -19,8 +20,12 @@ export const CartPopover: FC<CartPopoverProps> = ({ trigger }) => {
 			<PopoverTrigger>{trigger}</PopoverTrigger>
 
 			<PopoverContent className="w-80 p-0 pt-2 pb-2 pl-1 bg-secondary">
-				{isLoading && <p>Loading...</p>}
-				{isError && <p>Error loading cart</p>}
+				{isLoading && (
+					<div className="flex items-center justify-center py-6">
+						<Spinner size={20} />
+					</div>
+				)}
+				{isError && <p>Failed to load cart</p>}
 				{cart && cart.items.length === 0 && <p>Your cart is empty</p>}
 
 				{cart && cart.items.length > 0 && (
@@ -68,3 +73,5 @@ export const CartPopover: FC<CartPopoverProps> = ({ trigger }) => {
 		</Popover>
 	);
 };
+
+export default CartPopover;

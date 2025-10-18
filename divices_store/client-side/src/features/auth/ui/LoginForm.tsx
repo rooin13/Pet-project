@@ -19,86 +19,132 @@ export const LoginForm = () => {
 
 	return (
 		<Modal
-			style="bg-black/50 "
+			style="bg-black/50"
 			isOpen={isOpen && modalType === "login"}
 			onClose={() => dispatch(closeModal())}
 		>
 			<form
 				onSubmit={handleSubmit}
-				className="space-y-4 p-5 flex flex-col items-center"
+				className="space-y-6 p-8 flex flex-col items-center w-full max-w-md"
+				aria-label="Login form"
 			>
 				<Link
 					href="/"
-					className="cursor-pointer flex items-center gap-2"
+					className="cursor-pointer flex items-center gap-2 mb-4"
+					aria-label="HEX Store homepage"
 				>
-					{/* <Image
-						src="/images/logo.svg"
-						alt="logo"
-						width={24}
-						height={24}
-					/> */}
-					<p className="font-normal text-black text-3xl">Hex</p>
+					<h2 className="font-semibold text-black text-4xl">Hex</h2>
 				</Link>
-				<div className="w-full relative">
-					<svg
-						fill={errors.email ? "red" : "gray"}
-						width={20}
-						height={20}
-						className="absolute top-3 left-2"
-					>
-						<use xlinkHref={`/images/icons/icons.xml#mail`} />
-					</svg>
-					<input
-						type="text"
-						placeholder="Email"
-						className={`border p-2 pl-8 w-full rounded-lg text-black ${
-							errors.email ? "border-red-500" : ""
-						}`}
-						{...register("email")}
-					/>
-					{errors.email && (
-						<p className="text-red-500 text-sm">
-							{errors.email.message}
-						</p>
-					)}
+
+				<div className="w-full space-y-7">
+					{/* Email Field */}
+					<div className="w-full relative min-h-[52px]">
+						<label htmlFor="login-email" className="sr-only">
+							Email
+						</label>
+						<svg
+							fill={errors.email ? "#ef4444" : "#9ca3af"}
+							width={18}
+							height={18}
+							className="absolute top-3.5 left-3.5 z-10"
+							aria-hidden="true"
+						>
+							<use xlinkHref={`/images/icons/icons.xml#mail`} />
+						</svg>
+						<input
+							id="login-email"
+							type="email"
+							placeholder="Email"
+							className={`border p-3 pl-11 w-full rounded-xl text-black transition-colors focus:outline-none focus:ring-2 focus:ring-primary ${
+								errors.email
+									? "border-red-500 bg-red-50"
+									: "border-gray-300"
+							}`}
+							{...register("email")}
+							aria-invalid={!!errors.email}
+							aria-describedby={
+								errors.email ? "email-error" : undefined
+							}
+						/>
+						{errors.email && (
+							<p
+								id="email-error"
+								className="absolute left-0 top-full mt-1 text-red-500 text-xs whitespace-nowrap"
+								role="alert"
+							>
+								{errors.email.message}
+							</p>
+						)}
+					</div>
+
+					{/* Password Field */}
+					<div className="w-full relative min-h-[52px]">
+						<label htmlFor="login-password" className="sr-only">
+							Password
+						</label>
+						<svg
+							fill={errors.password ? "#ef4444" : "#9ca3af"}
+							width={18}
+							height={18}
+							className="absolute top-3.5 left-3.5 z-10"
+							aria-hidden="true"
+						>
+							<use xlinkHref={`/images/icons/icons.xml#key`} />
+						</svg>
+						<input
+							id="login-password"
+							type="password"
+							placeholder="Password"
+							className={`border p-3 pl-11 w-full rounded-xl text-black transition-colors focus:outline-none focus:ring-2 focus:ring-primary ${
+								errors.password
+									? "border-red-500 bg-red-50"
+									: "border-gray-300"
+							}`}
+							{...register("password")}
+							aria-invalid={!!errors.password}
+							aria-describedby={
+								errors.password ? "password-error" : undefined
+							}
+						/>
+						{errors.password && (
+							<p
+								id="password-error"
+								className="absolute left-0 top-full mt-1 text-red-500 text-xs whitespace-nowrap"
+								role="alert"
+							>
+								{errors.password.message}
+							</p>
+						)}
+					</div>
 				</div>
 
-				<div className="w-full relative">
-					<svg
-						fill={errors.password ? "red" : "gray"}
-						width={20}
-						height={20}
-						className="absolute top-3 left-2"
-					>
-						<use xlinkHref={`/images/icons/icons.xml#key`} />
-					</svg>
-					<input
-						type="password"
-						placeholder="Password"
-						className={`border p-2 pl-8 w-full rounded-lg text-black ${
-							errors.password ? "border-red-500" : ""
-						}`}
-						{...register("password")}
-					/>
-					{errors.password && (
-						<p className="text-red-500 text-sm">
-							{errors.password.message}
-						</p>
-					)}
-				</div>
 				<button
 					type="submit"
-					className="w-full bg-primary text-white py-2 rounded-xl"
+					disabled={!form.formState.isDirty}
+					className={`w-full py-3 rounded-xl font-medium transition-colors mt-2 ${
+						!form.formState.isDirty
+							? "bg-gray-400 text-gray-200 cursor-not-allowed"
+							: "bg-black hover:bg-gray-800 text-white"
+					}`}
+					aria-label="Sign in to your account"
+					aria-disabled={!form.formState.isDirty}
 				>
 					Login
 				</button>
-				<p className="text-black">Don’t have an account? </p>
-				<span
-					className="text-blue-600 text-center  cursor-pointer"
-					onClick={() => dispatch(toggleModalType())}
-				>
-					Register
-				</span>
+
+				<div className="text-center mt-4">
+					<p className="text-gray-600 text-sm">
+						Don't have an account?{" "}
+						<button
+							type="button"
+							className="text-blue-600 font-medium hover:underline cursor-pointer"
+							onClick={() => dispatch(toggleModalType())}
+							aria-label="Switch to registration form"
+						>
+							Register
+						</button>
+					</p>
+				</div>
 			</form>
 		</Modal>
 	);

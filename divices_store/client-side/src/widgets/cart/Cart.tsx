@@ -1,86 +1,148 @@
 "use client";
 import { FC } from "react";
+import { Skeleton, Spinner } from "@/shared/ui";
 import CartItem from "./cart-item/ui/CartItem";
-import { useGetCartQuery } from "../../shared/lib/api/cart/cartApi";
+import { useCart } from "./model/useCart";
 import Link from "next/link";
+import { Truck } from "lucide-react";
 
 const Cart: FC = () => {
-	const { data: cart, isLoading, isError } = useGetCartQuery();
-	const shippingFee = 15;
-
-	if (isLoading) return <p className="p-10">Loading cart...</p>;
-	if (isError || !cart) return <p className="p-10">Failed to load cart</p>;
-
-	const cartItems = cart.items;
-	const subtotal = cart.totalAmount;
-	const shipping = subtotal > 39 ? 0 : shippingFee;
-	const total = subtotal + shipping;
+	const {
+		cartItems,
+		subtotal,
+		shipping,
+		total,
+		isLoading,
+		isError,
+		isEmpty,
+	} = useCart();
 
 	return (
-		<div className="pt-8 pb-10 flex flex-col md:flex-row gap-8">
+		<main className="pt-8 pb-12 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
 			{/* Список товаров */}
-			<div className="w-full md:basis-2/3">
-				<h2 className="text-3xl sm:text-4xl md:text-5xl mb-6 sm:mb-10 font-light inline-block">
+			<section
+				className="order-2 lg:order-1 lg:col-span-7"
+				aria-label="Shopping cart items"
+			>
+				<h1 className="text-3xl sm:text-4xl md:text-5xl mb-6 sm:mb-8 font-light inline-block">
 					Cart
-				</h2>
-				{cartItems.length === 0 ? (
-					<h3 className="text-xl sm:text-2xl mb-6 sm:mb-10">
+				</h1>
+				{isLoading ? (
+					<div className="flex h-40 items-center justify-center">
+						<Spinner size={28} />
+					</div>
+				) : cartItems.length === 0 ? (
+					<h3 className="text-xl sm:text-2xl mb-6 sm:mb-8">
 						Your shopping cart is empty.
 					</h3>
 				) : (
 					cartItems
 						.slice()
 						.sort((a, b) => a.id - b.id)
-						.map((item) => <CartItem item={item} key={item.id} />)
+						.map((item) => (
+							<div
+								key={item.id}
+								className="bg-white rounded-2xl shadow-sm px-6 py-5 mb-5"
+							>
+								<CartItem item={item} />
+							</div>
+						))
 				)}
-			</div>
+				{isError && (
+					<p className="mt-4 text-red-600" role="alert">
+						Failed to load cart
+					</p>
+				)}
+			</section>
 
-			{/* Блок Summary */}
-			<div className="w-full md:basis-1/3 flex flex-col gap-5">
-				<div className="bg-white rounded-xl pb-4 px-6 sm:pb-5 sm:px-10">
-					<h3 className="text-sm sm:text-base font-bold">
-						Free shipping on orders over $39.00
-					</h3>
+			{/* Блок Summary (на мобилках сверху) */}
+			<aside
+				className="order-1 lg:order-2 lg:col-span-5 lg:sticky lg:top-24 flex flex-col gap-6"
+				role="complementary"
+				aria-label="Order summary"
+			>
+				<div className="bg-white mt-4 rounded-xl border border-black/10 shadow-md px-6 py-5">
+					<div className="flex items-center gap-4">
+						<Truck
+							className="text-black w-7 h-7 sm:w-8 sm:h-8 flex-shrink-0"
+							aria-hidden="true"
+						/>
+						<p className="text-black text-sm sm:text-base font-normal leading-relaxed">
+							Free shipping on orders over $29.00 and free returns
+						</p>
+					</div>
 				</div>
 
-				<div className="flex flex-col bg-white rounded-xl pb-4 px-6 sm:pb-5 sm:px-10">
-					<h3 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-10">
+				<div className="flex flex-col bg-white rounded-2xl shadow-lg pb-5 px-6 sm:pb-7 sm:px-8 pt-5 sm:pt-6">
+					<h2 className="text-xl sm:text-2xl font-semibold mb-6 sm:mb-8">
 						Summary
-					</h3>
+					</h2>
 
-					<div className="flex flex-col sm:flex-row justify-between border-b-2 border-b-primary pb-4 sm:pb-10">
-						<ul className="flex flex-col space-y-2 sm:space-y-4">
+					<div className="flex flex-col sm:flex-row justify-between border-b-2 border-b-primary pb-4 sm:pb-8">
+						<ul className="flex flex-col space-y-2 sm:space-y-3">
 							<li>Subtotal</li>
 							<li>Estimated Shipping</li>
 							<li>Total Savings</li>
 						</ul>
-						<ul className="flex flex-col space-y-2 sm:space-y-4 text-right mt-2 sm:mt-0">
-							<li>${subtotal.toFixed(2)}</li>
-							<li>
-								{shipping > 0
-									? `$${shipping}`
-									: "Free shipping"}
-							</li>
-							<li>$0.00</li>
+						<ul className="flex flex-col space-y-2 sm:space-y-3 text-right mt-2 sm:mt-0">
+							{isLoading ? (
+								<div className="animate-pulse">
+									<li>
+										<Skeleton className="h-4 w-20 ml-auto" />
+									</li>
+									<li>
+										<Skeleton className="h-4 w-24 ml-auto" />
+									</li>
+									<li>
+										<Skeleton className="h-4 w-16 ml-auto" />
+									</li>
+								</div>
+							) : (
+								<>
+									<li>${subtotal.toFixed(2)}</li>
+									<li>
+										{shipping > 0
+											? `$${shipping}`
+											: "Free shipping"}
+									</li>
+									<li>$0.00</li>
+								</>
+							)}
 						</ul>
 					</div>
 
 					<div className="flex justify-between pt-4 sm:pt-5">
 						<h2 className="font-bold">Total</h2>
-						<p className="font-bold">${total.toFixed(2)}</p>
+						{isLoading ? (
+							<div className="animate-pulse">
+								<Skeleton className="h-5 w-24" />
+							</div>
+						) : (
+							<p className="font-bold">${total.toFixed(2)}</p>
+						)}
 					</div>
 
-					<Link href={"/checkout"}>
-						<button
-							disabled={cartItems.length === 0}
-							className="w-full cursor-pointer hover:bg-gray-800 mt-6 sm:mt-10 bg-black text-white py-3 rounded-lg disabled:opacity-50"
-						>
-							Proceed to Checkout
-						</button>
+					<Link
+						href={"/checkout"}
+						aria-label={`Proceed to checkout with ${cartItems.length} items`}
+					>
+						{isLoading ? (
+							<div className="mt-6 sm:mt-8">
+								<Skeleton className="h-10 w-full rounded-lg" />
+							</div>
+						) : (
+							<button
+								disabled={cartItems.length === 0}
+								className="w-full cursor-pointer hover:bg-gray-800 mt-6 sm:mt-8 bg-black text-white py-3 rounded-lg disabled:opacity-50"
+								aria-disabled={cartItems.length === 0}
+							>
+								Proceed to Checkout
+							</button>
+						)}
 					</Link>
 				</div>
-			</div>
-		</div>
+			</aside>
+		</main>
 	);
 };
 

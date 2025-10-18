@@ -22,7 +22,7 @@ export const RangeSlider = ({
 	return (
 		<div className="flex flex-col items-start w-full">
 			{/* Фиксированные метки на краях */}
-			<div className="flex justify-between w-[250px] sm:w-full text-sm mb-2 text-muted-foreground">
+			<div className="flex justify-between w-[250px] sm:w-full text-sm mb-2 text-black font-medium">
 				<span>{value[0]} $</span>
 				<span>{value[1]} $</span>
 			</div>

@@ -134,6 +134,16 @@ model Order {
     items       Json
     status      OrderStatus
     paymentId   String?
+    // Billing Details
+    firstName   String      @default("")
+    lastName    String      @default("")
+    email       String      @default("")
+    phone       String?
+    address     String      @default("")
+    city        String      @default("")
+    state       String?
+    zipCode     String      @default("")
+    country     String      @default("United States")
     createdAt   DateTime    @default(now())
     updatedAt   DateTime    @updatedAt
 }

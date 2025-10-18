@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, memo, useMemo, useState } from "react";
+import { FC, memo, useMemo, useRef } from "react";
 
 import {
 	NavigationMenu,
@@ -18,23 +18,18 @@ import CartBtn from "../ui/CartBtn";
 import SearchDropdown from "@/features/search/ui/search-dropdown/SearchDropdown";
 
 import { useAppSelector } from "@/store";
-
-// импортируем Sheet из shadcn/ui
-import {
-	Sheet,
-	SheetContent,
-	SheetTrigger,
-	SheetHeader,
-	SheetTitle,
-} from "@/shared/ui/Sheet";
+import { useMobileMenu } from "../model/lib/useMobileMenu";
+import { BurgerButton } from "./BurgerButton";
+import { MobileMenuPortal } from "./MobileMenuPortal";
+import { SHOP_CATEGORIES } from "@/shared/lib/config/categories.config";
 
 const Logo = memo(() => (
 	<NavigationMenuItem className="flex items-center justify-between">
-		<Link href="/">
+		<Link href="/" aria-label="HEX Store - Go to homepage">
 			<Image
 				width={70}
 				height={70}
-				alt="HEX Logo"
+				alt="HEX Store Logo"
 				src="/images/favicon.png"
 				priority
 			/>
@@ -48,48 +43,18 @@ const ShopContent = memo(() => (
 		<div className="w-screen flex justify-center p-4">
 			<div className="max-w-[1500px] justify-between w-full flex items-start gap-8">
 				<div className="grid grid-cols-3 gap-3 h-20">
-					{[
-						{
-							href: "/shop/c/mice",
-							src: "/images/categories/mice.png",
-							label: "Mice",
-						},
-						{
-							href: "/shop/c/keyboards",
-							src: "/images/categories/keyboards.png",
-							label: "Keyboards",
-						},
-						{
-							href: "/shop/c/mats",
-							src: "/images/categories/mats.png",
-							label: "Mats",
-						},
-						{
-							href: "/shop/c/headphones",
-							src: "/images/categories/headphones.png",
-							label: "Headphones",
-						},
-						{
-							href: "/shop/c/webcams",
-							src: "/images/categories/webcams.png",
-							label: "Webcams",
-						},
-						{
-							href: "/shop/c/accessories",
-							src: "/images/categories/accessories.png",
-							label: "Accessories",
-						},
-					].map(({ href, src, label }, i) => (
+					{SHOP_CATEGORIES.map(({ href, src, label }, i) => (
 						<Link
 							key={i}
 							href={href}
 							className="block w-32 sm:w-36 md:w-40 text-center hover:text-blue-500"
+							aria-label={`Shop ${label}`}
 						>
 							{/* Контейнер картинки */}
 							<div className="relative w-full h-28 sm:h-32 md:h-36  rounded-lg overflow-hidden">
 								<Image
 									src={src}
-									alt={label}
+									alt={`${label} category`}
 									fill
 									className="object-contain"
 								/>
@@ -110,8 +75,9 @@ const ShopContent = memo(() => (
 					<Link
 						href="/shop"
 						className="inline-block bg-white text-indigo-600 font-semibold py-1 px-3 rounded hover:bg-gray-200 transition"
+						aria-label="Shop special offers now"
 					>
-						<p className="text-black">Shop Now →</p>
+						<span className="text-black">Shop Now →</span>
 					</Link>
 				</div>
 			</div>
@@ -130,7 +96,7 @@ const RightButtons = memo(() => (
 			<div className="hover:opacity-70 flex items-center">
 				<AuthBtn />
 			</div>
-			<div className="pb-2">
+			<div className="flex items-center">
 				<CartBtn />
 			</div>
 		</NavigationMenuItem>
@@ -139,13 +105,14 @@ const RightButtons = memo(() => (
 RightButtons.displayName = "RightButtons";
 
 const Menu: FC = () => {
-	const atTop = useAppSelector((state) => state.ui.atTop);
-	const [open, setOpen] = useState(false);
+	const atTop = useAppSelector((state) => state?.ui?.atTop ?? true);
+	const { isOpen, toggleMenu, closeMenu } = useMobileMenu();
+	const burgerButtonRef = useRef<HTMLDivElement>(null);
 
 	const ShopMenuItem = useMemo(() => {
 		return (
 			<NavigationMenuItem className="text-black bg-transparent text-xl h-15 font-semibold duration-300">
-				<Link href={"/shop"}>
+				<Link href={"/shop"} aria-label="Shop all products">
 					<NavigationMenuTrigger
 						className={`
             relative cursor-pointer h-full duration-300
@@ -153,10 +120,11 @@ const Menu: FC = () => {
             after:absolute after:bottom-3 after:left-0 after:w-0 after:h-[2px] after:bg-primary after:transition-all
             hover:after:w-full
           `}
+						aria-label="Open shop menu"
 					>
-						<p className="cursor-pointer text-xl font-semibold">
+						<span className="cursor-pointer text-xl font-semibold">
 							Shop
-						</p>
+						</span>
 					</NavigationMenuTrigger>
 				</Link>
 				<ShopContent />
@@ -174,11 +142,12 @@ const Menu: FC = () => {
           after:absolute after:bottom-1 after:left-0 after:w-0 after:h-[2px] after:bg-primary after:transition-all
           hover:after:w-full
         `}
+					aria-label="Open software menu"
 				>
-					<Link href={"/software"}>
-						<p className="cursor-pointer text-xl font-semibold">
+					<Link href={"/software"} aria-label="Software and drivers">
+						<span className="cursor-pointer text-xl font-semibold">
 							Software
-						</p>
+						</span>
 					</Link>
 				</NavigationMenuTrigger>
 			</NavigationMenuItem>
@@ -188,7 +157,11 @@ const Menu: FC = () => {
 	return (
 		<>
 			{/* Десктопное меню */}
-			<NavigationMenu className="hidden md:flex">
+			<NavigationMenu
+				className="hidden md:flex"
+				role="navigation"
+				aria-label="Main navigation"
+			>
 				<NavigationMenuList className="items-center justify-between gap-16 w-[97vw] max-w-380">
 					<div className="flex items-center gap-9">
 						<Logo />
@@ -200,63 +173,42 @@ const Menu: FC = () => {
 			</NavigationMenu>
 
 			{/* Мобильное бургер-меню */}
-			<div className="md:hidden flex items-center justify-between md:p-4 p-0	">
+			<nav
+				className="md:hidden flex items-center justify-between md:p-4 p-0 relative"
+				role="navigation"
+				aria-label="Mobile navigation"
+			>
 				<Logo />
-				<div className="flex">
-					<div className="flex flex-row ">
+				<div className="flex items-center gap-3">
+					<div className="flex items-center">
 						<SearchDropdown />
-						<div className="hover:opacity-70 mr-3 ml-3 flex items-center">
-							<AuthBtn />
-						</div>
-						<div className="pt-0 md:pt-1	 mr-3">
-							<CartBtn />
-						</div>
 					</div>
-					<Sheet open={open} onOpenChange={setOpen}>
-						<SheetTrigger>
-							<button className="p-2 rounded hover:bg-gray-200 mt-1 transition">
-								<span
-									className={`${
-										atTop
-											? "block w-6 h-0.5 bg-black mb-1"
-											: "block w-6 h-0.5 bg-white mb-1"
-									}`}
-								></span>
-								<span
-									className={`${
-										atTop
-											? "block w-6 h-0.5 bg-black mb-1"
-											: "block w-6 h-0.5 bg-white mb-1"
-									}`}
-								></span>
-								<span
-									className={`${
-										atTop
-											? "block w-6 h-0.5 bg-black mb-1"
-											: "block w-6 h-0.5 bg-white mb-1"
-									}`}
-								></span>
-							</button>
-						</SheetTrigger>
-						<SheetContent side="right" className="w-64 p-6">
-							<SheetTitle>Menu</SheetTitle>
-
-							<div className="flex flex-col gap-6 mt-6">
-								<Link href="/shop">
-									<p className="cursor-pointer text-xl font-semibold">
-										Shop
-									</p>
-								</Link>
-								<Link href="/software">
-									<p className="cursor-pointer text-xl font-semibold">
-										Software
-									</p>
-								</Link>
-							</div>
-						</SheetContent>
-					</Sheet>
+					<div className="flex items-center hover:opacity-70">
+						<AuthBtn />
+					</div>
+					<div className="flex items-center">
+						<CartBtn />
+					</div>
+					<div
+						ref={burgerButtonRef}
+						className="flex items-center relative"
+						style={{ zIndex: 50000 }}
+					>
+						<BurgerButton
+							isOpen={isOpen}
+							onClick={toggleMenu}
+							isDark={atTop && !isOpen}
+						/>
+					</div>
 				</div>
-			</div>
+			</nav>
+
+			{/* Мобильное меню через портал */}
+			<MobileMenuPortal
+				isOpen={isOpen}
+				onClose={closeMenu}
+				ignoreRef={burgerButtonRef}
+			/>
 		</>
 	);
 };

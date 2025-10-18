@@ -15,11 +15,11 @@ import useFocus from "@/shared/lib/hooks/useFocus";
 export default function SearchDropdown() {
 	const [open, setOpen] = useState(false);
 	return (
-		<div>
+		<div role="search">
 			<Sheet open={open} onOpenChange={setOpen}>
 				<SheetTrigger asChild>
-					<button>
-						<SearchIcon></SearchIcon>
+					<button aria-label="Open search" aria-expanded={open}>
+						<SearchIcon aria-hidden="true" />
 					</button>
 				</SheetTrigger>
 
@@ -27,12 +27,17 @@ export default function SearchDropdown() {
 					className="fixed top-0 left-0 w-full py-3 px-5 text-black bg-secondary border-black items-center justify-center z-50
 	   								data-[state=open]:animate-[slide-in-top_0.3s_ease-out_forwards] data-[state=closed]:animate-[slide-out-top_0.3s_ease-in_forwards]"
 					side="top"
+					aria-label="Search panel"
 				>
 					<SheetHeader className="pb-50">
-						<SheetTitle>
-							<Search closeSheet={() => setOpen(false)} />
+						<SheetTitle className="sr-only">
+							Search Products
 						</SheetTitle>
-						<SheetDescription></SheetDescription>
+						<Search closeSheet={() => setOpen(false)} />
+						<SheetDescription className="sr-only">
+							Search for gaming products, keyboards, mice, and
+							more
+						</SheetDescription>
 					</SheetHeader>
 				</SheetContent>
 			</Sheet>

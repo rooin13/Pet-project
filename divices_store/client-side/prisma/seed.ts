@@ -37,11 +37,34 @@ async function main() {
     }
 }
 async function up() {
+    // Delete all dependent records first to satisfy FK constraints
     await prisma.cartItem.deleteMany();
     await prisma.cart.deleteMany();
-    // Delete dependent records first to satisfy FK constraints
     await prisma.variation.deleteMany();
+
+    // Disconnect all relations before deleting products
+    await prisma.$executeRaw`UPDATE "Product" SET "brandId" = NULL`;
+    await prisma.$executeRaw`DELETE FROM "_ProductColors"`;
+    await prisma.$executeRaw`DELETE FROM "_ProductMiceSeries"`;
+    await prisma.$executeRaw`DELETE FROM "_ProductKeyboardSeries"`;
+    await prisma.$executeRaw`DELETE FROM "_ProductWebCamSeries"`;
+    await prisma.$executeRaw`DELETE FROM "_ProductMiceFeatures"`;
+    await prisma.$executeRaw`DELETE FROM "_ProductWebCamFeatures"`;
+    await prisma.$executeRaw`DELETE FROM "_ProductCertified"`;
+    await prisma.$executeRaw`DELETE FROM "_ProductHandPref"`;
+    await prisma.$executeRaw`DELETE FROM "_ProductHandSizes"`;
+    await prisma.$executeRaw`DELETE FROM "_ProductScrollTypes"`;
+    await prisma.$executeRaw`DELETE FROM "_ProductConnectivity"`;
+    await prisma.$executeRaw`DELETE FROM "_ProductPlatform"`;
+    await prisma.$executeRaw`DELETE FROM "_ProductResolution"`;
+    await prisma.$executeRaw`DELETE FROM "_ProductWorksWith"`;
+    await prisma.$executeRaw`DELETE FROM "_ProductKeyboardLayouts"`;
+    await prisma.$executeRaw`DELETE FROM "_ProductKeyboardExtras"`;
+
+    // Now delete all products
     await prisma.product.deleteMany();
+
+    console.log('✓ Cleaned up all existing data');
 
 
     await prisma.category.createMany({
@@ -70,23 +93,77 @@ async function up() {
     await prisma.keyboardLayoutSize.createMany({ data: [...keyboardLayoutsConst] as Prisma.KeyboardLayoutSizeCreateManyInput[], skipDuplicates: true });
     await prisma.keyboardExtraFeature.createMany({ data: [...keyboardExtrasConst] as Prisma.KeyboardExtraFeatureCreateManyInput[], skipDuplicates: true });
 
-    await prisma.product.createMany({
-        data: products.map(p => ({
-            id: p.id,
-            slug: p.slug,
-            name: p.name,
-            description: p.description,
-            price: p.price,
-            imagesUrl: p.imagesUrl as Prisma.InputJsonValue,
-            categoryId: p.categoryId,
-            brandId: p.brandId ?? undefined,
-            createdAt: p.createdAt,
-            updatedAt: p.updatedAt,
-        })),
-        skipDuplicates: true,
-    });
+    // Check for duplicate slugs
+    const slugs = products.map(p => p.slug);
+    const uniqueSlugs = new Set(slugs);
+    if (slugs.length !== uniqueSlugs.size) {
+        console.error(`ERROR: Found duplicate slugs!`);
+        const slugCounts = new Map<string, number>();
+        slugs.forEach(slug => slugCounts.set(slug, (slugCounts.get(slug) || 0) + 1));
+        const duplicates = Array.from(slugCounts.entries()).filter(([_, count]) => count > 1);
+        duplicates.forEach(([slug, count]) => {
+            const productIds = products.filter(p => p.slug === slug).map(p => p.id);
+            console.error(`  - slug "${slug}" appears ${count} times in products with IDs: ${productIds.join(', ')}`);
+        });
+    }
+
+    // Create products one by one with upsert to ensure they exist with correct IDs
+    for (const p of products) {
+        await prisma.product.upsert({
+            where: { slug: p.slug },
+            create: {
+                id: p.id,
+                slug: p.slug,
+                name: p.name,
+                description: p.description,
+                price: p.price,
+                imagesUrl: p.imagesUrl as Prisma.InputJsonValue,
+                categoryId: p.categoryId,
+                brandId: p.brandId ?? undefined,
+                createdAt: p.createdAt,
+                updatedAt: p.updatedAt,
+            },
+            update: {
+                name: p.name,
+                description: p.description,
+                price: p.price,
+                imagesUrl: p.imagesUrl as Prisma.InputJsonValue,
+                categoryId: p.categoryId,
+                brandId: p.brandId ?? undefined,
+                updatedAt: p.updatedAt,
+            },
+        });
+    }
+    console.log(`✓ Created/updated ${products.length} products`);
+
+    console.log(`Total products: ${products.length}`);
+    console.log(`Total variations to create: ${variations.length}`);
+
+    // Check if all variation productIds exist in products
+    const productIds = new Set(products.map(p => p.id));
+    const invalidVariations = variations.filter(v => !productIds.has(v.productId));
+
+    if (invalidVariations.length > 0) {
+        console.error('Invalid variations found (productId not in products):');
+        invalidVariations.forEach(v => {
+            console.error(`  - Variation id ${v.id} references non-existent productId ${v.productId}`);
+        });
+        throw new Error(`Found ${invalidVariations.length} variations with invalid productIds`);
+    }
+
+    // Get actual product IDs from DB to compare
+    const dbProducts = await prisma.product.findMany({ select: { id: true, slug: true } });
+    const dbProductIds = new Set(dbProducts.map(p => p.id));
+
+    console.log(`Products in DB: ${dbProducts.length}, IDs: [${Array.from(dbProductIds).sort((a, b) => a - b).slice(0, 10).join(', ')}...]`);
 
     for (const v of variations) {
+        if (!dbProductIds.has(v.productId)) {
+            console.error(`ERROR: Variation ${v.id} references productId ${v.productId} which doesn't exist in DB!`);
+            console.error(`Available product IDs: ${Array.from(dbProductIds).sort((a, b) => a - b).join(', ')}`);
+            throw new Error(`Invalid productId ${v.productId} in variation ${v.id}`);
+        }
+
         await prisma.variation.create({
             data: {
                 productId: v.productId,
