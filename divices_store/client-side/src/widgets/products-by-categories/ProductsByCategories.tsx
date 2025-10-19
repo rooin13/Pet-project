@@ -38,28 +38,30 @@ export const ProductsByCategories = ({
 			<div className="page-wrapper md:p-8 pt-4 mr-3 relative min-h-300">
 				<div className="mb-4 flex justify-between items-center">
 					<Breadcrumbs items={breadcrumbs} />
-					<SortSelect sortBy={sortBy} setSortBy={setSortBy} />
-				</div>
-				<div className="mb-8 flex justify-between items-center">
-					<div className="md:hidden">
-						<Sheet>
-							<SheetTrigger asChild>
-								<Button classname="text-black mr-4">
-									All filters
-								</Button>
-							</SheetTrigger>
-							<SheetContent
-								className="scroll-aut w-80! sm:px-6 overflow-y-auto data-[state=open]:animate-slide-in-left data-[state=closed]:animate-slide-out-left py-6 px-8 text-black bg-white border-black"
-								side="left"
-							>
-								<Filtration
-									filterGroups={initialFilters}
-									isLoading={false}
-								/>
-								<SheetDescription></SheetDescription>
-							</SheetContent>
-						</Sheet>
+					<div className="hidden md:block">
+						<SortSelect sortBy={sortBy} setSortBy={setSortBy} />
 					</div>
+				</div>
+
+				<div className="mb-8 flex justify-between items-center md:hidden">
+					<Sheet>
+						<SheetTrigger asChild>
+							<Button classname="text-black mr-4 whitespace-nowrap font-semibold text-sm w-[200px] h-[48px]">
+								All filters
+							</Button>
+						</SheetTrigger>
+						<SheetContent
+							className="scroll-aut w-80! sm:px-6 overflow-y-auto data-[state=open]:animate-slide-in-left data-[state=closed]:animate-slide-out-left py-6 px-8 text-black bg-white border-black"
+							side="left"
+						>
+							<Filtration
+								filterGroups={initialFilters}
+								isLoading={false}
+							/>
+							<SheetDescription></SheetDescription>
+						</SheetContent>
+					</Sheet>
+					<SortSelect sortBy={sortBy} setSortBy={setSortBy} />
 				</div>
 
 				<div className="flex gap-2">

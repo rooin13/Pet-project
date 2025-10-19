@@ -20,7 +20,7 @@ export const useCheckout = () => {
     });
 
     const onSubmit = async (data: CheckoutForm, cartItems: any[], total: number) => {
-        // Проверка авторизации
+        // check authentication
         if (!user) {
             alert("Please sign in to place an order");
             dispatch(openModal("login"));

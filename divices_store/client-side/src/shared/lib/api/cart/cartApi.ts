@@ -26,7 +26,15 @@ export const cartApi = createApi({
             query: () => "/api/cart",
             providesTags: ["Cart"],
         }),
-        addItem: builder.mutation<CartResponse, { variationId: number; quantity: number }>({
+        addItem: builder.mutation<CartResponse, {
+            variationId: number;
+            quantity: number;
+            // Для оптимистичного UI - опциональные данные
+            optimisticData?: {
+                variation: any;
+                product: any;
+            };
+        }>({
             query: ({ variationId, quantity }) => {
                 const csrf = getCsrfToken();
                 return {
@@ -35,6 +43,48 @@ export const cartApi = createApi({
                     body: { variationId, quantity },
                     headers: csrf ? { 'X-CSRF-Token': csrf } : undefined,
                 };
+            },
+            // Оптимистичное обновление кэша
+            async onQueryStarted({ variationId, quantity, optimisticData }, { dispatch, queryFulfilled }) {
+                if (!optimisticData) {
+                    // Если нет данных для оптимистичного UI - просто ждем ответа
+                    return;
+                }
+
+                // Оптимистично обновляем кэш корзины
+                const patchResult = dispatch(
+                    cartApi.util.updateQueryData('getCart', undefined, (draft) => {
+                        // Ищем, есть ли уже такой item в корзине
+                        const existingItem = draft.items.find(
+                            item => item.variation.id === variationId
+                        );
+
+                        if (existingItem) {
+                            // Увеличиваем quantity
+                            existingItem.quantity += quantity;
+                        } else {
+                            // Добавляем новый item
+                            const newItem = {
+                                id: Date.now(), // временный ID
+                                quantity,
+                                variation: {
+                                    ...optimisticData.variation,
+                                    product: optimisticData.product,
+                                },
+                            };
+                            draft.items.push(newItem);
+                        }
+                    })
+                );
+
+                try {
+                    // Ждем ответа от сервера
+                    await queryFulfilled;
+                    // Если успешно - кэш уже обновлен оптимистично, сервер подтвердит
+                } catch {
+                    // Если ошибка - откатываем изменения
+                    patchResult.undo();
+                }
             },
             invalidatesTags: ["Cart"],
         }),

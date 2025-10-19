@@ -1,6 +1,6 @@
 import { prisma } from "@/shared/lib/prisma/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken"; // для декодирования JWT
+import jwt from "jsonwebtoken"; // for JWT decoding
 import { getToken } from "next-auth/jwt";
 
 const ALLOWED_ORIGINS = new Set([
@@ -23,7 +23,7 @@ export function createCorsHeaders(req: NextRequest) {
 
 
 
-const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET; // может быть undefined для гостя
+const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET; // might be undefined for guests
 
 export async function GET(req: NextRequest) {
     try {
@@ -35,11 +35,11 @@ export async function GET(req: NextRequest) {
                     null;
         console.log('[cart.GET] tokenPayload present:', Boolean(tokenPayload), 'userId:', userId);
 
-        // Для гостя — читаем cartToken
+        // for guests - read cartToken
         const cartToken = userId ? null : req.cookies.get("cartToken")?.value;
         console.log('[cart.GET] cartToken from cookie:', cartToken);
 
-        // Ищем корзину (приоритет userId)
+        // find cart (userId has priority)
         console.log('[cart.GET] findFirst cart by OR', { userId, hasCartToken: Boolean(cartToken) });
         let cart = await prisma.cart.findFirst({
             where: {
@@ -68,7 +68,7 @@ export async function GET(req: NextRequest) {
         });
         console.log('[cart.GET] found cart?', Boolean(cart), cart ? { id: cart.id, hasToken: Boolean(cart.token) } : null);
 
-        // если корзины нет — создаём (и для гостя пометим, что нужно поставить cookie)
+        // if no cart - create one (and set cookie for guests)
         let setCartCookieValue: string | null = null;
         if (!cart) {
             const newToken = userId ? undefined : crypto.randomUUID();
@@ -101,7 +101,7 @@ export async function GET(req: NextRequest) {
             if (!userId && cart.token) setCartCookieValue = cart.token;
         }
 
-        // Подготовим items и totalAmount
+        // prepare items and totalAmount
         const items = (cart?.items ?? []).map((item) => ({
             id: item.id,
             quantity: item.quantity,
@@ -113,9 +113,9 @@ export async function GET(req: NextRequest) {
             0
         );
 
-        // Формируем ответ и при необходимости ставим cookie
+        // build response and set cookie if needed
         const res = NextResponse.json({ items, totalAmount }, { headers: createCorsHeaders(req) });
-        // Выдаём гостевой CSRF-токен, если его нет (для X-CSRF-Token)
+        // issue guest CSRF token if missing (for X-CSRF-Token)
         if (!req.cookies.get('csrf-token')) {
             res.cookies.set('csrf-token', crypto.randomUUID(), {
                 httpOnly: true,
@@ -132,7 +132,7 @@ export async function GET(req: NextRequest) {
                 httpOnly: true,
                 sameSite: "lax",
                 secure: process.env.NODE_ENV === "production",
-                maxAge: 60 * 60 * 24 * 30, // 30 дней
+                maxAge: 60 * 60 * 24 * 30, // 30 days
             });
         }
 

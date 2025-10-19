@@ -25,6 +25,11 @@ export const ProductDetails = (product: ProductWithVariations) => {
 			const result = await addItem({
 				variationId: selectedVariation.id,
 				quantity: 1,
+				// Передаем данные для оптимистичного UI
+				optimisticData: {
+					variation: selectedVariation,
+					product: product,
+				},
 			}).unwrap();
 
 			console.log("✅ Added to cart:", result);
@@ -69,12 +74,7 @@ export const ProductDetails = (product: ProductWithVariations) => {
 				<h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-black">
 					{product.name}
 				</h1>
-				{/* Встроенное описание из БД сразу под заголовком */}
-				{product.description && (
-					<p className="text-black/70 font-light text-sm sm:text-base max-w-3xl">
-						{product.description}
-					</p>
-				)}
+
 				<div className="grid grid-cols-2 gap-5">
 					{/* Верхний левый квадрат с изображением */}
 					<div className="bg-white rounded-2xl p-2 shadow-md relative">
@@ -109,6 +109,18 @@ export const ProductDetails = (product: ProductWithVariations) => {
 						<div className="rounded-xl w-full h-full aspect-square bg-secondary/20" />
 					</div>
 				</div>
+
+				{/* Описание товара под картинками */}
+				{product.description && (
+					<div className="bg-white rounded-2xl p-6 shadow-md">
+						<h2 className="text-xl font-semibold text-black mb-4">
+							Description
+						</h2>
+						<p className="text-black/70 font-light text-sm sm:text-base leading-relaxed">
+							{product.description}
+						</p>
+					</div>
+				)}
 			</div>
 
 			{/* RIGHT SIDE */}

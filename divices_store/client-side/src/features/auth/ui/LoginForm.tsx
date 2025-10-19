@@ -37,7 +37,7 @@ export const LoginForm = () => {
 				</Link>
 
 				<div className="w-full space-y-7">
-					{/* Email Field */}
+					// поле email
 					<div className="w-full relative min-h-[52px]">
 						<label htmlFor="login-email" className="sr-only">
 							Email
@@ -76,8 +76,7 @@ export const LoginForm = () => {
 							</p>
 						)}
 					</div>
-
-					{/* Password Field */}
+					// поле пароля
 					<div className="w-full relative min-h-[52px]">
 						<label htmlFor="login-password" className="sr-only">
 							Password

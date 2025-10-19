@@ -25,8 +25,7 @@ const BillingForm: FC<BillingFormProps> = ({ register, errors, setValue }) => {
 			<h3 className="text-2xl rounded-md mb-5 pl-4 text-white bg-black">
 				Billing Details
 			</h3>
-
-			{/* First Name & Last Name */}
+			// поля имени и фамилии
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 				<div>
 					<input
@@ -67,8 +66,7 @@ const BillingForm: FC<BillingFormProps> = ({ register, errors, setValue }) => {
 					)}
 				</div>
 			</div>
-
-			{/* Email & Phone */}
+			// поля email и телефона
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 				<div>
 					<input
@@ -104,8 +102,7 @@ const BillingForm: FC<BillingFormProps> = ({ register, errors, setValue }) => {
 					)}
 				</div>
 			</div>
-
-			{/* Address Autocomplete (бесплатный Nominatim) */}
+			// автодополнение адреса
 			<div className="relative" ref={suggestionsRef}>
 				<label className="text-black text-sm mb-1 block">
 					Street Address *
@@ -128,8 +125,7 @@ const BillingForm: FC<BillingFormProps> = ({ register, errors, setValue }) => {
 					aria-required="true"
 					autoComplete="off"
 				/>
-
-				{/* Dropdown с suggestions */}
+				// выпадающий список с подсказками
 				{showSuggestions && suggestions.length > 0 && (
 					<div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
 						{suggestions.map((suggestion, index) => (
@@ -146,15 +142,13 @@ const BillingForm: FC<BillingFormProps> = ({ register, errors, setValue }) => {
 						))}
 					</div>
 				)}
-
 				{errors.address && (
 					<p className="text-red-500 text-sm mt-1">
 						{errors.address.message}
 					</p>
 				)}
 			</div>
-
-			{/* City & State */}
+			// поля города и штата
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 				<div>
 					<input
@@ -190,8 +184,6 @@ const BillingForm: FC<BillingFormProps> = ({ register, errors, setValue }) => {
 					)}
 				</div>
 			</div>
-
-			{/* ZIP Code & Country */}
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 				<div>
 					<input
@@ -233,7 +225,6 @@ const BillingForm: FC<BillingFormProps> = ({ register, errors, setValue }) => {
 					)}
 				</div>
 			</div>
-
 			<p className="text-gray-600 text-sm mt-4">* Required fields</p>
 		</div>
 	);

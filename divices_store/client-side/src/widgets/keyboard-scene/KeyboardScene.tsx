@@ -61,7 +61,7 @@ export default function KeyboardScene() {
 			const scrollTop = window.scrollY;
 			const sectionTop = section.offsetTop;
 			const sectionHeight = section.offsetHeight;
-			const offsetStart = sectionHeight * 0.1;
+			const offsetStart = sectionHeight * 0.09;
 			const rawProgress =
 				(scrollTop - sectionTop - offsetStart) / sectionHeight;
 			const clampedProgress = Math.min(Math.max(rawProgress, 0), 1);
@@ -103,6 +103,7 @@ export default function KeyboardScene() {
 					useFrame={libs.fiber.useFrame}
 					useGLTF={useGLTF}
 					THREE={libs.three}
+					isMobile={isMobile}
 				/>
 			</Suspense>
 		</Canvas>
@@ -114,11 +115,13 @@ function RotatingKeyboard({
 	useFrame,
 	useGLTF,
 	THREE,
+	isMobile,
 }: {
 	progress: number;
 	useFrame: any;
 	useGLTF: any;
 	THREE: any;
+	isMobile: boolean;
 }) {
 	const groupRef = useRef<any>(null);
 	const gltf = useGLTF("/models/keyboard.glb");
@@ -139,7 +142,7 @@ function RotatingKeyboard({
 			ref={groupRef}
 			object={gltf.scene}
 			position={[0, 1, 0]}
-			scale={0.54}
+			scale={isMobile ? 0.64 : 0.7}
 		/>
 	);
 }

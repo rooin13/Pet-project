@@ -19,7 +19,6 @@ const Cart: FC = () => {
 
 	return (
 		<main className="pt-8 pb-12 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-			{/* Список товаров */}
 			<section
 				className="order-2 lg:order-1 lg:col-span-7"
 				aria-label="Shopping cart items"
@@ -55,7 +54,6 @@ const Cart: FC = () => {
 				)}
 			</section>
 
-			{/* Блок Summary (на мобилках сверху) */}
 			<aside
 				className="order-1 lg:order-2 lg:col-span-5 lg:sticky lg:top-24 flex flex-col gap-6"
 				role="complementary"

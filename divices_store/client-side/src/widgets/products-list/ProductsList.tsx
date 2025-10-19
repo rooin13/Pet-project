@@ -69,11 +69,31 @@ export default function ProductsList({ slug, sortBy }: Props) {
 			{isLoading && (
 				<div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-10">
 					{Array.from({ length: 8 }).map((_, i) => (
-						<div key={i} className="space-y-3">
-							<Skeleton className="h-[200px] w-full rounded-xl" />
-							<Skeleton className="h-4 w-3/4" />
-							<Skeleton className="h-4 w-1/2" />
-						</div>
+						<article
+							key={i}
+							className="bg-secondary rounded-2xl w-full h-90 overflow-hidden flex flex-col"
+						>
+							{/* Скелетон изображения */}
+							<div className="relative overflow-hidden items-center mb-1 flex-1">
+								<Skeleton className="h-full w-full rounded-xl" />
+							</div>
+							{/* Скелетон контента */}
+							<div className="pb-4 px-4 flex flex-col items-start space-y-3">
+								{/* Название товара */}
+								<Skeleton className="h-6 w-4/5 rounded" />
+								{/* Описание товара */}
+								<div className="space-y-2 w-full">
+									<Skeleton className="h-3 w-full rounded" />
+									<Skeleton className="h-3 w-3/4 rounded" />
+									<Skeleton className="h-3 w-1/2 rounded" />
+								</div>
+								{/* Цена */}
+								<div className="flex items-center justify-between w-full mt-2">
+									<Skeleton className="h-5 w-20 rounded" />
+									<Skeleton className="h-4 w-16 rounded" />
+								</div>
+							</div>
+						</article>
 					))}
 				</div>
 			)}

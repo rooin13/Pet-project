@@ -81,9 +81,15 @@ export default function Page() {
 				</div>
 			</section>
 
+			{/* Черная буферная зона перед 3D секцией - чтобы моргание хедера было на черном фоне */}
+			<div
+				className="w-screen bg-black h-[8vh] md:h-[15vh]"
+				style={marginStyle2}
+			/>
+
 			<section
 				id="keyboard-section"
-				className="relative h-[100vh] md:h-[190vh] pb-0 md:pb-50 pt-25  md:pt-50 bg-black w-screen overflow-hidden"
+				className="relative h-[60vh] md:h-[190vh] pb-0 bg-black w-screen overflow-hidden"
 				style={marginStyle2}
 			>
 				<Scroll3DSection />

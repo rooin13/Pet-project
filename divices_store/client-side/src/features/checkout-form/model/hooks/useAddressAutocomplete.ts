@@ -23,7 +23,7 @@ export const useAddressAutocomplete = (setValue: UseFormSetValue<CheckoutForm>) 
     const [addressInput, setAddressInput] = useState("");
     const suggestionsRef = useRef<HTMLDivElement>(null);
 
-    // Debounced search
+    // debounced search
     useEffect(() => {
         if (addressInput.length < 3) {
             setSuggestions([]);
@@ -52,7 +52,7 @@ export const useAddressAutocomplete = (setValue: UseFormSetValue<CheckoutForm>) 
         return () => clearTimeout(timer);
     }, [addressInput]);
 
-    // Закрытие при клике вне
+    // close on outside click
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (suggestionsRef.current && !suggestionsRef.current.contains(event.target as Node)) {
@@ -66,7 +66,7 @@ export const useAddressAutocomplete = (setValue: UseFormSetValue<CheckoutForm>) 
     const handleSelectAddress = (suggestion: AddressSuggestion) => {
         const addr = suggestion.address;
 
-        // Формируем полный адрес
+        // build full address
         const street = [addr.house_number, addr.road, addr.building].filter(Boolean).join(" ");
         const city = addr.city || addr.town || addr.village || "";
 

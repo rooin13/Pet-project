@@ -36,9 +36,8 @@ export const RegisterForm = () => {
 				>
 					<h2 className="font-semibold text-black text-4xl">Hex</h2>
 				</Link>
-
 				<div className="w-full space-y-6">
-					{/* Name & Surname */}
+					// поля имени и фамилии
 					<div className="grid grid-cols-2 gap-3 min-h-[52px]">
 						<div className="relative">
 							<label htmlFor="register-name" className="sr-only">
@@ -117,8 +116,7 @@ export const RegisterForm = () => {
 							)}
 						</div>
 					</div>
-
-					{/* Email Field */}
+					// поле email
 					<div className="w-full relative min-h-[52px]">
 						<label htmlFor="register-email" className="sr-only">
 							Email
@@ -153,8 +151,7 @@ export const RegisterForm = () => {
 							</p>
 						)}
 					</div>
-
-					{/* Password Field */}
+					// поле пароля
 					<div className="w-full relative min-h-[52px]">
 						<label htmlFor="register-password" className="sr-only">
 							Password
@@ -189,8 +186,7 @@ export const RegisterForm = () => {
 							</p>
 						)}
 					</div>
-
-					{/* Repeat Password Field */}
+					// подтверждение пароля
 					<div className="w-full relative min-h-[52px]">
 						<label
 							htmlFor="register-repeat-password"
@@ -229,8 +225,7 @@ export const RegisterForm = () => {
 						)}
 					</div>
 				</div>
-
-				{/* Submit Button */}
+				// кнопка отправки
 				<button
 					type="submit"
 					disabled={!isDirty}
@@ -244,7 +239,6 @@ export const RegisterForm = () => {
 				>
 					Register
 				</button>
-
 				<div className="text-center mt-4">
 					<p className="text-gray-600 text-sm">
 						Already have an account?{" "}

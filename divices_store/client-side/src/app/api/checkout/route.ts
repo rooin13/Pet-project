@@ -9,15 +9,15 @@ if (!process.env.STRIPE_SECRET_KEY) {
     throw new Error('STRIPE_SECRET_KEY is required');
 }
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-    // используем версию по умолчанию аккаунта или укажем стабильную из dashboard при необходимости
+    // версия API по умолчанию
 });
 
 export async function POST(req: NextRequest) {
     try {
-        // 1) Если пользователь аутентифицирован — не требуем CSRF (session защищает)
+        // проверяем авторизацию пользователя
         const session = await getServerSession(authOptions);
         if (!session?.user?.email) {
-            // 2) Для гостя требуется корректный CSRF токен (Double Submit Cookie)
+            // для неавторизованных пользователей проверяем CSRF токен
             if (!validateCsrf(req)) {
                 return NextResponse.json({ success: false, error: 'Invalid CSRF token' }, { status: 403 });
             }
@@ -48,8 +48,8 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ success: false, error: "User not found" }, { status: 404 });
         }
 
-        // 1️⃣ Пересчитываем цены на сервере по данным из БД
-        // Нормализуем форму данных из клиента: поддерживаем как ID-поля, так и вложенные объекты
+        // пересчитываем цены на основе данных из базы
+        // обрабатываем данные от клиента
         const items = (cartItems as any[]).map((i) => ({
             variationId: i.variationId ?? i.variation?.id ?? null,
             productId: i.productId ?? i.product?.id ?? i.variation?.product?.id ?? null,
@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
                 unit = p?.price ?? 0;
                 name = p?.name ?? name;
             }
-            // Доп. защита: если по каким-то причинам не нашли по БД — пробуем взять из клиентских полей (название/цена)
+            // если не нашли в базе, берем данные от клиента
             if (!unit) {
                 const fallbackVar = (cartItems as any[]).find(ci => (ci.variationId ?? ci.variation?.id ?? null) === item.variationId);
                 const fallbackProd = (cartItems as any[]).find(ci => (ci.productId ?? ci.product?.id ?? ci.variation?.product?.id ?? null) === item.productId);
@@ -127,7 +127,6 @@ export async function POST(req: NextRequest) {
                 totalAmount,
                 items: items as any,
                 status: "PENDING",
-                // Billing Details
                 firstName: firstName.trim(),
                 lastName: lastName.trim(),
                 email: email.trim(),
@@ -140,7 +139,7 @@ export async function POST(req: NextRequest) {
             },
         });
 
-        // 2️⃣ Создаём Stripe Checkout Session (по доверенным данным)
+        // создаем сессию Stripe для оплаты
         const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
         const stripeSession = await stripe.checkout.sessions.create({
@@ -163,7 +162,7 @@ export async function POST(req: NextRequest) {
         console.error("Error message:", err.message);
         console.error("Error stack:", err.stack);
 
-        // Более информативная ошибка для разработки
+        // детальная ошибка для отладки
         const errorMessage = process.env.NODE_ENV === 'development'
             ? err.message
             : "Server error";

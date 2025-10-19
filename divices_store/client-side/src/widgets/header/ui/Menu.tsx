@@ -50,7 +50,6 @@ const ShopContent = memo(() => (
 							className="block w-32 sm:w-36 md:w-40 text-center hover:text-blue-500"
 							aria-label={`Shop ${label}`}
 						>
-							{/* Контейнер картинки */}
 							<div className="relative w-full h-28 sm:h-32 md:h-36  rounded-lg overflow-hidden">
 								<Image
 									src={src}
@@ -156,7 +155,6 @@ const Menu: FC = () => {
 
 	return (
 		<>
-			{/* Десктопное меню */}
 			<NavigationMenu
 				className="hidden md:flex"
 				role="navigation"
@@ -172,7 +170,6 @@ const Menu: FC = () => {
 				</NavigationMenuList>
 			</NavigationMenu>
 
-			{/* Мобильное бургер-меню */}
 			<nav
 				className="md:hidden flex items-center justify-between md:p-4 p-0 relative"
 				role="navigation"
@@ -203,7 +200,6 @@ const Menu: FC = () => {
 				</div>
 			</nav>
 
-			{/* Мобильное меню через портал */}
 			<MobileMenuPortal
 				isOpen={isOpen}
 				onClose={closeMenu}

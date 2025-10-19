@@ -18,7 +18,11 @@ export default function SearchDropdown() {
 		<div role="search">
 			<Sheet open={open} onOpenChange={setOpen}>
 				<SheetTrigger asChild>
-					<button aria-label="Open search" aria-expanded={open}>
+					<button
+						aria-label="Open search"
+						aria-expanded={open}
+						className="flex items-center justify-center"
+					>
 						<SearchIcon aria-hidden="true" />
 					</button>
 				</SheetTrigger>

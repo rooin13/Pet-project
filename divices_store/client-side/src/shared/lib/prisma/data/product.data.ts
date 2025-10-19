@@ -56,7 +56,7 @@ function getCategoryByName(name: ProductCategorys) {
 }
 
 
-// colors.ts
+// colors data
 export const colors = [
     { id: 1, name: "Black" },
     { id: 2, name: "White" },
@@ -76,7 +76,7 @@ export function getBrandByName(name: typeof brands[number]["name"]) {
     return brands.find(b => b.name === name)!;
 }
 
-// miceSeries.ts
+// mice series data
 export const miceSeries = [
     { id: 1, name: "Viper" },
     { id: 2, name: "DeathAdder" },

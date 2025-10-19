@@ -26,7 +26,7 @@ const Button = ({
 		<button
 			disabled={disabled}
 			onClick={onClick}
-			className={`rounded-md z-20 main-btn md:px-9 px-3  py-3 text-xs text-center font-bold ${classNames[type]} ${classname}`}
+			className={`rounded-md z-20 main-btn md:px-9 px-4 py-3 text-sm md:text-xs text-center font-bold ${classNames[type]} ${classname}`}
 		>
 			{children}
 		</button>

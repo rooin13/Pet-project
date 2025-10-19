@@ -16,22 +16,25 @@ export const Breadcrumbs = ({ items, className = "" }: BreadcrumbsProps) => {
 	return (
 		<nav
 			aria-label="Breadcrumb"
-			className={`text-sm text-black/60 ${className}`}
+			className={`text-base md:text-sm text-black/60 ${className}`}
 		>
-			<ol className="flex items-center gap-1 flex-wrap">
+			<ol className="flex items-center gap-2 md:gap-1 flex-wrap">
 				{items.map((item, idx) => {
 					const isLast = idx === items.length - 1;
 					return (
-						<li key={idx} className="flex items-center gap-1">
+						<li
+							key={idx}
+							className="flex items-center gap-2 md:gap-1"
+						>
 							{item.href && !isLast ? (
 								<Link
 									href={item.href}
-									className="hover:underline hover:text-black"
+									className="hover:underline hover:text-black py-2 md:py-0"
 								>
 									{item.label}
 								</Link>
 							) : (
-								<span className="text-black/80">
+								<span className="text-black/80 py-2 md:py-0">
 									{item.label}
 								</span>
 							)}

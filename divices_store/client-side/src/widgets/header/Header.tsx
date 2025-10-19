@@ -9,7 +9,7 @@ import Menu from "./ui/Menu";
 import Us from "./ui/Us";
 
 const HEADER_US_HEIGHT = 35;
-const HEADER_MENU_HEIGHT = 60;
+const HEADER_MENU_HEIGHT = 65;
 
 const Header: FC = () => {
 	const pathname = usePathname();

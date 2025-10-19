@@ -2,14 +2,14 @@ import React, { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { Product } from "@prisma/client";
+import { Product, Variation } from "@prisma/client";
 import { getProductImages } from "@/shared/lib/utils/productUtils";
 import { PAGES } from "@/shared/lib/config/pages.config";
 import { useProductHover } from "../model/hooks/useProductHover";
 import { formatPriceSimple } from "@/shared/lib/utils/formatters";
 
 type ProductWithVariations = Product & {
-	variations: { color: string; size?: string }[];
+	variations: Variation[];
 };
 
 const ProductItem: React.FC<ProductWithVariations> = (product) => {
@@ -44,6 +44,13 @@ const ProductItem: React.FC<ProductWithVariations> = (product) => {
 					</div>
 				</Link>
 			</div>
+			{/* Описание товара под картинками */}
+			<div className="px-4 py-2">
+				<p className="text-gray-600 text-xs line-clamp-2 leading-relaxed">
+					{product.description}
+				</p>
+			</div>
+
 			<div className="pb-4 px-4 flex flex-col items-start">
 				<h3 className="font-base text-1xl text-black mb-2">
 					{product.name}
