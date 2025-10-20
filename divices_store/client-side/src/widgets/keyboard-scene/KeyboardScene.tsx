@@ -129,7 +129,9 @@ function RotatingKeyboard({
 	useFrame(() => {
 		if (groupRef.current && gltf?.scene) {
 			const targetRotation = progress * Math.PI;
-			groupRef.current.rotation.y = targetRotation;
+			// Плавная интерполяция вращения
+			groupRef.current.rotation.y +=
+				(targetRotation - groupRef.current.rotation.y) * 0.1;
 		}
 	});
 
