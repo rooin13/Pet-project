@@ -1,22 +1,34 @@
 "use client";
 import { IMovie } from "@/entities/movie/model/types";
-import { getUserProfileThunk, selectUser } from "@/entities/user/model/slice";
-import { getUserThunk } from "@/features/auth/model/slice";
 import { LoginForm } from "@/features/auth/ui/LoginForm";
-import {
-	deleteFavorites,
-	postFavorites,
-} from "@/shared/lib/api/favoritesApi/api";
 import { useFavorites } from "@/shared/lib/hooks/useFavorites";
 import { convertMinutes } from "@/shared/lib/utils/convertMinutes";
 import { getRatingBgColor } from "@/shared/lib/utils/getRatingBgColor";
-import { Btn } from "@/shared/ui/Button/Btn";
-import { useAppDispatch, useAppSelector } from "@/store";
+import { Button } from "@/shared/ui/Button/Button";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { useSearchParams, useRouter } from "next/navigation";
+import {
+	bounceButton,
+	listVariants,
+	infoItemVariants,
+	imageVariants,
+} from "@/shared/lib/animations/animation";
+import {
+	useUser,
+	useAuthModal,
+} from "@/features/auth-button/model/supabase-hooks";
+import {
+	useMovieFavorite,
+	useMovieMedia,
+	getYouTubeId,
+} from "@/widgets/randomMovie/model/hooks";
 
 export const MovieDetails = (movie: IMovie) => {
+	const searchParams = useSearchParams();
+	const fromGenre = searchParams.get("from");
+	const router = useRouter();
 	const {
 		tmdbRating,
 		genres,
@@ -35,12 +47,14 @@ export const MovieDetails = (movie: IMovie) => {
 		awardsSummary,
 		id,
 	} = movie;
-	const languageNames = new Intl.DisplayNames(["en"], { type: "language" });
 
+	const languageNames = new Intl.DisplayNames(["en"], { type: "language" });
 	const ratingBgColor = getRatingBgColor(tmdbRating);
-	const user = useAppSelector(selectUser);
-	const dispatch = useAppDispatch();
-	const [isFav, setIsFav] = useState(false);
+
+	const { data: userData } = useUser();
+	const { openLoginForm } = useAuthModal();
+	const user = userData?.user;
+	const profile = userData?.profile;
 
 	const {
 		isOpen,
@@ -51,13 +65,18 @@ export const MovieDetails = (movie: IMovie) => {
 		isFavorite,
 	} = useFavorites();
 
-	useEffect(() => {
-		const checkFavorite = async () => {
-			const fav = await isFavorite(id);
-			setIsFav(fav);
-		};
-		checkFavorite();
-	}, [id, isFavorite]);
+	const { isFav, updateFavoriteStatus } = useMovieFavorite(id, isFavorite);
+	const { imageLoading, setImageLoading, showTrailer, setShowTrailer } =
+		useMovieMedia(id);
+
+	const youtubeId = getYouTubeId(trailerUrl);
+
+	const onToggleFavorite = async () => {
+		const newStatus = await handleFavoriteToggle(id, title);
+		if (newStatus !== undefined) {
+			updateFavoriteStatus(newStatus);
+		}
+	};
 
 	const InfoRow = (label: string, value: string | number) => (
 		<div className=" lg:flex-row flex flex-col items-start   text-lg  py-2">
@@ -72,86 +91,311 @@ export const MovieDetails = (movie: IMovie) => {
 	return (
 		<div>
 			{isOpen && <LoginForm onSwitch={toggleForm} onClose={closeForm} />}
-			<div className=" flex-col-reverse lg:flex-row flex items-center justify-center pt-10 pb-20  min-h-100">
-				<div className="flex-col space-y-4 flex-1/2  pr-10  ">
-					<div>
-						<ul className="flex items-center space-x-4 lg:space-x-10 flex-row ">
+
+			{/* Back to Genre Button */}
+			{fromGenre && (
+				<Link
+					className="group inline-flex mb-6 items-center"
+					href={`/genres/${fromGenre.toLowerCase()}`}
+				>
+					<svg
+						width={44}
+						height={44}
+						className="transition-transform duration-300 group-hover:-translate-x-2"
+					>
+						<use xlinkHref={`/images/icons/icons.xml#backarrow`} />
+					</svg>
+					<span className="pl-1 text-white text-lg font-semibold capitalize">
+						Back to {fromGenre}
+					</span>
+				</Link>
+			)}
+
+			{/* Hero Section - same as RandomMovie */}
+			<div className="flex flex-col lg:flex-row gap-4 lg:gap-8 mb-8 lg:mb-16 min-h-[350px] lg:h-[280px]">
+				<div className="flex-1 flex flex-col justify-between overflow-hidden order-2 lg:order-1">
+					<div className="space-y-2 lg:space-y-4">
+						<motion.ul
+							className="flex items-center flex-wrap gap-2 lg:gap-4"
+							variants={listVariants}
+							initial="hidden"
+							animate="visible"
+						>
 							<li
-								className="text-white font-bold text-lg pl-3 pr-3 rounded-2xl flex items-center justify-center gap-2"
+								className="text-white font-bold text-sm md:text-base px-2 md:px-3 py-1 rounded-2xl flex items-center gap-1 md:gap-2"
 								style={{ backgroundColor: ratingBgColor }}
 							>
-								<svg width={18} height={18}>
+								<svg
+									width={14}
+									height={14}
+									className="md:w-4 md:h-4"
+								>
 									<use
 										xlinkHref={`/images/icons/icons.xml#star`}
 									/>
 								</svg>
-								<p className="pt-0.3">
-									{tmdbRating.toFixed(1)}
-								</p>
+								<span>{tmdbRating.toFixed(1)}</span>
 							</li>
-							<li>{releaseYear}</li>
+							<motion.li
+								variants={infoItemVariants}
+								className="text-white"
+							>
+								{releaseYear}
+							</motion.li>
+							{genres.map((genre) => (
+								<motion.li
+									key={genre}
+									variants={infoItemVariants}
+								>
+									<Link
+										href={`/genres/${genre.toLowerCase()}`}
+										className="text-white hover:text-purple-400 transition-colors duration-200 hover:underline"
+									>
+										{genre}
+									</Link>
+								</motion.li>
+							))}
+							<motion.li
+								variants={infoItemVariants}
+								className="text-white"
+							>
+								{convertMinutes(runtime)}
+							</motion.li>
+						</motion.ul>
 
-							<li>{genres.join(", ")}</li>
-
-							<li>{convertMinutes(runtime)}</li>
-						</ul>
-					</div>
-					<div className="mt-4 flex-wrap mb-15">
-						<h2 className="w-full max-w-xl text-2xl sm:text-3xl md:text-5xl font-bold text-left text-white mb-5">
+						<motion.h2
+							className="w-full max-w-xl text-2xl sm:text-3xl lg:text-5xl font-bold text-left text-white mb-2 sm:mb-4"
+							initial={{ opacity: 0, y: 20 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{
+								duration: 0.8,
+								delay: 0.4,
+								ease: "easeOut",
+							}}
+							style={{
+								display: "-webkit-box",
+								WebkitLineClamp: 2,
+								WebkitBoxOrient: "vertical",
+								overflow: "hidden",
+								textOverflow: "ellipsis",
+								lineHeight: "1.3",
+								paddingBottom: "0.2rem",
+							}}
+						>
 							{title}
-						</h2>
-
-						<p className="w-full max-w-xl text-base sm:text-lg md:text-xl text-left text-white/70">
-							{plot}
-						</p>
+						</motion.h2>
 					</div>
-					<div className="flex-col lg:flex-row flex mb-3 space-x-4">
-						<div className="mb-4 lg:mb-0 flex">
+
+					{/* Buttons on desktop only */}
+					<motion.div
+						className="hidden lg:flex flex-wrap gap-2 sm:flex-nowrap sm:space-x-4"
+						variants={bounceButton}
+						initial="hidden"
+						animate="visible"
+					>
+						<Link
+							href={trailerUrl}
+							target="_blank"
+							rel="noopener noreferrer"
+							className="flex-1 sm:flex-none"
+						>
+							<Button
+								variant="primary"
+								className="w-full sm:w-auto"
+							>
+								Trailer
+							</Button>
+						</Link>
+
+						<Button
+							variant="primary"
+							onClick={() => {
+								if (!user) {
+									openLoginForm();
+								} else if (profile?.has_subscription) {
+									router.push(
+										`/watch/${encodeURIComponent(title)}`
+									);
+								} else {
+									router.push("/subscription");
+								}
+							}}
+							className="w-full sm:w-auto"
+						>
+							Watch
+						</Button>
+
+						<button
+							onClick={onToggleFavorite}
+							aria-label={
+								isFav
+									? "Remove from favorites"
+									: "Add to favorites"
+							}
+							className={`flex justify-center items-center gap-3 rounded-[28px] cursor-pointer transition-colors duration-300 text-white font-light px-6 py-2 text-base ${
+								isFav
+									? "bg-blue-500 hover:bg-blue-600"
+									: "bg-secondary hover:bg-gray-700"
+							}`}
+						>
+							<svg
+								width={18}
+								height={18}
+								fill={isFav ? "#ff0000" : "gray"}
+							>
+								<use
+									xlinkHref={`/images/icons/icons.xml#like`}
+								/>
+							</svg>
+						</button>
+					</motion.div>
+				</div>
+
+				{/* Image/Trailer Section - Order 2 */}
+				<motion.div
+					className="flex-1 relative overflow-hidden rounded-xl h-full order-1 lg:order-2"
+					variants={imageVariants}
+					initial="hidden"
+					animate="visible"
+					onMouseEnter={() => youtubeId && setShowTrailer(true)}
+					onMouseLeave={() => setShowTrailer(false)}
+					style={{ maxHeight: "350px", minHeight: "200px" }}
+				>
+					{backdropUrl ? (
+						<>
+							{/* Image loading spinner */}
+							{imageLoading && !showTrailer && (
+								<div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-xl z-10">
+									<div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin" />
+								</div>
+							)}
+
+							{/* Poster image */}
 							<Link
-								className="flex basis-full  lg:basis-0"
+								href={trailerUrl}
 								target="_blank"
 								rel="noopener noreferrer"
-								href={trailerUrl}
+								className="h-full block"
 							>
-								<Btn
-									style="primary"
-									className="basis-full"
-									onclick={() => console.log()}
-								>
-									Trailer
-								</Btn>
+								<Image
+									onLoadingComplete={() =>
+										setImageLoading(false)
+									}
+									src={backdropUrl}
+									alt={title}
+									width={800}
+									height={450}
+									className="w-full h-full object-cover rounded-xl"
+								/>
 							</Link>
-						</div>
-						<div className="flex space-x-4">
-							<Btn
-								style=""
-								onclick={() => handleFavoriteToggle(id)}
-							>
-								<svg
-									width={18}
-									height={18}
-									fill={isFav ? "#67A5EB" : "gray"}
-								>
-									<use
-										xlinkHref={`/images/icons/icons.xml#like`}
+
+							{/* Trailer overlay on hover */}
+							{showTrailer && youtubeId && (
+								<div className="absolute inset-0 z-20">
+									<iframe
+										src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&loop=1&playlist=${youtubeId}&showinfo=0&fs=0&iv_load_policy=3&disablekb=1&cc_load_policy=0`}
+										className="w-full h-full"
+										allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+										allowFullScreen
+										title={`${title} trailer preview`}
 									/>
-								</svg>
-							</Btn>
+								</div>
+							)}
+						</>
+					) : (
+						<div className="w-full h-full bg-gray-700 rounded-xl flex items-center justify-center text-white text-xl">
+							No poster
 						</div>
+					)}
+				</motion.div>
+
+				{/* Buttons on mobile only - Order 3 (at the bottom) */}
+				<motion.div
+					className="flex lg:hidden flex-wrap gap-2 order-3"
+					variants={bounceButton}
+					initial="hidden"
+					animate="visible"
+				>
+					<Link
+						href={trailerUrl}
+						target="_blank"
+						rel="noopener noreferrer"
+						className="flex-1"
+					>
+						<Button variant="primary" className="w-full">
+							Trailer
+						</Button>
+					</Link>
+
+					<Button
+						variant="primary"
+						onClick={() => {
+							if (!user) {
+								openLoginForm();
+							} else if (profile?.has_subscription) {
+								router.push(
+									`/watch/${encodeURIComponent(title)}`
+								);
+							} else {
+								router.push("/subscription");
+							}
+						}}
+						className="flex-1"
+					>
+						Watch
+					</Button>
+
+					<button
+						onClick={onToggleFavorite}
+						aria-label={
+							isFav ? "Remove from favorites" : "Add to favorites"
+						}
+						className={`flex justify-center items-center gap-3 rounded-[28px] cursor-pointer transition-colors duration-300 text-white font-light px-6 py-2 text-base ${
+							isFav
+								? "bg-blue-500 hover:bg-blue-600"
+								: "bg-secondary hover:bg-gray-700"
+						}`}
+					>
+						<svg
+							width={18}
+							height={18}
+							fill={isFav ? "#ff0000" : "gray"}
+						>
+							<use xlinkHref={`/images/icons/icons.xml#like`} />
+						</svg>
+					</button>
+				</motion.div>
+			</div>
+
+			{/* Description Section */}
+			<div className="mb-6">
+				<h3 className="text-3xl md:text-4xl font-bold text-left text-white mb-6">
+					Description
+				</h3>
+				<p className="text-lg md:text-xl text-left text-white/80 leading-relaxed">
+					{plot}
+				</p>
+			</div>
+
+			{/* Trailer Section */}
+			{youtubeId && (
+				<div className="mb-16">
+					<div
+						className="w-full rounded-2xl overflow-hidden shadow-2xl"
+						style={{ aspectRatio: "16/9" }}
+					>
+						<iframe
+							src={`https://www.youtube.com/embed/${youtubeId}?rel=0`}
+							className="w-full h-full"
+							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+							allowFullScreen
+							title={`${title} trailer`}
+						/>
 					</div>
 				</div>
-				<div className="flex-1/2 h-full lg:mb-0 mb-5">
-					{backdropUrl && (
-						<Image
-							src={backdropUrl}
-							alt={title}
-							width={1080}
-							height={1920}
-							className="w-full rounded-xl lg:h-100 h-60"
-						></Image>
-					)}
-				</div>
-			</div>
+			)}
+
+			{/* About Section */}
 			<h3 className="self-stretch mb-10 flex-grow-0 flex-shrink-0 text-2xl sm:text-2xl md:text-4xl font-bold text-left text-white">
 				About the movie
 			</h3>

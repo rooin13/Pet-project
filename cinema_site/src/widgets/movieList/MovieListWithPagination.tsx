@@ -3,10 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import MovieCard from "@/entities/movie/ui/MovieCard";
-import { getMovieByGenre } from "@/shared/lib/api/genresApi/api";
+import { getMovieByGenre } from "@/shared/lib/api/genresApi";
 import { IMovie } from "@/entities/movie/model/types";
 import { AnimatePresence, motion } from "framer-motion";
 import { itemVariants, listVariants } from "@/shared/lib/animations/animation";
+import { MovieListSkeleton } from "./MovieListSkeleton";
 
 interface Props {
 	slug: string;
@@ -29,11 +30,12 @@ export default function MovieListWithPagination({ slug }: Props) {
 				if (res.length === 0) {
 					setHasMore(false);
 				} else {
-					setLastBatchStart((prevMovies) => {
-						return movies.length;
-					});
+					setLastBatchStart(() => movies.length);
 					setMovies((prev) => [...prev, ...res]);
 				}
+			} catch (error) {
+				console.error("Failed to fetch movies by genre:", error);
+				setHasMore(false);
 			} finally {
 				setIsLoading(false);
 			}
@@ -59,15 +61,13 @@ export default function MovieListWithPagination({ slug }: Props) {
 		}
 
 		return () => {
-			if (observerRef.current) {
-				observer.unobserve(observerRef.current);
-			}
+			observer.disconnect();
 		};
 	}, [isLoading, hasMore]);
 
 	return (
 		<>
-			<motion.ul className="flex gap-6 flex-wrap justify-center mb-10">
+			<motion.ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mb-10">
 				<AnimatePresence>
 					{movies.map((movie, index) => {
 						const localIndex =
@@ -86,15 +86,21 @@ export default function MovieListWithPagination({ slug }: Props) {
 								animate="visible"
 								exit="exit"
 							>
-								<MovieCard movie={movie} index={index} />
+								<MovieCard
+									movie={movie}
+									index={index}
+									fromGenre={slug}
+								/>
 							</motion.li>
 						);
 					})}
 				</AnimatePresence>
 			</motion.ul>
-			{isLoading && <p className="pl-20">Loading...</p>}
+			{isLoading && <MovieListSkeleton count={4} />}
 			<div ref={observerRef} className="h-10"></div>
-			{!hasMore && <p>No more movies</p>}
+			{!hasMore && !isLoading && movies.length > 0 && (
+				<p className="text-center text-white/70">No more movies</p>
+			)}
 		</>
 	);
 }

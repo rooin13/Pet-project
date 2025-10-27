@@ -1,18 +1,40 @@
-import React from "react";
-
 function Footer() {
 	return (
-		<div className="flex items-center justify-end space-x-4  py-10 text-white gap-6">
-			<svg width={45} height={45}>
-				<use xlinkHref={`/images/icons/icons.xml#vk`} />
-			</svg>
-			<svg width={45} height={45}>
-				<use xlinkHref={`/images/icons/icons.xml#telegram`} />
-			</svg>
-			<svg width={45} height={45}>
-				<use xlinkHref={`/images/icons/icons.xml#youtube`} />
-			</svg>
-		</div>
+		<footer className="flex items-center justify-end space-x-4 py-10 text-white gap-6 relative z-50 pt-20">
+			<a
+				href="https://vk.com"
+				target="_blank"
+				rel="noopener noreferrer"
+				aria-label="Visit our VK page"
+				className="hover:opacity-70 transition-opacity"
+			>
+				<svg width={45} height={45} aria-hidden="true">
+					<use xlinkHref={`/images/icons/icons.xml#vk`} />
+				</svg>
+			</a>
+			<a
+				href="https://t.me"
+				target="_blank"
+				rel="noopener noreferrer"
+				aria-label="Visit our Telegram channel"
+				className="hover:opacity-70 transition-opacity"
+			>
+				<svg width={45} height={45} aria-hidden="true">
+					<use xlinkHref={`/images/icons/icons.xml#telegram`} />
+				</svg>
+			</a>
+			<a
+				href="https://youtube.com"
+				target="_blank"
+				rel="noopener noreferrer"
+				aria-label="Visit our YouTube channel"
+				className="hover:opacity-70 transition-opacity"
+			>
+				<svg width={45} height={45} aria-hidden="true">
+					<use xlinkHref={`/images/icons/icons.xml#youtube`} />
+				</svg>
+			</a>
+		</footer>
 	);
 }
 

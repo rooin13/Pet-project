@@ -1,13 +1,18 @@
-import { getUserThunk, loginThunk } from "@/features/auth/model/slice";
+"use client";
+
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema } from "@/features/auth/model/shema";
-import { useAppDispatch } from "@/store/index";
+import { loginSchema } from "@/features/auth/model/schema";
 import { LoginDataType } from "@/features/auth/model/types";
 import { Modal } from "@/features/modal/modal";
 import Link from "next/link";
 import Image from "next/image";
-import { getUserProfileThunk } from "@/entities/user/model/slice";
+import {
+	useSignIn,
+	useGoogleSignIn,
+} from "@/features/auth/model/supabase-hooks";
+import { Button } from "@/shared/ui/Button/Button";
 
 export const LoginForm = ({
 	onSwitch,
@@ -16,33 +21,35 @@ export const LoginForm = ({
 	onSwitch: () => void;
 	onClose: () => void;
 }) => {
-	const dispatch = useAppDispatch();
+	const [generalError, setGeneralError] = useState("");
+	const signInMutation = useSignIn();
+	const googleSignInMutation = useGoogleSignIn();
 
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
-		setError,
 	} = useForm<LoginDataType>({
 		resolver: zodResolver(loginSchema),
 	});
 
-	const onSubmit = async (data: LoginDataType) => {
-		const action = await dispatch(loginThunk(data));
-		await dispatch(getUserThunk());
-		if (loginThunk.rejected.match(action) && action.payload === 400) {
-			setError("password", {
-				type: "manual",
-				message: "Invalid mail or password",
-			}),
-				setError("email", {
-					type: "manual",
-					message: "",
-				});
-			return;
+	const onSubmit = async (formData: LoginDataType) => {
+		setGeneralError("");
+
+		const result = await signInMutation.mutateAsync({
+			email: formData.email,
+			password: formData.password,
+		});
+
+		if (result.error) {
+			setGeneralError("Invalid email or password");
 		} else {
 			onClose();
 		}
+	};
+
+	const handleGoogleSignIn = async () => {
+		await googleSignInMutation.mutateAsync();
 	};
 
 	return (
@@ -54,16 +61,23 @@ export const LoginForm = ({
 				<Link
 					href="/"
 					className="cursor-pointer flex items-center gap-2"
+					aria-label="Go to homepage"
 				>
-					{" "}
 					<Image
 						src="/images/logo.svg"
-						alt="Поиск"
+						alt="MARUSYA logo"
 						width={24}
 						height={24}
 					/>
-					<p className=" font-normal text-black text-3xl">marusya</p>
+					<p className="font-normal text-black text-3xl">marusya</p>
 				</Link>
+
+				{/* General Error */}
+				{generalError && (
+					<p className="text-red-500 text-sm w-full text-center">
+						{generalError}
+					</p>
+				)}
 
 				{/* Email Field */}
 				<div className="w-full relative">
@@ -72,19 +86,30 @@ export const LoginForm = ({
 						width={20}
 						height={20}
 						className="absolute top-3 left-2"
+						aria-hidden="true"
 					>
 						<use xlinkHref={`/images/icons/icons.xml#mail`} />
 					</svg>
 					<input
-						type="text"
+						id="email"
+						type="email"
 						placeholder="Email"
+						aria-label="Email address"
+						aria-invalid={!!errors.email}
+						aria-describedby={
+							errors.email ? "email-error" : undefined
+						}
 						className={`border p-2 pl-8 w-full rounded-lg text-black ${
 							errors.email ? "border-red-500" : ""
 						}`}
 						{...register("email")}
 					/>
 					{errors.email && (
-						<p className="text-red-500 text-sm">
+						<p
+							id="email-error"
+							role="alert"
+							className="text-red-500 text-sm"
+						>
 							{errors.email.message}
 						</p>
 					)}
@@ -97,19 +122,30 @@ export const LoginForm = ({
 						width={20}
 						height={20}
 						className="absolute top-3 left-2"
+						aria-hidden="true"
 					>
 						<use xlinkHref={`/images/icons/icons.xml#key`} />
 					</svg>
 					<input
+						id="password"
 						type="password"
 						placeholder="Password"
+						aria-label="Password"
+						aria-invalid={!!errors.password}
+						aria-describedby={
+							errors.password ? "password-error" : undefined
+						}
 						className={`border p-2 pl-8 w-full rounded-lg text-black ${
 							errors.password ? "border-red-500" : ""
 						}`}
 						{...register("password")}
 					/>
 					{errors.password && (
-						<p className="text-red-500 text-sm">
+						<p
+							id="password-error"
+							role="alert"
+							className="text-red-500 text-sm"
+						>
 							{errors.password.message}
 						</p>
 					)}
@@ -117,14 +153,30 @@ export const LoginForm = ({
 
 				<button
 					type="submit"
-					className="w-full bg-primary text-white py-2 rounded-xl"
+					disabled={signInMutation.isPending}
+					className="w-full bg-primary text-white py-2 rounded-xl hover:bg-primary-hover transition-colors disabled:opacity-50"
+					aria-label="Login to account"
 				>
-					Login
+					{signInMutation.isPending ? "Signing in..." : "Login"}
 				</button>
-				<p className="text-sm text-center">
+
+				{/* Google Sign In */}
+				<button
+					type="button"
+					onClick={handleGoogleSignIn}
+					disabled={googleSignInMutation.isPending}
+					className="w-full bg-primary text-white py-2 rounded-xl hover:bg-primary-hover transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+				>
+					Continue with Google
+					<svg width={20} height={20}>
+						<use xlinkHref="/images/icons/icons.xml#google" />
+					</svg>
+				</button>
+
+				<p className="text-sm text-center text-black">
 					Don't have an account?{" "}
 					<span
-						className="text-blue-600 cursor-pointer"
+						className="text-blue-600 cursor-pointer hover:underline"
 						onClick={onSwitch}
 					>
 						Register

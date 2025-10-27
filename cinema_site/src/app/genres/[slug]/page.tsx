@@ -1,7 +1,3 @@
-import { getMovieBySlug } from "@/shared/lib/api/moviesApi/api";
-import { notFound } from "next/navigation";
-import { MovieCard } from "@/entities/movie/ui/MovieCard";
-import { getMovieByGenre } from "@/shared/lib/api/genresApi/api";
 import Link from "next/link";
 import MovieListWithPagination from "@/widgets/movieList/MovieListWithPagination";
 
@@ -17,16 +13,19 @@ export async function generateMetadata({ params }: Props) {
 export default async function MoviePage({ params }: Props) {
 	return (
 		<>
-			<div className="page-wrapper p-8 relative min-h-300">
-				<Link className="group inline-flex" href={"/genres"}>
+			<div className="page-wrapper relative min-h-300">
+				<Link
+					className="group inline-flex mb-10 items-center"
+					href={"/genres"}
+				>
 					<svg
 						width={44}
 						height={44}
-						className="absolute top-8 left-2 transition-transform duration-300 group-hover:-translate-x-2"
+						className="transition-transform duration-300 group-hover:-translate-x-2"
 					>
 						<use xlinkHref={`/images/icons/icons.xml#backarrow`} />
 					</svg>
-					<h3 className="pl-5 self-stretch mb-10 flex-grow-0 flex-shrink-0 text-2xl sm:text-2xl md:text-4xl font-bold text-left text-white">
+					<h3 className="pl-2 self-stretch flex-grow-0 flex-shrink-0 text-2xl sm:text-2xl md:text-4xl font-bold text-left text-white uppercase">
 						{params.slug.toLocaleUpperCase()}
 					</h3>
 				</Link>

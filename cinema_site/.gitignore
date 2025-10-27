@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Documentation guides (personal)
+STRIPE_SETUP.md
+SUBSCRIPTION_GUIDE.md
+SUPABASE_FULL_GUIDE.md

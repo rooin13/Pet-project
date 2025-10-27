@@ -1,12 +1,13 @@
-import { getUserThunk, selectIsAuthenticated } from "@/features/auth/model/slice";
-import { useAppSelector } from "@/store";
+import { useCurrentUser } from "@/features/auth/model/supabase-hooks";
 
-const useAuth = () => {
-  const isAuthenticated = useAppSelector(selectIsAuthenticated);
-  console.log("isAuthenticated", isAuthenticated);
+export const useAuth = () => {
+  const { data: userData } = useCurrentUser();
+  const isAuth = !!userData?.user;
+
   return {
-    isAuth: isAuthenticated
-  }
-}
+    isAuth,
+    user: userData?.user,
+  };
+};
 
-export default useAuth
+export default useAuth;

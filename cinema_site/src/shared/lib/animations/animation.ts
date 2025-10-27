@@ -3,7 +3,7 @@ export const listVariants: Variants = {
     hidden: {},
     visible: {
         transition: {
-            staggerChildren: 0.2,
+            staggerChildren: 0.3,
         },
     },
 };
@@ -14,7 +14,7 @@ export const infoItemVariants: Variants = {
     visible: {
         opacity: 1,
         y: 0,
-        transition: { duration: 0.3, ease: "easeOut" },
+        transition: { duration: 0.6, ease: "easeOut" },
     },
 };
 
@@ -34,30 +34,29 @@ export const itemVariants: Variants = {
     exit: { opacity: 0, y: -20, transition: { duration: 0.2 } },
 };
 
-// Контейнер для typewriter: задержка старта и между буквами
+// typewriter container: start delay and stagger between letters
 export const typewriterContainer: Variants = {
     hidden: { opacity: 1 },
     visible: {
         opacity: 1,
         transition: {
-            staggerChildren: 0.01,    // задержка перед каждой буквой
-            delayChildren: 0.2,       // небольшая задержка перед началом
+            staggerChildren: 0.025,
+            delayChildren: 0.4,
         },
     },
 };
 
-
-// Отдельно для каждой буквы
+// individual letter animation
 export const typewriterLetter: Variants = {
     hidden: { opacity: 0, y: 10 },
     visible: {
         opacity: 1,
         y: 0,
-        transition: { duration: 0.1, ease: "easeOut" },
+        transition: { duration: 0.2, ease: "easeOut" },
     },
 };
 
-// Для кнопок «подпрыгивание»
+// buttons bounce animation
 export const bounceButton: Variants = {
     hidden: { y: -20, opacity: 0 },
     visible: {
@@ -65,9 +64,22 @@ export const bounceButton: Variants = {
         opacity: 1,
         transition: {
             type: "spring",
-            stiffness: 500,
-            damping: 20,
-            delay: 0.6,           // кнопки появятся чуть позже
+            stiffness: 300,
+            damping: 25,
+            delay: 1.0,
+        },
+    },
+};
+
+// image fade in animation
+export const imageVariants: Variants = {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: {
+        opacity: 1,
+        scale: 1,
+        transition: {
+            duration: 0.8,
+            ease: "easeOut",
         },
     },
 };

@@ -1,46 +1,61 @@
-import { getUserProfileThunk, selectUser } from '@/entities/user/model/slice';
-import { useAppDispatch, useAppSelector } from '@/store';
 import { useState, useCallback } from 'react';
-import { deleteFavorites, postFavorites } from '../api/favoritesApi/api';
-
+import { useCurrentUser } from '@/features/auth/model/supabase-hooks';
+import { useQueryClient } from '@tanstack/react-query';
+import {
+    addFavorite,
+    removeFavorite,
+    isFavorite as checkIsFavorite
+} from '../api/supabase-favorites';
+import { useFavoritesList } from './useSupabaseFavorites';
 
 export const useFavorites = () => {
-    const user = useAppSelector(selectUser);
-    const dispatch = useAppDispatch();
+    const { data: userData } = useCurrentUser();
+    const { refetch } = useFavoritesList();
+    const queryClient = useQueryClient();
     const [isOpen, setIsOpen] = useState(false);
     const [isRegister, setIsRegister] = useState(false);
+
+    const user = userData?.user;
 
     const closeForm = useCallback(() => setIsOpen(false), []);
     const toggleForm = useCallback(() => setIsRegister((prev) => !prev), []);
 
     const isFavorite = useCallback(
         async (id: number) => {
-
-            const favorites = user.favorites.map(Number);
-            if (favorites.includes(id)) {
-                return true
-            } else {
-                return false
-            }
+            if (!user) return false;
+            return await checkIsFavorite(id);
         },
-        [user.favorites]
-    )
+        [user]
+    );
 
     const handleFavoriteToggle = useCallback(
-        async (id: number) => {
-            try {
-                const favorites = user.favorites.map(Number);
-                if (favorites.includes(id)) {
-                    await deleteFavorites(id);
-                } else {
-                    await postFavorites(id);
-                }
-                dispatch(getUserProfileThunk());
-            } catch (error) {
+        async (id: number, title?: string) => {
+            if (!user) {
                 setIsOpen(true);
+                return;
+            }
+
+            try {
+                const isFav = await checkIsFavorite(id);
+
+                if (isFav) {
+                    await removeFavorite(id);
+                } else {
+                    await addFavorite(id, title || `Movie ${id}`);
+                }
+
+                // Refetch favorites list and invalidate cache
+                refetch();
+                queryClient.invalidateQueries({ queryKey: ['favorite', id] });
+                queryClient.invalidateQueries({ queryKey: ['favorites'] });
+
+                // Force re-render by returning the new status
+                return !isFav;
+            } catch (error) {
+                console.error('Failed to toggle favorite:', error);
             }
         },
-        [user.favorites, dispatch]
+        [user, refetch, queryClient]
     );
 
     return {
