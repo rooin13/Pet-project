@@ -96,11 +96,11 @@ export const RandomMovie = () => {
 	};
 
 	return (
-		<div className="flex flex-col lg:flex-row gap-4 lg:gap-8 mb-4 lg:mb-20 min-h-[350px] lg:h-[350px]">
+		<div className="flex flex-col lg:flex-row gap-4 lg:gap-8 mb-4 lg:mb-20 min-h-[350px] lg:min-h-[350px]">
 			{isOpen && <LoginForm onSwitch={toggleForm} onClose={closeForm} />}
 
 			{/* Text content - Order 1 on mobile, Order 1 on desktop */}
-			<div className="flex-1 flex flex-col justify-between overflow-hidden order-1">
+			<div className="flex-1 flex flex-col justify-between order-1">
 				<div className="space-y-2 lg:space-y-4">
 					<motion.ul
 						className="flex items-center flex-wrap gap-2 lg:gap-4"
