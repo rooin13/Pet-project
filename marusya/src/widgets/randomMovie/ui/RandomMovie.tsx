@@ -102,7 +102,6 @@ export const RandomMovie = () => {
 					<LoginForm onSwitch={toggleForm} onClose={closeForm} />
 				))}
 
-			{/* Text content - Order 1 on mobile, Order 1 on desktop */}
 			<div className="flex-1 flex flex-col justify-between order-1">
 				<div className="space-y-2 lg:space-y-4">
 					<motion.ul
@@ -197,7 +196,6 @@ export const RandomMovie = () => {
 					</Link>
 				</div>
 
-				{/* Buttons on desktop only */}
 				<motion.div
 					className="hidden lg:flex flex-wrap gap-2 sm:flex-nowrap sm:space-x-4"
 					variants={bounceButton}
@@ -259,7 +257,6 @@ export const RandomMovie = () => {
 				</motion.div>
 			</div>
 
-			{/* Image/Trailer - Order 2 on mobile, Order 2 on desktop */}
 			<motion.div
 				className="flex-1 relative overflow-hidden rounded-xl h-full order-2"
 				variants={imageVariants}
@@ -270,14 +267,12 @@ export const RandomMovie = () => {
 			>
 				{backdropUrl ? (
 					<>
-						{/* Image loading spinner */}
 						{imageLoading && !showTrailer && (
 							<div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-xl z-10">
 								<div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin" />
 							</div>
 						)}
 
-						{/* Poster image (always rendered, hidden when trailer shows) */}
 						<Link
 							href={`/movies/${encodeURIComponent(title)}`}
 							className="h-full block"
@@ -292,7 +287,6 @@ export const RandomMovie = () => {
 							/>
 						</Link>
 
-						{/* Trailer overlay on hover (poster stays visible underneath while loading) */}
 						{showTrailer && youtubeId && (
 							<div className="absolute inset-0 z-20">
 								<iframe
@@ -312,7 +306,6 @@ export const RandomMovie = () => {
 				)}
 			</motion.div>
 
-			{/* Buttons on mobile only - Order 3 (at the bottom) */}
 			<motion.div
 				className="flex lg:hidden flex-wrap gap-2 order-3"
 				variants={bounceButton}

@@ -40,7 +40,6 @@ export const TopMovies = () => {
 		);
 	}
 
-	// Split movies into 4 columns
 	const columns = [
 		movies.filter((_, i) => i % 4 === 0),
 		movies.filter((_, i) => i % 4 === 1),
@@ -50,15 +49,12 @@ export const TopMovies = () => {
 
 	return (
 		<div ref={containerRef} style={{ height: "800vh" }} className="mb-40">
-			{/* 8x viewport height for full scroll */}
 			<div className="sticky top-0 h-screen">
 				<h2 className="text-3xl md:text-5xl font-bold text-white pt-4 md:pt-8 pb-8 md:pb-16 text-center">
 					Top Movies
 				</h2>
 
-				{/* Scroll container */}
 				<div ref={scrollContainerRef} className="h-full">
-					{/* Flex Layout - masonry */}
 					<div
 						className="flex gap-2 md:gap-6 px-2 md:px-4 max-w-7xl mx-auto pb-60"
 						style={{ minHeight: "100%" }}
@@ -84,12 +80,10 @@ export const TopMovies = () => {
 											aria-label={`View ${movie.title} details`}
 										>
 											<div className="relative rounded-xl md:rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 group-hover:scale-105 group-hover:shadow-purple-500/50">
-												{/* Rank Badge */}
 												<div className="absolute top-2 left-2 md:top-3 md:left-3 z-10 bg-white text-purple-600 font-bold text-sm md:text-lg px-2 py-1 md:px-4 md:py-2 rounded-full shadow-lg">
 													{globalIndex + 1}
 												</div>
 
-												{/* Movie Poster */}
 												{movie.posterUrl && (
 													<Image
 														src={movie.posterUrl}
@@ -104,7 +98,6 @@ export const TopMovies = () => {
 													/>
 												)}
 
-												{/* Hover Overlay */}
 												<div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
 													<p className="text-white font-bold text-sm line-clamp-2">
 														{movie.title}
