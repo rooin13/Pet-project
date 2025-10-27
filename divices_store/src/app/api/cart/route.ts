@@ -1,6 +1,5 @@
 import { prisma } from "@/shared/lib/prisma/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken"; // for JWT decoding
 import { getToken } from "next-auth/jwt";
 
 const ALLOWED_ORIGINS = new Set([
@@ -33,14 +32,9 @@ export async function GET(req: NextRequest) {
             tokenPayload?.id ? Number(tokenPayload.id) :
                 tokenPayload?.sub ? Number(tokenPayload.sub) :
                     null;
-        console.log('[cart.GET] tokenPayload present:', Boolean(tokenPayload), 'userId:', userId);
 
-        // for guests - read cartToken
+        // for guests read cartToken
         const cartToken = userId ? null : req.cookies.get("cartToken")?.value;
-        console.log('[cart.GET] cartToken from cookie:', cartToken);
-
-        // find cart (userId has priority)
-        console.log('[cart.GET] findFirst cart by OR', { userId, hasCartToken: Boolean(cartToken) });
         let cart = await prisma.cart.findFirst({
             where: {
                 OR: [
@@ -66,9 +60,8 @@ export async function GET(req: NextRequest) {
                 },
             },
         });
-        console.log('[cart.GET] found cart?', Boolean(cart), cart ? { id: cart.id, hasToken: Boolean(cart.token) } : null);
 
-        // if no cart - create one (and set cookie for guests)
+        // if no cart create one 
         let setCartCookieValue: string | null = null;
         if (!cart) {
             const newToken = userId ? undefined : crypto.randomUUID();
@@ -96,7 +89,6 @@ export async function GET(req: NextRequest) {
                     },
                 },
             });
-            console.log('[cart.GET] created cart', { id: cart.id, token: cart.token });
 
             if (!userId && cart.token) setCartCookieValue = cart.token;
         }
@@ -115,7 +107,6 @@ export async function GET(req: NextRequest) {
 
         // build response and set cookie if needed
         const res = NextResponse.json({ items, totalAmount }, { headers: createCorsHeaders(req) });
-        // issue guest CSRF token if missing (for X-CSRF-Token)
         if (!req.cookies.get('csrf-token')) {
             res.cookies.set('csrf-token', crypto.randomUUID(), {
                 httpOnly: true,
@@ -135,11 +126,8 @@ export async function GET(req: NextRequest) {
                 maxAge: 60 * 60 * 24 * 30, // 30 days
             });
         }
-
-        console.log('[cart.GET] success, items:', cart?.items?.length || 0, 'setCartCookieValue:', Boolean(setCartCookieValue));
         return res;
     } catch (err: any) {
-        console.error("❌ Ошибка получения корзины:", err?.message, err?.stack);
         return NextResponse.json(
             { items: [], totalAmount: 0, error: "Internal server error" },
             { status: 500, headers: createCorsHeaders(req) }

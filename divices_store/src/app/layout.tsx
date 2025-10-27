@@ -4,6 +4,7 @@ import AppClientProviders from "@/providers/AppClientProviders";
 import Header from "@/widgets/header/Header";
 import SliderSection from "@/widgets/slider-section/ui/SliderSection";
 import { ModalRenderer } from "@/features/modal/ui/ModalRenderer";
+import SmoothScrollProvider from "@/shared/lib/smooth-scroll/SmoothScrollProvider";
 
 import type { Metadata } from "next";
 
@@ -35,12 +36,14 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className={inter.className}>
-				<AppClientProviders>
-					<Header />
-					<SliderSection />
-					<ModalRenderer />
-					{children}
-				</AppClientProviders>
+				<SmoothScrollProvider>
+					<AppClientProviders>
+						<Header />
+						<SliderSection />
+						<ModalRenderer />
+						{children}
+					</AppClientProviders>
+				</SmoothScrollProvider>
 			</body>
 		</html>
 	);

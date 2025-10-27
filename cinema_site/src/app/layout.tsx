@@ -37,17 +37,17 @@ export default function RootLayout({
 					<div className="absolute inset-0 bg-black/40" />
 				</div>
 
-			<ReactQueryProvider>
-				<StoreProvider>
-					<LenisProvider>
-						<div className="container lg:ml-15 lg:mr-15 relative z-10">
-							<Header />
-							<main>{children}</main>
-							<Footer />
-						</div>
-					</LenisProvider>
-				</StoreProvider>
-			</ReactQueryProvider>
+				<ReactQueryProvider>
+					<StoreProvider>
+						<LenisProvider>
+							<div className="container lg:ml-15 lg:mr-15 relative z-10">
+								<Header />
+								<main>{children}</main>
+								<Footer />
+							</div>
+						</LenisProvider>
+					</StoreProvider>
+				</ReactQueryProvider>
 			</body>
 		</html>
 	);

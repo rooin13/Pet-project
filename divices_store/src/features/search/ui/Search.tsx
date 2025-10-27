@@ -71,7 +71,7 @@ export const Search: React.FC<SearchProps> = ({ closeSheet }) => {
 				aria-label="Search results"
 				className={
 					showList
-						? "bg-secondary text-black absolute top-20 w-full z-10 rounded-xl overflow-hidden"
+						? "bg-secondary text-black absolute top-20 w-full z-10 rounded-xl overflow-hidden max-h-[400px] overflow-y-auto"
 						: "hidden z-0"
 				}
 			>
@@ -92,22 +92,30 @@ export const Search: React.FC<SearchProps> = ({ closeSheet }) => {
 									className="hover:bg-primary/20 transition-colors duration-150 rounded-xl flex bg-secondary pl-2 pb-2 pt-2 w-full"
 									aria-label={`View ${product.name}`}
 								>
-									<Image
-										alt={`${product.name} thumbnail`}
-										className="mr-3 rounded-xl"
-										width={35}
-										height={35}
-										src={
-											Array.isArray(product.imagesUrl) &&
-											product.imagesUrl.length > 0 &&
-											typeof product.imagesUrl[0] ===
-												"string"
-												? product.imagesUrl[0]
-												: "/placeholder.png"
-										}
-									/>
-									<div className="flex flex-col flex-wrap rounded-xl bg-secondary">
-										<p className="text-base font-bold">
+									<div className="mr-3 rounded-xl w-[35px] h-[35px] flex-shrink-0 overflow-hidden">
+										<Image
+											alt={`${product.name} thumbnail`}
+											className="w-full h-full object-cover"
+											width={35}
+											height={35}
+											src={
+												Array.isArray(
+													product.imagesUrl
+												) &&
+												product.imagesUrl.length > 0 &&
+												typeof product.imagesUrl[0] ===
+													"string"
+													? product.imagesUrl[0]
+													: "/placeholder.png"
+											}
+											onError={(e) => {
+												e.currentTarget.src =
+													"/placeholder.png";
+											}}
+										/>
+									</div>
+									<div className="flex flex-col flex-1 min-w-0">
+										<p className="text-base font-bold truncate max-w-[200px]">
 											{product.name}
 										</p>
 									</div>
