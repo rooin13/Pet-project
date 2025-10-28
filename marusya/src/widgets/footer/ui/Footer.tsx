@@ -1,6 +1,6 @@
 function Footer() {
 	return (
-		<footer className="flex items-center justify-end space-x-4 py-10 text-white gap-6 relative z-50 pt-20">
+		<footer className="flex items-center justify-end space-x-4 py-6 text-white gap-6 relative z-50">
 			<a
 				href="https://vk.com"
 				target="_blank"

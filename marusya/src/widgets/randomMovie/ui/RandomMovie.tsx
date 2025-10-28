@@ -87,6 +87,10 @@ export const RandomMovie = () => {
 	const youtubeId = getYouTubeId(trailerUrl);
 
 	const onToggleFavorite = async () => {
+		if (!user) {
+			openLoginForm();
+			return;
+		}
 		const newStatus = await handleFavoriteToggle(id, title);
 		if (newStatus !== undefined) {
 			updateFavoriteStatus(newStatus);
@@ -94,7 +98,7 @@ export const RandomMovie = () => {
 	};
 
 	return (
-		<div className="flex flex-col lg:flex-row gap-4 lg:gap-8 mb-4 lg:mb-20 min-h-[350px] lg:min-h-[350px]">
+		<div className="flex flex-col lg:flex-row gap-4 lg:gap-8 mb-2 lg:mb-5 min-h-[280px] lg:min-h-[280px] lg:items-stretch">
 			{isOpen &&
 				(isRegister ? (
 					<RegisterForm onSwitch={toggleForm} onClose={closeForm} />
@@ -103,7 +107,7 @@ export const RandomMovie = () => {
 				))}
 
 			<div className="flex-1 flex flex-col justify-between order-1">
-				<div className="space-y-2 lg:space-y-4">
+				<div className="space-y-1 lg:space-y-2">
 					<motion.ul
 						className="flex items-center flex-wrap gap-2 lg:gap-4"
 						variants={listVariants}
@@ -154,7 +158,7 @@ export const RandomMovie = () => {
 						className="block"
 					>
 						<motion.h2
-							className="w-full max-w-xl text-2xl sm:text-3xl lg:text-5xl font-bold text-left text-white mb-2 sm:mb-4 cursor-pointer hover:text-purple-400 transition-colors duration-200"
+							className="w-full max-w-xl text-2xl sm:text-3xl lg:text-5xl font-bold text-left text-white cursor-pointer hover:text-purple-400 transition-colors duration-200"
 							initial={{ opacity: 0, y: 20 }}
 							animate={{ opacity: 1, y: 0 }}
 							transition={{
@@ -168,8 +172,8 @@ export const RandomMovie = () => {
 								WebkitBoxOrient: "vertical",
 								overflow: "hidden",
 								textOverflow: "ellipsis",
-								lineHeight: "1.3",
-								paddingBottom: "0.2rem",
+								lineHeight: "1.2",
+								paddingBottom: "0.5rem",
 							}}
 						>
 							{title}
@@ -258,7 +262,7 @@ export const RandomMovie = () => {
 			</div>
 
 			<motion.div
-				className="flex-1 relative overflow-hidden rounded-xl h-full order-2"
+				className="flex-1 relative overflow-hidden rounded-xl order-2"
 				variants={imageVariants}
 				initial="hidden"
 				animate="visible"
@@ -275,23 +279,26 @@ export const RandomMovie = () => {
 
 						<Link
 							href={`/movies/${encodeURIComponent(title)}`}
-							className="h-full block"
+							className="block h-full"
 						>
 							<Image
-								onLoadingComplete={() => setImageLoading(false)}
+								onLoad={() => setImageLoading(false)}
 								src={backdropUrl}
 								alt={title}
 								width={800}
 								height={450}
+								priority
+								quality={85}
+								sizes="(max-width: 768px) 100vw, 50vw"
 								className="w-full h-full object-cover rounded-xl"
 							/>
 						</Link>
 
 						{showTrailer && youtubeId && (
-							<div className="absolute inset-0 z-20">
+							<div className="absolute inset-0 z-20 rounded-xl overflow-hidden">
 								<iframe
 									src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&loop=1&playlist=${youtubeId}&showinfo=0&fs=0&iv_load_policy=3&disablekb=1&cc_load_policy=0`}
-									className="w-full h-full"
+									className="w-[102%] h-[102%] border-0 -m-[1%]"
 									allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 									allowFullScreen
 									title={`${title} trailer preview`}
@@ -300,7 +307,7 @@ export const RandomMovie = () => {
 						)}
 					</>
 				) : (
-					<div className="w-full h-full bg-gray-700 rounded-xl flex items-center justify-center text-white text-xl">
+					<div className="w-full h-full min-h-[184px] lg:min-h-[232px] bg-gray-700 rounded-xl flex items-center justify-center text-white text-xl">
 						No poster
 					</div>
 				)}

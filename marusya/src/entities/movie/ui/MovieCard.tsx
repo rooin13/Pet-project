@@ -34,9 +34,11 @@ export const MovieCard: FC<MovieCardProps> = ({ movie, fromGenre }) => {
 						height={450}
 						alt={`${movie.title} poster`}
 						src={movie.posterUrl}
+						loading="lazy"
+						quality={75}
+						sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
 					/>
 
-					{/* Hover Overlay with movie title */}
 					<div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
 						<p className="text-white font-bold text-base line-clamp-2">
 							{movie.title}

@@ -36,7 +36,7 @@ const Header = () => {
 				</Link>
 			</div>
 
-			{/* Desktop Navigation */}
+			{/* desktop nav */}
 			<nav
 				className="hidden lg:block flex-shrink-0"
 				aria-label="Main navigation"
@@ -63,17 +63,15 @@ const Header = () => {
 				</ul>
 			</nav>
 
-			{/* Search */}
+			{/* search */}
 			<div className="flex-1 px-12">
 				<MovieSearchInput />
 			</div>
 
-			{/* Desktop Auth Button */}
 			<div className="font-normal text-white text-2xl hidden lg:block flex-shrink-0">
 				<AuthButton />
 			</div>
 
-			{/* Mobile Burger Menu */}
 			<BurgerMenu />
 		</header>
 	);

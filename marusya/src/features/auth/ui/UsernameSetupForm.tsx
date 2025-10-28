@@ -108,7 +108,6 @@ export const UsernameSetupForm = ({
 					</p>
 				)}
 
-				{/* Username Field */}
 				<div className="w-full">
 					<label
 						htmlFor="username"
@@ -136,7 +135,6 @@ export const UsernameSetupForm = ({
 					/>
 				</div>
 
-				{/* Name Field */}
 				<div className="w-full">
 					<label
 						htmlFor="name"
@@ -156,7 +154,6 @@ export const UsernameSetupForm = ({
 					/>
 				</div>
 
-				{/* Surname Field */}
 				<div className="w-full">
 					<label
 						htmlFor="surname"

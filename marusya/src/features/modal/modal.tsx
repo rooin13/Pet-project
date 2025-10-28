@@ -47,14 +47,11 @@ export const Modal = ({
 
 	return createPortal(
 		<div
-			className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto"
+			className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
 			role="dialog"
 			aria-modal="true"
 		>
-			<div
-				ref={ref}
-				className="bg-white rounded-2xl p-4 w-full max-w-sm my-auto max-h-[90vh] overflow-y-auto"
-			>
+			<div ref={ref} className="bg-white rounded-2xl p-3 w-full max-w-sm">
 				{children}
 			</div>
 		</div>,

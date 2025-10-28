@@ -61,7 +61,6 @@ export const BurgerMenu = () => {
 
 	return (
 		<>
-			{/* Burger Icon - visible only on mobile */}
 			<button
 				onClick={toggleMenu}
 				className="lg:hidden text-white text-3xl focus:outline-none z-50 relative"
@@ -70,7 +69,6 @@ export const BurgerMenu = () => {
 				{isMenuOpen ? <FaTimes /> : <FaBars />}
 			</button>
 
-			{/* Backdrop */}
 			<AnimatePresence>
 				{isMenuOpen && (
 					<motion.div
@@ -83,7 +81,6 @@ export const BurgerMenu = () => {
 				)}
 			</AnimatePresence>
 
-			{/* Menu */}
 			<AnimatePresence>
 				{isMenuOpen && (
 					<motion.nav
@@ -94,7 +91,6 @@ export const BurgerMenu = () => {
 						className="fixed top-0 right-0 h-full w-64 bg-gradient-to-b from-[#0c1a2d] to-[#38384a] shadow-2xl z-50 lg:hidden"
 					>
 						<div className="flex flex-col h-full p-8 pt-20">
-							{/* User Info / Auth Button */}
 							<motion.div
 								custom={-1}
 								variants={linkVariants}
@@ -127,7 +123,6 @@ export const BurgerMenu = () => {
 								)}
 							</motion.div>
 
-							{/* Navigation Links */}
 							{links.map((link, i) => (
 								<motion.div
 									key={link.href}
@@ -151,7 +146,6 @@ export const BurgerMenu = () => {
 				)}
 			</AnimatePresence>
 
-			{/* Auth Forms */}
 			{isOpen &&
 				(isRegister ? (
 					<RegisterForm onSwitch={toggleForm} onClose={closeForm} />

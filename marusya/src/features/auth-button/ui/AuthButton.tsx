@@ -31,24 +31,27 @@ export const AuthButton = () => {
 	}
 
 	const fullName = profile?.username || user?.email?.split("@")[0] || "User";
-	const displayName = fullName.length > 6 ? fullName.substring(0, 6) + "..." : fullName;
+	const displayName =
+		fullName.length > 6 ? fullName.substring(0, 6) + "..." : fullName;
 
 	return (
 		<>
 			{user ? (
-				<Link href="/profile" className="group relative cursor-pointer" title={fullName}>
+				<Link
+					href="/profile"
+					className="group relative cursor-pointer"
+					title={fullName}
+				>
 					<p className="text-white py-2 px-4">{displayName}</p>
 					<span className="absolute left-0 bottom-0 h-0.5 w-0 bg-purple-500 transition-all duration-300 group-hover:w-full"></span>
 				</Link>
 			) : (
 				<div
-					className="group relative cursor-pointer"
+					className="group relative cursor-pointer inline-block"
 					onClick={openLoginForm}
 				>
-					<button className="text-white py-2 px-4 w-40">
-						Sign Up
-					</button>
-					<span className="absolute left-0 bottom-0 h-0.5 w-0 bg-purple-500 transition-all duration-300 group-hover:w-full"></span>
+					<button className="text-white py-2 px-4">Sign Up</button>
+					<span className="absolute left-1/2 -translate-x-1/2 bottom-0 h-0.5 w-0 bg-purple-500 transition-all duration-300 group-hover:w-[80%]"></span>
 				</div>
 			)}
 

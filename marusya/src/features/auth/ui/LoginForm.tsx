@@ -56,30 +56,28 @@ export const LoginForm = ({
 		<Modal isOpen={true} onClose={onClose}>
 			<form
 				onSubmit={handleSubmit(onSubmit)}
-				className="space-y-4 flex flex-col items-center"
+				className="space-y-2 flex flex-col items-center"
 			>
 				<Link
 					href="/"
-					className="cursor-pointer flex items-center gap-2"
+					className="cursor-pointer flex items-center gap-2 mb-1"
 					aria-label="Go to homepage"
 				>
 					<Image
 						src="/images/logo.svg"
 						alt="MARUSYA logo"
-						width={24}
-						height={24}
+						width={20}
+						height={20}
 					/>
-					<p className="font-normal text-black text-3xl">marusya</p>
+					<p className="font-normal text-black text-2xl">marusya</p>
 				</Link>
 
-				{/* General Error */}
 				{generalError && (
 					<p className="text-red-500 text-sm w-full text-center">
 						{generalError}
 					</p>
 				)}
 
-				{/* Email Field */}
 				<div className="w-full relative">
 					<svg
 						fill={errors.email ? "red" : "gray"}
@@ -115,7 +113,6 @@ export const LoginForm = ({
 					)}
 				</div>
 
-				{/* Password Field */}
 				<div className="w-full relative">
 					<svg
 						fill={errors.password ? "red" : "gray"}
@@ -160,7 +157,6 @@ export const LoginForm = ({
 					{signInMutation.isPending ? "Signing in..." : "Login"}
 				</button>
 
-				{/* Google Sign In */}
 				<button
 					type="button"
 					onClick={handleGoogleSignIn}

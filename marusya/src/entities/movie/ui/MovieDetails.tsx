@@ -1,6 +1,7 @@
 "use client";
 import { IMovie } from "@/entities/movie/model/types";
 import { LoginForm } from "@/features/auth/ui/LoginForm";
+import { RegisterForm } from "@/features/auth/ui/RegistrationForm";
 import { useFavorites } from "@/shared/lib/hooks/useFavorites";
 import { convertMinutes } from "@/shared/lib/utils/convertMinutes";
 import { getRatingBgColor } from "@/shared/lib/utils/getRatingBgColor";
@@ -52,18 +53,12 @@ export const MovieDetails = (movie: IMovie) => {
 	const ratingBgColor = getRatingBgColor(tmdbRating);
 
 	const { data: userData } = useUser();
-	const { openLoginForm } = useAuthModal();
+	const { isOpen, isRegister, openLoginForm, closeForm, toggleForm } =
+		useAuthModal();
 	const user = userData?.user;
 	const profile = userData?.profile;
 
-	const {
-		isOpen,
-		isRegister,
-		closeForm,
-		toggleForm,
-		handleFavoriteToggle,
-		isFavorite,
-	} = useFavorites();
+	const { handleFavoriteToggle, isFavorite } = useFavorites();
 
 	const { isFav, updateFavoriteStatus } = useMovieFavorite(id, isFavorite);
 	const { imageLoading, setImageLoading, showTrailer, setShowTrailer } =
@@ -72,6 +67,10 @@ export const MovieDetails = (movie: IMovie) => {
 	const youtubeId = getYouTubeId(trailerUrl);
 
 	const onToggleFavorite = async () => {
+		if (!user) {
+			openLoginForm();
+			return;
+		}
 		const newStatus = await handleFavoriteToggle(id, title);
 		if (newStatus !== undefined) {
 			updateFavoriteStatus(newStatus);
@@ -90,9 +89,13 @@ export const MovieDetails = (movie: IMovie) => {
 
 	return (
 		<div>
-			{isOpen && <LoginForm onSwitch={toggleForm} onClose={closeForm} />}
+			{isOpen &&
+				(isRegister ? (
+					<RegisterForm onSwitch={toggleForm} onClose={closeForm} />
+				) : (
+					<LoginForm onSwitch={toggleForm} onClose={closeForm} />
+				))}
 
-			{/* Back to Genre Button */}
 			{fromGenre && (
 				<Link
 					className="group inline-flex mb-6 items-center"
@@ -111,10 +114,10 @@ export const MovieDetails = (movie: IMovie) => {
 				</Link>
 			)}
 
-			{/* Hero Section - same as RandomMovie */}
-			<div className="flex flex-col lg:flex-row gap-4 lg:gap-8 mb-8 lg:mb-16 min-h-[350px] lg:h-[280px]">
+			{/* hero section */}
+			<div className="flex flex-col lg:flex-row gap-4 lg:gap-8 mb-8 lg:mb-16 min-h-[280px] lg:min-h-[280px] lg:items-stretch">
 				<div className="flex-1 flex flex-col justify-between overflow-hidden order-2 lg:order-1">
-					<div className="space-y-2 lg:space-y-4">
+					<div className="space-y-1 lg:space-y-2">
 						<motion.ul
 							className="flex items-center flex-wrap gap-2 lg:gap-4"
 							variants={listVariants}
@@ -164,7 +167,7 @@ export const MovieDetails = (movie: IMovie) => {
 						</motion.ul>
 
 						<motion.h2
-							className="w-full max-w-xl text-2xl sm:text-3xl lg:text-5xl font-bold text-left text-white mb-2 sm:mb-4"
+							className="w-full max-w-xl text-2xl sm:text-3xl lg:text-5xl font-bold text-left text-white"
 							initial={{ opacity: 0, y: 20 }}
 							animate={{ opacity: 1, y: 0 }}
 							transition={{
@@ -178,15 +181,14 @@ export const MovieDetails = (movie: IMovie) => {
 								WebkitBoxOrient: "vertical",
 								overflow: "hidden",
 								textOverflow: "ellipsis",
-								lineHeight: "1.3",
-								paddingBottom: "0.2rem",
+								lineHeight: "1.2",
+								paddingBottom: "0.5rem",
 							}}
 						>
 							{title}
 						</motion.h2>
 					</div>
 
-					{/* Buttons on desktop only */}
 					<motion.div
 						className="hidden lg:flex flex-wrap gap-2 sm:flex-nowrap sm:space-x-4"
 						variants={bounceButton}
@@ -251,26 +253,22 @@ export const MovieDetails = (movie: IMovie) => {
 					</motion.div>
 				</div>
 
-				{/* Image/Trailer Section - Order 2 */}
 				<motion.div
-					className="flex-1 relative overflow-hidden rounded-xl h-full order-1 lg:order-2"
+					className="flex-1 relative overflow-hidden rounded-xl order-1 lg:order-2"
 					variants={imageVariants}
 					initial="hidden"
 					animate="visible"
 					onMouseEnter={() => youtubeId && setShowTrailer(true)}
 					onMouseLeave={() => setShowTrailer(false)}
-					style={{ maxHeight: "350px", minHeight: "200px" }}
 				>
 					{backdropUrl ? (
 						<>
-							{/* Image loading spinner */}
 							{imageLoading && !showTrailer && (
 								<div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-xl z-10">
 									<div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin" />
 								</div>
 							)}
 
-							{/* Poster image */}
 							<Link
 								href={trailerUrl}
 								target="_blank"
@@ -278,23 +276,23 @@ export const MovieDetails = (movie: IMovie) => {
 								className="h-full block"
 							>
 								<Image
-									onLoadingComplete={() =>
-										setImageLoading(false)
-									}
+									onLoad={() => setImageLoading(false)}
 									src={backdropUrl}
 									alt={title}
 									width={800}
 									height={450}
+									priority
+									quality={85}
+									sizes="(max-width: 768px) 100vw, 50vw"
 									className="w-full h-full object-cover rounded-xl"
 								/>
 							</Link>
 
-							{/* Trailer overlay on hover */}
 							{showTrailer && youtubeId && (
-								<div className="absolute inset-0 z-20">
+								<div className="absolute inset-0 z-20 rounded-xl overflow-hidden">
 									<iframe
 										src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&loop=1&playlist=${youtubeId}&showinfo=0&fs=0&iv_load_policy=3&disablekb=1&cc_load_policy=0`}
-										className="w-full h-full"
+										className="w-[102%] h-[102%] border-0 -m-[1%]"
 										allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 										allowFullScreen
 										title={`${title} trailer preview`}
@@ -303,13 +301,12 @@ export const MovieDetails = (movie: IMovie) => {
 							)}
 						</>
 					) : (
-						<div className="w-full h-full bg-gray-700 rounded-xl flex items-center justify-center text-white text-xl">
+						<div className="w-full h-full min-h-[184px] lg:min-h-[232px] bg-gray-700 rounded-xl flex items-center justify-center text-white text-xl">
 							No poster
 						</div>
 					)}
 				</motion.div>
 
-				{/* Buttons on mobile only - Order 3 (at the bottom) */}
 				<motion.div
 					className="flex lg:hidden flex-wrap gap-2 order-3"
 					variants={bounceButton}
@@ -367,7 +364,7 @@ export const MovieDetails = (movie: IMovie) => {
 				</motion.div>
 			</div>
 
-			{/* Description Section */}
+			{/* description */}
 			<div className="mb-6">
 				<h3 className="text-3xl md:text-4xl font-bold text-left text-white mb-6">
 					Description
@@ -377,7 +374,7 @@ export const MovieDetails = (movie: IMovie) => {
 				</p>
 			</div>
 
-			{/* Trailer Section */}
+			{/* trailer */}
 			{youtubeId && (
 				<div className="mb-16">
 					<div
@@ -395,7 +392,7 @@ export const MovieDetails = (movie: IMovie) => {
 				</div>
 			)}
 
-			{/* About Section */}
+			{/* about */}
 			<h3 className="self-stretch mb-10 flex-grow-0 flex-shrink-0 text-2xl sm:text-2xl md:text-4xl font-bold text-left text-white">
 				About the movie
 			</h3>

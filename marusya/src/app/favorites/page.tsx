@@ -9,6 +9,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { convertMinutes } from "@/shared/lib/utils/convertMinutes";
 import { FaSearch } from "react-icons/fa";
+import { useAuthModal } from "@/features/auth-button/model/supabase-hooks";
+import { LoginForm } from "@/features/auth/ui/LoginForm";
+import { RegisterForm } from "@/features/auth/ui/RegistrationForm";
 
 export default function FavoritesPage() {
 	const { data: userData, isLoading: userLoading } = useCurrentUser();
@@ -19,6 +22,8 @@ export default function FavoritesPage() {
 	const [loading, setLoading] = useState(true);
 
 	const user = userData?.user;
+	const { isOpen, isRegister, openLoginForm, closeForm, toggleForm } =
+		useAuthModal();
 
 	// Fetch full movie data for favorites
 	useEffect(() => {
@@ -73,18 +78,27 @@ export default function FavoritesPage() {
 	if (!user) {
 		return (
 			<div className="page-wrapper pb-20 min-h-screen text-center">
+				{isOpen &&
+					(isRegister ? (
+						<RegisterForm
+							onSwitch={toggleForm}
+							onClose={closeForm}
+						/>
+					) : (
+						<LoginForm onSwitch={toggleForm} onClose={closeForm} />
+					))}
 				<h3 className="self-stretch mb-10 text-2xl sm:text-2xl md:text-4xl font-bold text-left text-white uppercase">
 					Favorites
 				</h3>
 				<p className="text-white text-xl mb-6">
 					Please log in to view your favorite movies
 				</p>
-				<Link
-					href="/"
-					className="text-purple-400 hover:underline text-lg"
+				<button
+					onClick={openLoginForm}
+					className="px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-full font-semibold transition-colors"
 				>
-					Go to Home
-				</Link>
+					Sign In
+				</button>
 			</div>
 		);
 	}
@@ -106,7 +120,6 @@ export default function FavoritesPage() {
 				</div>
 			) : (
 				<div className="max-w-5xl mx-auto">
-					{/* Search Bar */}
 					<div className="relative mb-8">
 						<FaSearch
 							size={20}
@@ -121,7 +134,6 @@ export default function FavoritesPage() {
 						/>
 					</div>
 
-					{/* Movies List */}
 					{filteredMovies.length === 0 ? (
 						<p className="text-white text-center">
 							No movies found matching "{searchQuery}"
@@ -135,26 +147,25 @@ export default function FavoritesPage() {
 									className="block"
 								>
 									<div className="flex bg-secondary rounded-xl p-4 hover:bg-gray-700 transition-colors group">
-										{/* Poster */}
 										<div className="flex-shrink-0 w-32 h-48 rounded-lg overflow-hidden mr-6">
 											<Image
 												src={movie.posterUrl}
 												alt={movie.title}
 												width={128}
 												height={192}
+												loading="lazy"
+												sizes="128px"
+												quality={75}
 												className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
 											/>
 										</div>
 
-										{/* Info */}
 										<div className="flex-1 flex flex-col justify-between">
 											<div>
-												{/* Title */}
 												<h3 className="text-2xl font-bold text-white mb-3 group-hover:text-purple-400 transition-colors">
 													{movie.title}
 												</h3>
 
-												{/* Meta */}
 												<div className="flex items-center gap-4 text-gray-400 text-sm mb-3">
 													<span className="flex items-center gap-1">
 														<svg
@@ -183,7 +194,6 @@ export default function FavoritesPage() {
 													</span>
 												</div>
 
-												{/* Plot */}
 												<p className="text-white/70 text-base leading-relaxed line-clamp-3">
 													{movie.plot}
 												</p>
