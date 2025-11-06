@@ -1,0 +1,35 @@
+{
+	"nav": {
+		"home": "Accueil",
+		"search": "Rechercher",
+		"library": "Votre bibliothèque",
+		"aiPlaylist": "Playlist IA",
+		"createPlaylist": "Créer une playlist",
+		"likedSongs": "Titres likés"
+	},
+	"player": {
+		"play": "Lecture",
+		"pause": "Pause",
+		"next": "Suivant",
+		"previous": "Précédent",
+		"shuffle": "Aléatoire",
+		"repeat": "Répéter",
+		"volume": "Volume",
+		"queue": "File d'attente"
+	},
+	"main": {
+		"goodMorning": "Bonjour",
+		"goodAfternoon": "Bon après-midi",
+		"goodEvening": "Bonsoir",
+		"recentlyPlayed": "Récemment écoutés",
+		"madeForYou": "Créé pour vous",
+		"popularArtists": "Artistes populaires",
+		"playlistsForYou": "Playlists pour vous"
+	},
+	"common": {
+		"language": "Langue",
+		"english": "Anglais",
+		"french": "Français"
+	}
+}
+
