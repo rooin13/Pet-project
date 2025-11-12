@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { useUser, useLogout, useAuthModal } from "../model/supabase-hooks";
-import { LoginForm } from "@/features/auth/ui/LoginForm";
-import { RegisterForm } from "@/features/auth/ui/RegistrationForm";
-import { UsernameSetupForm } from "@/features/auth/ui/UsernameSetupForm";
+import {
+	LoginForm,
+	RegisterForm,
+	UsernameSetupForm,
+} from "@/features/auth";
 import Link from "next/link";
 
 export const AuthButton = () => {

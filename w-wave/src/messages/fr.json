@@ -1,0 +1,125 @@
+{
+	"nav": {
+		"home": "Accueil",
+		"search": "Recherche",
+		"library": "Votre bibliothèque",
+		"aiPlaylist": "Playlist IA",
+		"createPlaylist": "Créer une playlist",
+		"likedSongs": "Titres likés",
+		"profile": "Profil",
+		"loadingProfile": "Chargement du profil",
+		"loadingPlaylists": "Chargement des playlists",
+		"noPlaylists": "Aucune playlist pour le moment"
+	},
+	"createPlaylist": {
+		"title": "Créer une playlist",
+		"loading": "Chargement des playlists",
+		"empty": "Aucune playlist pour le moment",
+		"form": {
+			"namePlaceholder": "Nom de la playlist",
+			"nameFieldLabel": "Nom de la playlist",
+			"visibilityFieldLabel": "Rendre publique",
+			"submit": "Créer",
+			"creating": "Création…"
+		},
+		"sections": {
+			"public": {
+				"title": "Playlists publiques"
+			},
+			"private": {
+				"title": "Playlists privées"
+			}
+		},
+		"cards": {
+			"public": "Publique",
+			"private": "Privée",
+			"makePrivate": "Rendre privée",
+			"makePublic": "Rendre publique",
+			"delete": "Supprimer",
+			"open": "Ouvrir la playlist {name}",
+			"menuAriaLabel": "Actions pour la playlist {name}",
+			"ariaLabel": "Carte de playlist {name}"
+		}
+	},
+	"player": {
+		"play": "Lecture",
+		"pause": "Pause",
+		"next": "Suivant",
+		"previous": "Précédent",
+		"shuffle": "Aléatoire",
+		"repeat": "Répéter",
+		"volume": "Volume",
+		"queue": "File d'attente",
+		"mute": "Couper le son",
+		"unmute": "Activer le son",
+		"openInSpotify": "Ouvrir dans Spotify",
+		"progress": "Progression de la lecture",
+		"volumeControl": "Contrôle du volume",
+		"addToLibrary": "Ajouter à la bibliothèque",
+		"removeFromLibrary": "Retirer de la bibliothèque",
+		"nowPlaying": "Lecture en cours",
+		"close": "Fermer le lecteur",
+		"addToPlaylist": "Ajouter à la playlist"
+	},
+	"main": {
+		"goodMorning": "Bonjour",
+		"goodAfternoon": "Bon après-midi",
+		"goodEvening": "Bonsoir",
+		"recentlyPlayed": "Récemment écoutés",
+		"madeForYou": "Créé pour vous",
+		"popularArtists": "Artistes populaires",
+		"playlistsForYou": "Playlists pour vous",
+		"loadingFeaturedPlaylists": "Chargement des playlists mises en avant",
+		"loadingPersonalizedPlaylists": "Chargement des playlists personnalisées"
+	},
+	"library": {
+		"title": "Votre bibliothèque",
+		"subtitle": "Rassemblez les playlists et les albums que vous aimez. Accédez rapidement à vos créations et à votre musique enregistrée.",
+		"createPlaylistCTA": "Nouvelle playlist",
+		"tabsLabel": "Sections de la bibliothèque",
+		"loading": "Chargement de la bibliothèque",
+		"tabs": {
+			"all": "Tout",
+			"myPlaylists": "Mes playlists",
+			"savedPlaylists": "Playlists enregistrées",
+			"savedAlbums": "Albums enregistrés"
+		},
+		"empty": {
+			"all": "Aucun contenu enregistré pour l'instant. Ajoutez des playlists ou des albums à votre bibliothèque.",
+			"myPlaylists": "Vous n'avez pas encore créé de playlist. Lancez-vous et créez votre première sélection.",
+			"savedPlaylists": "Aucune playlist enregistrée pour le moment. Ajoutez-en une à vos favoris pour la retrouver ici.",
+			"savedAlbums": "Aucun album enregistré pour l'instant. Likez un album pour l'ajouter à votre bibliothèque."
+		},
+		"badges": {
+			"myPlaylist": "Ma playlist",
+			"savedPlaylist": "Playlist enregistrée",
+			"savedAlbum": "Album enregistré"
+		},
+		"unknownArtist": "Artiste inconnu"
+	},
+	"profile": {
+		"loadingProfile": "Chargement du profil",
+		"loginPrompt": "Connectez-vous pour voir votre profil",
+		"avatarLabel": "Avatar du profil avec l'initiale {initial}",
+		"noUsername": "Aucun nom d'utilisateur",
+		"usernameSectionTitle": "Mettre à jour le nom d'utilisateur",
+		"usernamePlaceholder": "johndoe",
+		"usernameFieldLabel": "Saisissez un nom d'utilisateur",
+		"saving": "Enregistrement…",
+		"saveChanges": "Enregistrer",
+		"updateSuccess": "Nom d'utilisateur mis à jour",
+		"spotifySectionLabel": "Paramètres de connexion Spotify",
+		"statsSectionLabel": "Statistiques du compte",
+		"stats": {
+			"playlists": "Playlists",
+			"followers": "Abonnés",
+			"following": "Abonnements"
+		}
+	},
+	"common": {
+		"language": "Langue",
+		"english": "Anglais",
+		"french": "Français"
+	}
+}
+

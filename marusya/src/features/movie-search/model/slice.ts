@@ -1,4 +1,4 @@
-import { IMovie } from "@/entities/movie/model/types";
+import type { IMovie } from "@/entities/movie";
 import { getMovieByTitle } from "@/shared/lib/api/moviesApi";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 

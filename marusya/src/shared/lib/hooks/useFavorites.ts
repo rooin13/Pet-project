@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { useCurrentUser } from '@/features/auth/model/supabase-hooks';
+import { useCurrentUser } from "@/features/auth";
 import { useQueryClient } from '@tanstack/react-query';
 import {
     addFavorite,

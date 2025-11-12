@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useCurrentUser } from "@/features/auth/model/supabase-hooks";
+import { useCurrentUser } from "@/features/auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 

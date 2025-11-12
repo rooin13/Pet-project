@@ -2,10 +2,7 @@
 
 import { Button } from "@/shared/ui/Button/Button";
 import { useState } from "react";
-import {
-	useCurrentUser,
-	useSignOut,
-} from "@/features/auth/model/supabase-hooks";
+import { useCurrentUser, useSignOut } from "@/features/auth";
 import { updateProfile } from "@/shared/lib/api/supabase-profile";
 
 const Profile = () => {

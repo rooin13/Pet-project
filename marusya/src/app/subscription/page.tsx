@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useCurrentUser } from "@/features/auth/model/supabase-hooks";
+import { useCurrentUser } from "@/features/auth";
 import Link from "next/link";
 import Image from "next/image";
 import { FaCheck } from "react-icons/fa";

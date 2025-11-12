@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Modal } from "@/features/modal/modal";
+import { Modal } from "@/features/modal";
 import { Button } from "@/shared/ui/Button/Button";
 import {
 	updateProfile,

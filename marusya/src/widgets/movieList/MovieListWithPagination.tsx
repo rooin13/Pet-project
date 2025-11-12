@@ -2,9 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import MovieCard from "@/entities/movie/ui/MovieCard";
+import { MovieCard } from "@/entities/movie";
 import { getMovieByGenre } from "@/shared/lib/api/genresApi";
-import { IMovie } from "@/entities/movie/model/types";
+import type { IMovie } from "@/entities/movie";
 import { AnimatePresence, motion } from "framer-motion";
 import { itemVariants, listVariants } from "@/shared/lib/animations/animation";
 import { MovieListSkeleton } from "./MovieListSkeleton";

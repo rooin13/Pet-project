@@ -3,15 +3,12 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema } from "@/features/auth/model/schema";
-import { LoginDataType } from "@/features/auth/model/types";
-import { Modal } from "@/features/modal/modal";
+import { loginSchema } from "../model/schema";
+import { LoginDataType } from "../model/types";
+import { Modal } from "@/features/modal";
 import Link from "next/link";
 import Image from "next/image";
-import {
-	useSignIn,
-	useGoogleSignIn,
-} from "@/features/auth/model/supabase-hooks";
+import { useSignIn, useGoogleSignIn } from "../model/supabase-hooks";
 import { Button } from "@/shared/ui/Button/Button";
 
 export const LoginForm = ({

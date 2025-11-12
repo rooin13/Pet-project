@@ -1,0 +1,125 @@
+{
+	"nav": {
+		"home": "Home",
+		"search": "Search",
+		"library": "Your Library",
+		"aiPlaylist": "AI Playlist",
+		"createPlaylist": "Create Playlist",
+		"likedSongs": "Liked Songs",
+		"profile": "Profile",
+		"loadingProfile": "Loading profile",
+		"loadingPlaylists": "Loading playlists",
+		"noPlaylists": "No playlists yet"
+	},
+	"createPlaylist": {
+		"title": "Create playlist",
+		"loading": "Loading playlists",
+		"empty": "No playlists yet",
+		"form": {
+			"namePlaceholder": "Playlist name",
+			"nameFieldLabel": "Playlist name",
+			"visibilityFieldLabel": "Make public",
+			"submit": "Create",
+			"creating": "Creating…"
+		},
+		"sections": {
+			"public": {
+				"title": "Public playlists"
+			},
+			"private": {
+				"title": "Private playlists"
+			}
+		},
+		"cards": {
+			"public": "Public",
+			"private": "Private",
+			"makePrivate": "Make private",
+			"makePublic": "Make public",
+			"delete": "Delete",
+			"open": "Open playlist {name}",
+			"menuAriaLabel": "Playlist actions for {name}",
+			"ariaLabel": "Playlist card {name}"
+		}
+	},
+	"player": {
+		"play": "Play",
+		"pause": "Pause",
+		"next": "Next",
+		"previous": "Previous",
+		"shuffle": "Shuffle",
+		"repeat": "Repeat",
+		"volume": "Volume",
+		"queue": "Queue",
+		"mute": "Mute",
+		"unmute": "Unmute",
+		"openInSpotify": "Open in Spotify",
+		"progress": "Playback progress",
+		"volumeControl": "Volume control",
+		"addToLibrary": "Add to library",
+		"removeFromLibrary": "Remove from library",
+		"nowPlaying": "Now playing",
+		"close": "Close player",
+		"addToPlaylist": "Add to playlist"
+	},
+	"main": {
+		"goodMorning": "Good morning",
+		"goodAfternoon": "Good afternoon",
+		"goodEvening": "Good evening",
+		"recentlyPlayed": "Recently played",
+		"madeForYou": "Made for you",
+		"popularArtists": "Popular artists",
+		"playlistsForYou": "Playlists for you",
+		"loadingFeaturedPlaylists": "Loading featured playlists",
+		"loadingPersonalizedPlaylists": "Loading personalized playlists"
+	},
+	"library": {
+		"title": "Your Library",
+		"subtitle": "Collect playlists and albums you love. Quickly jump between your creations and saved music.",
+		"createPlaylistCTA": "New playlist",
+		"tabsLabel": "Library sections",
+		"loading": "Loading library",
+		"tabs": {
+			"all": "All",
+			"myPlaylists": "My playlists",
+			"savedPlaylists": "Saved playlists",
+			"savedAlbums": "Saved albums"
+		},
+		"empty": {
+			"all": "Nothing saved yet. Save playlists or albums to build your collection here.",
+			"myPlaylists": "You haven't created any playlists yet. Start a new one to curate your favourite tracks.",
+			"savedPlaylists": "No playlists saved yet. Tap the heart icon on any playlist to add it here.",
+			"savedAlbums": "No albums saved yet. Like an album to keep it in your library."
+		},
+		"badges": {
+			"myPlaylist": "My playlist",
+			"savedPlaylist": "Saved playlist",
+			"savedAlbum": "Saved album"
+		},
+		"unknownArtist": "Unknown artist"
+	},
+	"profile": {
+		"loadingProfile": "Loading profile",
+		"loginPrompt": "Log in to view your profile",
+		"avatarLabel": "Profile avatar with initial {initial}",
+		"noUsername": "No username yet",
+		"usernameSectionTitle": "Update username",
+		"usernamePlaceholder": "johndoe",
+		"usernameFieldLabel": "Enter a username",
+		"saving": "Saving…",
+		"saveChanges": "Save changes",
+		"updateSuccess": "Username updated successfully",
+		"spotifySectionLabel": "Spotify connection settings",
+		"statsSectionLabel": "Account statistics",
+		"stats": {
+			"playlists": "Playlists",
+			"followers": "Followers",
+			"following": "Following"
+		}
+	},
+	"common": {
+		"language": "Language",
+		"english": "English",
+		"french": "French"
+	}
+}
+

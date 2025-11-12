@@ -4,8 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/shared/ui/Button/Button";
 import { useFavorites } from "@/shared/lib/hooks/useFavorites";
-import { LoginForm } from "@/features/auth/ui/LoginForm";
-import { RegisterForm } from "@/features/auth/ui/RegistrationForm";
+import { LoginForm, RegisterForm, useCurrentUser } from "@/features/auth";
 import { convertMinutes } from "@/shared/lib/utils/convertMinutes";
 import { getRatingBgColor } from "@/shared/lib/utils/getRatingBgColor";
 import {
@@ -14,8 +13,7 @@ import {
 	useMovieMedia,
 	getYouTubeId,
 } from "../model/hooks";
-import { useCurrentUser } from "@/features/auth/model/supabase-hooks";
-import { useAuthModal } from "@/features/auth-button/model/supabase-hooks";
+import { useAuthModal } from "@/features/auth-button";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {

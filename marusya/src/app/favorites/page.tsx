@@ -1,17 +1,15 @@
 "use client";
 
-import { useCurrentUser } from "@/features/auth/model/supabase-hooks";
+import { LoginForm, RegisterForm, useCurrentUser } from "@/features/auth";
 import { useFavoritesList } from "@/shared/lib/hooks/useSupabaseFavorites";
 import { getMovieByTitle } from "@/shared/lib/api/moviesApi";
 import { useEffect, useState } from "react";
-import { IMovie } from "@/entities/movie/model/types";
+import type { IMovie } from "@/entities/movie";
 import Link from "next/link";
 import Image from "next/image";
 import { convertMinutes } from "@/shared/lib/utils/convertMinutes";
 import { FaSearch } from "react-icons/fa";
-import { useAuthModal } from "@/features/auth-button/model/supabase-hooks";
-import { LoginForm } from "@/features/auth/ui/LoginForm";
-import { RegisterForm } from "@/features/auth/ui/RegistrationForm";
+import { useAuthModal } from "@/features/auth-button";
 
 export default function FavoritesPage() {
 	const { data: userData, isLoading: userLoading } = useCurrentUser();

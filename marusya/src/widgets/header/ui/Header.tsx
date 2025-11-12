@@ -1,6 +1,6 @@
 "use client";
-import { MovieSearchInput } from "@/features/movie-search/ui/MovieSearchInput";
-import { AuthButton } from "@/features/auth-button/ui/AuthButton";
+import { MovieSearchInput } from "@/features/movie-search";
+import { AuthButton } from "@/features/auth-button";
 import { BurgerMenu } from "./BurgerMenu";
 import Image from "next/image";
 import Link from "next/link";

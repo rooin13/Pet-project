@@ -1,4 +1,4 @@
-import { MovieCardSkeleton } from "@/entities/movie/ui/MovieCardSkeleton";
+import { MovieCardSkeleton } from "@/entities/movie";
 
 interface MovieListSkeletonProps {
 	count?: number;

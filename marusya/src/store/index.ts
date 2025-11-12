@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector, TypedUseSelectorHook } from "react-redux";
-import { movieSearchReducer } from "@/features/movie-search/model/slice";
+import { movieSearchReducer } from "@/features/movie-search";
 
 export const store = configureStore({
     reducer: {

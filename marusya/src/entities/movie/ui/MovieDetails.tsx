@@ -1,7 +1,6 @@
 "use client";
-import { IMovie } from "@/entities/movie/model/types";
-import { LoginForm } from "@/features/auth/ui/LoginForm";
-import { RegisterForm } from "@/features/auth/ui/RegistrationForm";
+import type { IMovie } from "@/entities/movie";
+import { LoginForm, RegisterForm } from "@/features/auth";
 import { useFavorites } from "@/shared/lib/hooks/useFavorites";
 import { convertMinutes } from "@/shared/lib/utils/convertMinutes";
 import { getRatingBgColor } from "@/shared/lib/utils/getRatingBgColor";
@@ -16,10 +15,7 @@ import {
 	infoItemVariants,
 	imageVariants,
 } from "@/shared/lib/animations/animation";
-import {
-	useUser,
-	useAuthModal,
-} from "@/features/auth-button/model/supabase-hooks";
+import { useAuthModal, useUser } from "@/features/auth-button";
 import {
 	useMovieFavorite,
 	useMovieMedia,

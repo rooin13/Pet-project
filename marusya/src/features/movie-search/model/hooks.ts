@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { IMovie } from "@/entities/movie/model/types";
+import type { IMovie } from "@/entities/movie";
 import { getMovieByTitle } from "@/shared/lib/api/moviesApi";
 
 // search with debounce + API call (logic moved from UI!)

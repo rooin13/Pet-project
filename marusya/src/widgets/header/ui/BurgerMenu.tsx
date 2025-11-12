@@ -4,12 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaBars, FaTimes } from "react-icons/fa";
-import {
-	useUser,
-	useAuthModal,
-} from "@/features/auth-button/model/supabase-hooks";
-import { LoginForm } from "@/features/auth/ui/LoginForm";
-import { RegisterForm } from "@/features/auth/ui/RegistrationForm";
+import { useAuthModal, useUser } from "@/features/auth-button";
+import { LoginForm, RegisterForm } from "@/features/auth";
 
 export const BurgerMenu = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);

@@ -1,17 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Modal } from "@/features/modal/modal";
+import { Modal } from "@/features/modal";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { registerSchema } from "@/features/auth/model/schema";
-import { RegisterDataType } from "@/features/auth/model/types";
+import { registerSchema } from "../model/schema";
+import { RegisterDataType } from "../model/types";
 import Link from "next/link";
 import Image from "next/image";
-import {
-	useSignUp,
-	useGoogleSignIn,
-} from "@/features/auth/model/supabase-hooks";
+import { useSignUp, useGoogleSignIn } from "../model/supabase-hooks";
 import { Button } from "@/shared/ui/Button/Button";
 
 export const RegisterForm = ({

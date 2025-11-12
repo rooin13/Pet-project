@@ -1,4 +1,4 @@
-import { MovieDetails } from "@/entities/movie/ui/MovieDetails";
+import { MovieDetails } from "@/entities/movie";
 import { getMovieBySlug } from "@/shared/lib/api/moviesApi";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";

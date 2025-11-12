@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { IMovie } from "@/entities/movie/model/types";
+import type { IMovie } from "@/entities/movie";
 import { getRandomMovie } from "@/shared/lib/api/moviesApi";
 
 // random movie with loading state (logic moved from UI!)

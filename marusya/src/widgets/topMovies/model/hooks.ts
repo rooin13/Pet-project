@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, RefObject } from "react";
 import { getCuratedTopMovies } from "@/shared/lib/api/moviesApi";
-import { IMovie } from "@/entities/movie/model/types";
+import type { IMovie } from "@/entities/movie";
 
 export function useTopMovies() {
     const [movies, setMovies] = useState<IMovie[]>([]);

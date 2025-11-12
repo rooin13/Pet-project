@@ -1,0 +1,4 @@
+export { useArtistDetails } from "./useArtistDetails";
+
+
+

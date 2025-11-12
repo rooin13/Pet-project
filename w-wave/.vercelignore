@@ -1,0 +1,19 @@
+# Database files
+db/
+*.db
+*.sqlite
+
+# Development
+.env.local
+.env*.local
+
+# Node modules
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Supabase local
+.supabase/
+

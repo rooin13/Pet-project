@@ -1,4 +1,4 @@
-import { useCurrentUser } from "@/features/auth/model/supabase-hooks";
+import { useCurrentUser } from "@/features/auth";
 
 export const useAuth = () => {
   const { data: userData } = useCurrentUser();

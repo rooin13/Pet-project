@@ -1,5 +1,11 @@
 import { useState } from 'react';
-import { useCurrentUser, useSignOut, useSignIn, useSignUp, useGoogleSignIn } from '@/features/auth/model/supabase-hooks';
+import {
+    useCurrentUser,
+    useSignOut,
+    useSignIn,
+    useSignUp,
+    useGoogleSignIn,
+} from '@/features/auth';
 
 /**
  * Hook for managing auth modal state
